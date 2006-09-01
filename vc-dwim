@@ -26,8 +26,8 @@
 use strict;
 use warnings;
 use Getopt::Long;
-use Coda;
-use Ascend::ProcessStatus qw($PROCESS_STATUS);
+#use Coda;
+#use Ascend::ProcessStatus qw($PROCESS_STATUS);
 use File::Basename; # for dirname
 use Tie::IxHash;
 
@@ -213,6 +213,7 @@ sub get_diffs ($)
     and chomp @added_lines;
   if ( ! close PIPE)
     {
+      my $PROCESS_STATUS = '';
       # Die if VC diff exits with unexpected status.
       valid_diff_exit_status ($? >> 8)
 	or die "$ME: error closing pipe from `"
