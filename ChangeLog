@@ -1,0 +1,89 @@
+2006-09-02  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim: Rename from cvci.
+	* cvci: Rename to vc-dwim cvci.
+
+2006-09-01  Jim Meyering  <jim@meyering.net>
+
+	* cvci (verbose_cmd): New function.  For consistent verbose output.
+	(get_diffs): Use 4+-arg form of open, to avoid quoting problems.
+
+	Allow the user to specify VC manually, in case s/he is using more
+	than one (e.g., CVS + RCS).
+	* cvci: Implement this, via new --vc=VC_NAME option.
+	(usage): Document --vc=VC_NAME.
+
+	* cvci (main): Use a more accurate regexp for +++/--- diff lines.
+	Don't print log-summary or diff output unless everything is ok.
+	Don't require the existence of a file if it's marked for deletion.
+	On the contrary, require its *non*-existence.
+	(vc_name): Return undef, rather than 'unknown'.
+	(main): Make the code to handle non-'*'-prefixed lines work again.
+
+	* cvci: Use git-diff, not cg-diff, since I don't like being forced
+	to use a pager.
+
+	* cvci: New option: --diff.
+
+	* cvci (main): Use a non-greedy (shy) ".*", in case there are two
+	or more ":"s on a "*" line.
+	E.g., the new-option line, above.
+
+2006-08-30  Jim Meyering  <jim@meyering.net>
+
+	* cvci (main): Handle a diff reflecting an hg-added file.
+
+2006-08-29  Jim Meyering  <jim@meyering.net>
+
+	* cvci (HG, CG, CVS, SVN): Factor out constant names of the version
+	control systems we know about.
+	Ensure that each affected file is mentioned in @$diff_lines
+	Thus, if a new file is listed in a ChangeLog entry, but not e.g.,
+	"hg add"ed, this will catch the error.  Another explanation: a typo,
+	in case you manually (mis)typed the file name in the ChangeLog.
+
+	* cvci (change_log_line_extract_file_list): New function.
+	(main): Handle multiple, comma-separated file names per "*"-
+	ChangeLog line.
+
+2006-08-25  Jim Meyering  <jim@meyering.net>
+
+	* cvci (main): Work once again when the first added line is blank.
+	(main): Remove the first line, if it is blank.
+	Fix a couple of other minor bugs.
+	(main): New function.
+
+2006-08-24  Jim Meyering  <jim@meyering.net>
+
+	Work when the first added ChangeLog line doesn't start with '*'.
+	* cvci (get_new_changelog_lines): Allow removed ChangeLog lines.
+	(get_new_changelog_lines): Update to handle offsets.
+	(get_new_changelog_lines): Push offset only once per @@ marker.
+
+	* cvci (get_new_changelog_lines): Rewrite to use get_diffs().
+	(exists_editor_backup): Work also for files not in ".".
+
+	* cvci: Add svn.
+
+2006-08-23  Jim Meyering  <jim@meyering.net>
+
+	* cvci (get_new_changelog_lines): Work better for hg.
+	(vc_name): Remove debugging cruft.
+
+	* cvci (vc_name): New function.
+	(main): Use it.
+
+2006-08-22  Jim Meyering  <jim@meyering.net>
+
+	* cvci (get_new_changelog_lines): Don't require 2nd "@@"
+	to be at the end of line.  With hg diff -p, it's not.
+
+	* cvci: Add hg support, fix cg commit command.
+	Really check in yesterday's change.
+	Unlink message file only after the commit command.
+
+2006-08-21  Jim Meyering  <jim@meyering.net>
+
+	* cvci: Now, works for cogito/git, too.
+	* cvci: Clean up.  Detect unsaved temps of the affected files, too,
+	not just of the ChangeLogs.
