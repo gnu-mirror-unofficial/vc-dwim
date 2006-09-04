@@ -1,0 +1,15 @@
+^Makefile$
+^Makefile\.in$
+^aclocal\.m4$
+^autom4te\.cache/.*$
+^config\.h$
+^config\.in$
+^config\.log$
+^config\.status$
+^configure$
+^stamp-h1$
+^tests/Makefile$
+^tests/Makefile\.in$
+^vc-dwim$
+^vc-dwim-[0-9.]+tar\.bz2$
+^vc-dwim-[0-9.]+tar\.gz$

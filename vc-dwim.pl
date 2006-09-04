@@ -1,5 +1,6 @@
-#!/usr/bin/perl
-# Given a command like cvci ChangeLog lib/ChangeLog..., check that each
+#!@PERL@ -w
+# @configure_input@
+# Given a command like vc-dwim ChangeLog lib/ChangeLog..., check that each
 # ChangeLog has been modified, determine the list of affected files from
 # the added lines in the ChangeLog diffs.  Ensure that there is no editor
 # temporary file indicating an unsaved emacs buffer, then write all ChangeLog
@@ -28,6 +29,21 @@ use warnings;
 use Getopt::Long;
 use File::Basename; # for dirname
 use Tie::IxHash;
+
+BEGIN
+{
+  my $perllibdir = $ENV{'perllibdir'} || '@datadir@/@PACKAGE@';
+  unshift @INC, (split '@PATH_SEPARATOR@', $perllibdir);
+
+  # Override SHELL.  This is required on DJGPP so that system() uses
+  # bash, not COMMAND.COM which doesn't quote arguments properly.
+  # Other systems aren't expected to use $SHELL when Automake
+  # runs, but it should be safe to drop the `if DJGPP' guard if
+  # it turns up other systems need the same thing.  After all,
+  # if SHELL is used, ./configure's SHELL is always better than
+  # the user's SHELL (which may be something like tcsh).
+  $ENV{'SHELL'} = '@SHELL@' if exists $ENV{'DJGPP'};
+}
 
 # FIXME: I really should publish both Coda and ProcessStatus.
 # Then this script would simply "use" them, without the "use lib" kludge.
@@ -824,7 +840,7 @@ sub main
 
       # Write commit log to a file.
       my ($fh, $commit_log_filename)
-	= File::Temp::tempfile ('cvci-log-XXXXXX', DIR => '.', UNLINK => 0);
+	= File::Temp::tempfile ('vc-dwim-log-XXXXXX', DIR => '.', UNLINK => 0);
       print $fh join ("\n", @log_msg_lines), "\n";
       close $fh
 	or die "$ME: failed to write $commit_log_filename: $!\n";

@@ -1,0 +1,12 @@
+EXTRA_DIST = $(TESTS)
+
+TESTS_ENVIRONMENT = \
+  top_srcdir=$(top_srcdir) \
+  srcdir=$(srcdir) \
+  PERL="$(PERL)" \
+  perllibdir="`cd $(top_srcdir); pwd`" \
+  PATH="$(VG_PATH_PREFIX)`pwd`/..$(PATH_SEPARATOR)$$PATH"
+
+TESTS = \
+  leading-comment \
+  no-star
