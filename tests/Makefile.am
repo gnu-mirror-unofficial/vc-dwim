@@ -7,6 +7,8 @@ TESTS_ENVIRONMENT = \
   perllibdir="`cd $(top_srcdir); pwd`" \
   PATH="$(VG_PATH_PREFIX)`pwd`/..$(PATH_SEPARATOR)$$PATH"
 
+XFAIL_TESTS = subdir
 TESTS = \
   leading-comment \
-  no-star
+  no-star \
+  subdir
