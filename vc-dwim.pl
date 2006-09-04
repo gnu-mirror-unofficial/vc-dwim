@@ -834,7 +834,7 @@ sub main
       close $fh
 	or die "$ME: failed to write $commit_log_filename: $!\n";
 
-      my @cmd = (@$vc_commit, $commit_log_filename, 'j--',
+      my @cmd = (@$vc_commit, $commit_log_filename, '--',
 		 @changelog_file_name, @affected_files);
       my $options =
 	{
