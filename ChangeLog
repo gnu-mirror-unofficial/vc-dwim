@@ -5,7 +5,7 @@
 
 	* vc-dwim.pl: Use $PROCESS_STATUS in place of equivalent code.
 
-	* Autoconfiscate, Automakify, and add tests.
+	Autoconfiscate, Automakify, and add tests.
 	* vc-dwim.pl: Set @INC.  Use @PERL@.
 
 	* ProcessStatus.pm, Coda.pm: New files.
