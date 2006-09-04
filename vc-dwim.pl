@@ -877,27 +877,31 @@ version-control "diff" or "commit" command
 
 =head1	SYNOPSIS
 
-vc-dwim $ME [OPTIONS] CHANGELOG_FILE...
-vc-dwim $ME [OPTIONS] --commit CHANGELOG_FILE...
-vc-dwim $ME [OPTIONS] --diff FILE...
+B<vc-dwim> [OPTIONS] CHANGELOG_FILE...
+
+B<vc-dwim> [OPTIONS] --commit CHANGELOG_FILE...
+
+B<vc-dwim> [OPTIONS] --diff FILE...
 
 =head1	DESCRIPTION
 
-By default, each command line argument is expected to be a version-controlled
-ChangeLog file.  In this default mode, $ME works by first computing diffs to
-any named ChangeLog files, and then parsing that output to determine which
-named files are being changed.  Then, it diffs the named files and prints the
-resulting output.  One advantage of using this tool is that before printing
-any diffs, it ensures that there is no editor temporary file corresponding
-to any affected file.  The existence of such a temporary can mean that you
-have unsaved changes, usually a bad thing.  Another common error you can
-avoid with this tool is that in which you create a new file, add its name to
-Makefiles, mention the addition in ChangeLog, but forget to e.g., "git add"
-(or "hg add", etc.)  the file to the version control system.  $ME detects this
-discrepancy and fails with a diagnostic explaining the probably situation.
-You might also have simply mistyped the file name in the ChangeLog.  Similarly,
-if diff output suggests you've "cvs remove"d a file, then that file should
-no longer exist.  If it does, $ME detects the problem.
+By default, each command line argument is expected to be a
+version-controlled ChangeLog file.  In this default mode, B<vc-dwim> works
+by first computing diffs of any named ChangeLog files, and then parsing
+that output to determine which named files are being changed.  Then, it
+diffs the named files and prints the resulting output.  One advantage
+of using this tool is that before printing any diffs, it ensures that
+there is no editor temporary file corresponding to any affected file.
+The existence of such a temporary can mean that you have unsaved changes,
+usually a bad thing.  Another common error you can avoid with this tool
+is the one where you create a new file, add its name to Makefiles, etc.,
+mention the addition in ChangeLog, but forget to e.g., "git add" (or
+"hg add", etc.)  the file to the version control system.  B<vc-dwim>
+detects this discrepancy and fails with a diagnostic explaining the
+probable situation.  You might also have simply mistyped the file name in
+the ChangeLog.  Similarly, if diff output suggests you've "cvs remove"d
+a file, then that file should no longer exist.  If it does, B<vc-dwim>
+detects the problem.
 
 This tool automatically detects which version control system affects the
 listed files, and uses that.  If it guesses wrong, you can override it's
@@ -908,6 +912,8 @@ those changes and the ChangeLog simply by rerunning the command with
 the --commit option.
 
 =head1	OPTIONS
+
+=over 4
 
 =item B<--commit>
 
@@ -938,8 +944,6 @@ Generate verbose output.
 =item B<--debug>
 
 Generate debug output.
-
-=over 4
 
 =item B<--verbose>
 
