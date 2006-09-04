@@ -1,8 +1,9 @@
 2006-09-04  Jim Meyering  <jim@meyering.net>
 
-	* vc-dwim.pl: Set @INC.  Use @PERL@.
-	* ProcessStatus.pm, Coda.pm: New files.
 	* Autoconfiscate, Automakify, and add tests.
+	* vc-dwim.pl: Set @INC.  Use @PERL@.
+
+	* ProcessStatus.pm, Coda.pm: New files.
 
 	* vc-dwim.pl: Rename from vc-dwim.
 	* vc-dwim: Rename to vc-dwim.pl.
