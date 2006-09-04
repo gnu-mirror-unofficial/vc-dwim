@@ -17,7 +17,7 @@ cd $tmp || framework_failure=1
 
 touch f ChangeLog || framework_failure=1
 git init-db 2> /dev/null || framework_failure=1
-git add f ChangeLog || framework_failure=1
+git add . || framework_failure=1
 git commit -m m . 2> /dev/null || framework_failure=1
 
 if test $framework_failure = 1; then
