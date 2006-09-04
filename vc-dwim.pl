@@ -381,22 +381,11 @@ sub run_command
       warn "$ME: ran with normal exit status\n" if $options{DEBUG};
       $fail = 0;
     }
-  elsif ($rc == 0xff00)
-    {
-      warn "$ME: internal error: couldn't run command:\n"
-	. join (' ', @cmd) . "\n";
-    }
-  elsif ($rc > 0x80)
-    {
-      # command ran successfully but exit'ed with non-zero status.
-      $rc >>= 8;
-      warn "$ME: ran with exit status $rc\n" if $options{DEBUG};
-    }
   else
     {
-      # command was terminated by a signal.
-      $rc &= ~0x80 if ($rc & 0x80);
-      warn "$ME: terminated by signal $rc\n" if $options{DEBUG};
+      my $cmd = join (' ', @cmd) . "\n";
+      $? = $rc;
+      warn "$ME: Error running '$cmd': $PROCESS_STATUS\n";
     }
 
   if ($fail && !$options{IGNORE_FAILURE})
@@ -845,7 +834,7 @@ sub main
       close $fh
 	or die "$ME: failed to write $commit_log_filename: $!\n";
 
-      my @cmd = (@$vc_commit, $commit_log_filename, '--',
+      my @cmd = (@$vc_commit, $commit_log_filename, 'j--',
 		 @changelog_file_name, @affected_files);
       my $options =
 	{

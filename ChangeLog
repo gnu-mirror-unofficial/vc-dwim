@@ -1,5 +1,7 @@
 2006-09-04  Jim Meyering  <jim@meyering.net>
 
+	* vc-dwim.pl: Use $PROCESS_STATUS in place of equivalent code.
+
 	* Autoconfiscate, Automakify, and add tests.
 	* vc-dwim.pl: Set @INC.  Use @PERL@.
 
