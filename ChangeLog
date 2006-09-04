@@ -1,7 +1,24 @@
+2006-09-04  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim: Put documentation in perldoc format.
+	Make $VERSION substitutable.
+
+	* vc-dwim (main): Adjust $offset to reflect removal of two lines.
+	Depend on Coda.pm and ProcessStatus.pm being in the directory alongside
+	this script.
+	(main): Add a colon after $file, in the constructed "*"-line.
+	(find_parent_file): If the "*" line looks like "* file_name:", don't
+	return the ":" as part of the extracted file name.
+	(main): Push log file lines onto @log_msg_lines list only *after*
+	they might be modified by the find_parent_file()-using code.
+	Fix some ?: regexp modifiers that were written as :?.
+
 2006-09-02  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim: Rename from cvci.
 	* cvci: Rename to vc-dwim cvci.
+	(main): Tighten up a regexp.
+	Add FIXME comment.
 
 2006-09-01  Jim Meyering  <jim@meyering.net>
 

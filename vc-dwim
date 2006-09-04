@@ -26,12 +26,16 @@
 use strict;
 use warnings;
 use Getopt::Long;
-#use Coda;
-#use Ascend::ProcessStatus qw($PROCESS_STATUS);
 use File::Basename; # for dirname
 use Tie::IxHash;
 
-(my $VERSION = '$Revision$ ') =~ tr/[0-9].//cd;
+# FIXME: I really should publish both Coda and ProcessStatus.
+# Then this script would simply "use" them, without the "use lib" kludge.
+use lib dirname ($0);
+use Coda;
+use ProcessStatus qw($PROCESS_STATUS);
+
+our $VERSION = '@VERSION@';
 (my $ME = $0) =~ s|.*/||;
 
 # This VC-selecting business belongs in a class of its own.
@@ -213,7 +217,6 @@ sub get_diffs ($)
     and chomp @added_lines;
   if ( ! close PIPE)
     {
-      my $PROCESS_STATUS = '';
       # Die if VC diff exits with unexpected status.
       valid_diff_exit_status ($? >> 8)
 	or die "$ME: error closing pipe from `"
@@ -284,7 +287,7 @@ sub exists_editor_backup ($)
 sub is_changelog ($)
 {
   my ($f) = @_;
-  return $f =~ m!(:?^|/)ChangeLog$!;
+  return $f =~ m!(?:^|/)ChangeLog$!;
 }
 
 # This is an interface to perl's system command with a global hook for
@@ -439,6 +442,7 @@ sub find_parent_file($$)
   # +       (main): Prepare to use offsets.
   #
   # In that case, search any following sequence of \t-prefixed lines.
+  my $file_name;
   if (@searchable_lines == 0)
     {
       while (defined (my $line = <$fh>))
@@ -446,7 +450,7 @@ sub find_parent_file($$)
 	  $line =~ /^\t/
 	    or last;
 	  $line =~ /^\t\* (\S+) /
-	    and return $1;
+	    and ($file_name = $1), last;
 	}
     }
   else
@@ -454,11 +458,15 @@ sub find_parent_file($$)
       while (defined (my $line = pop @searchable_lines))
 	{
 	  $line =~ /^\t\* (\S+) /
-	    and return $1;
+	    and ($file_name = $1), last;
 	}
     }
-  die "$ME: $log_file: can't find name of file in block containing "
-    . "line $line_no\n"
+  defined $file_name
+    or die "$ME: $log_file: can't find name of file in block containing "
+      . "line $line_no\n";
+
+  $file_name =~ s/:$//;
+  return $file_name;
 }
 
 # Given the part of a ChangeLog line after a leading "\t* ",
@@ -641,6 +649,7 @@ sub main
 	    }
 	  shift @log_lines;
 	  shift @log_lines;
+	  $offset += 2;
 	}
 
       # If the first line is empty, remove it.
@@ -664,7 +673,6 @@ sub main
       # if there are two or more ChangeLog files.
       2 <= @changelog_file_name
 	and push @log_msg_lines, "[$log]";
-      push @log_msg_lines, @log_lines;
 
       my $rel_dir = dirname $log;
 
@@ -696,7 +704,9 @@ sub main
 	      if ($line !~ /^\* (\S+) /)
 		{
 		  my $file = find_parent_file ($log, $offset);
-		  $line = "* $file $line";
+		  my $colon = ($line =~ /^\([^\)]+\)(?:\s*\[[^\]]+\])?: /
+			       ? '' : ':');
+		  $line = "* $file$colon $line";
 		}
 	    }
 	  undef $offset;
@@ -712,6 +722,10 @@ sub main
 		  $log_msg_file->Push($rel_file, undef);
 		}
 	    }
+	}
+      continue
+	{
+	  push @log_msg_lines, $line;
 	}
     }
 
@@ -751,7 +765,7 @@ sub main
       # For git and hg, look for lines like /^--- a/dir/file.c\s/,
       # or /^\+\+\+ b/dir/file.c\s/, for an hg-added file.
       # For cvs and svn, there won't be an "a/" or "b/" prefix.
-      $diff_line =~ /^[-+]{3} (\S+)(:?[ \t]|$)/
+      $diff_line =~ /^[-+]{3} (\S+)(?:[ \t]|$)/
 	or next;
       my $file_name = $1;
       if ($vc_name eq CG || $vc_name eq HG)
@@ -842,26 +856,74 @@ __END__
 
 =head1	NAME
 
-FIXME - description of what this script does
+vc-dwim - use new ChangeLog entries to direct and cross check a
+version-control "diff" or "commit" command
 
 =head1	SYNOPSIS
 
-FIXME [B<--foo>]  [B<--bar>]  [B<--verbose>] ARG1 [ARG2...] FIXME
-
-FIXME  B<--help>  |  B<--version>
+vc-dwim $ME [OPTIONS] CHANGELOG_FILE...
+vc-dwim $ME [OPTIONS] --commit CHANGELOG_FILE...
+vc-dwim $ME [OPTIONS] --diff FILE...
 
 =head1	DESCRIPTION
 
-B<FIXME> grobbles the frobniz on alternate Tuesdays, except where
-prohibited by law.
+By default, each command line argument is expected to be a version-controlled
+ChangeLog file.  In this default mode, $ME works by first computing diffs to
+any named ChangeLog files, and then parsing that output to determine which
+named files are being changed.  Then, it diffs the named files and prints the
+resulting output.  One advantage of using this tool is that before printing
+any diffs, it ensures that there is no editor temporary file corresponding
+to any affected file.  The existence of such a temporary can mean that you
+have unsaved changes, usually a bad thing.  Another common error you can
+avoid with this tool is that in which you create a new file, add its name to
+Makefiles, mention the addition in ChangeLog, but forget to e.g., "git add"
+(or "hg add", etc.)  the file to the version control system.  $ME detects this
+discrepancy and fails with a diagnostic explaining the probably situation.
+You might also have simply mistyped the file name in the ChangeLog.  Similarly,
+if diff output suggests you've "cvs remove"d a file, then that file should
+no longer exist.  If it does, $ME detects the problem.
+
+This tool automatically detects which version control system affects the
+listed files, and uses that.  If it guesses wrong, you can override it's
+guess with the --vc=VC option.
+
+Once you are happy with your ChangeLog-derived diffs, you can commit
+those changes and the ChangeLog simply by rerunning the command with
+the --commit option.
 
 =head1	OPTIONS
 
+=item B<--commit>
+
+perform the commit, too
+
+=item B<--vc=VC>
+
+Don't guess the version control system: use VC.
+VC must be one of: FIXME $vc_list
+
+=item B<--diff>
+
+Determine which version control system manages the first
+FILE, then use that to print diffs of the named FILES.
+
+=item B<--help>
+
+Display this help and exit.
+
+=item B<--version>
+
+Output version information and exit.
+
+=item B<--verbose>
+
+Generate verbose output.
+
+=item B<--debug>
+
+Generate debug output.
+
 =over 4
-
-=item B<--foo>
-
-FIXME
 
 =item B<--verbose>
 
@@ -877,34 +939,16 @@ Display program version.
 
 =back
 
-
-=head1	DIAGNOSTICS
-
-FIXME
-
-=head1	ENVIRONMENT
-
-FIXME
-
-=head1	FILES
-
-FIXME
-
 =head1	RESTRICTIONS
 
-FIXME
-
-=head1	SEE ALSO
-
-FIXME
-
-e.g. L<Ascend::DB|Ascend::DB>
-L<Ascend::DB::Project|Ascend::DB::Project>
+Relies on fairly strict adherence to recommended ChangeLog syntax.
+This tool detects editor temporaries created by Emacs.
+FIXME: add support to detect other-editor (e.g., vim) temporaries.
 
 =head1	AUTHOR
 
-Your Name <FIXME@ascend.com>
+Jim Meyering <jim@meyering.net>
 
-Please report bugs or suggestions to <tools-group@ascend.com>
+Please report bugs or suggestions to <FIXME>
 
 =cut
