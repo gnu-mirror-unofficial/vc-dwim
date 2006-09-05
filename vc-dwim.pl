@@ -178,11 +178,12 @@ sub valid_file_name($)
   return 1;
 }
 
-# FIXME: quote any argument that contains meta-characters.
+# Print the output you see with --verbose.
+# Be careful to quote any meta-characters.
 sub verbose_cmd ($)
 {
   my ($cmd) = @_;
-  warn "Running command: ", join (' ', @$cmd), "\n";
+  warn "Running command: ", join (' ', map {quotemeta} @$cmd), "\n";
 }
 
 # Return an array of lines from running $VC diff -u on the named files.

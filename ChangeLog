@@ -1,5 +1,7 @@
 2006-09-05  Jim Meyering  <jim@meyering.net>
 
+	* vc-dwim.pl (verbose_cmd): Quote meta-characters.
+
 	* vc-dwim.pl (usage): Remove now-duplicated/redundant --help text.
 	Instead, generate nearly the same output using Pod::PlainText.
 	(usage): Use *DATA directly, suggestion from Ed Santiago.
