@@ -1,3 +1,7 @@
+2006-09-05  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim.pl (find_relevant_file): Rename from find_parent_file.
+
 2006-09-04  Jim Meyering  <jim@meyering.net>
 
 	* tests/subdir: New file.  Currently expected to fail.

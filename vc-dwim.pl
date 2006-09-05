@@ -409,7 +409,7 @@ sub run_command
 #	(main): Prepare to use offsets.
 # -------
 # then this function must return "cvci".
-sub find_parent_file($$)
+sub find_relevant_file($$)
 {
   my ($log_file, $line_no) = @_;
 
@@ -708,7 +708,7 @@ sub main
 	    {
 	      if ($line !~ /^\* (\S+) /)
 		{
-		  my $file = find_parent_file ($log, $offset);
+		  my $file = find_relevant_file ($log, $offset);
 		  my $colon = ($line =~ /^\([^\)]+\)(?:\s*\[[^\]]+\])?: /
 			       ? '' : ':');
 		  $line = "* $file$colon $line";
