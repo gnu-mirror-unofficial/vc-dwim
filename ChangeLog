@@ -2,6 +2,8 @@
 
 	* vc-dwim.pl (usage): Remove now-duplicated/redundant --help text.
 	Instead, generate nearly the same output using Pod::PlainText.
+	(usage): Use *DATA directly, suggestion from Ed Santiago.
+	Remove now-unused local.
 
 	* Makefile.am (SUBDIRS): Prepend ".", so that we're sure to build
 	in this directory, updating vc-dwim if needed, before running tests.

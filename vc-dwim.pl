@@ -113,14 +113,11 @@ sub usage ($)
     }
   else
     {
-      my $vc_list = join (', ', sort keys %$vc_cmd);
-
-      *STDIN = *DATA;
       eval 'use Pod::PlainText';
       die $@ if $@;
       my $parser = Pod::PlainText->new (sentence => 1, width => 78);
-      # Read POD from STDIN and write to STDOUT.
-      $parser->parse_from_filehandle;
+      # Read POD from __END__ (below) and write to STDOUT.
+      $parser->parse_from_filehandle (*DATA);
     }
   exit $exit_code;
 }
