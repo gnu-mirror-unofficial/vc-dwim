@@ -1,4 +1,5 @@
 #!@PERL@ -w
+# -*- perl -*-
 # @configure_input@
 # Given a command like vc-dwim ChangeLog lib/ChangeLog..., check that each
 # ChangeLog has been modified, determine the list of affected files from
@@ -133,11 +134,11 @@ Makefiles, mention the addition in ChangeLog, but forget to e.g., "git add"
 (or "hg add", etc.)  the file to the version control system.  $ME detects this
 discrepancy and fails with a diagnostic explaining the probably situation.
 You might also have simply mistyped the file name in the ChangeLog.  Similarly,
-if diff output suggests you've "cvs remove"d a file, then that file should
+if diff output suggests you have "cvs remove"d a file, then that file should
 no longer exist.  If it does, $ME detects the problem.
 
 This tool automatically detects which version control system affects the
-listed files, and uses that.  If it guesses wrong, you can override it's
+listed files, and uses that.  If it guesses wrong, you can override it is
 guess with the --vc=VC option.
 
 Once you are happy with your ChangeLog-derived diffs, you can commit
@@ -145,7 +146,7 @@ those changes and the ChangeLog simply by rerunning the command with
 the --commit option.
 
    --commit     perform the commit, too
-   --vc=VC      don't guess the version control system: use VC
+   --vc=VC      do not guess the version control system: use VC
                   VC must be one of: $vc_list
    --diff       determine which version control system manages the first
                   FILE, then use that to print diffs of the named FILES
@@ -406,6 +407,35 @@ sub run_command
   return $fail;
 }
 
+# Given the part of a ChangeLog line after a leading "\t* ",
+# return the list of named files.  E.g.,
+# * foo.c: descr
+# * lib/bar.c (func): descr
+# * glarp.c (struct) [member]: descr
+# and multiple files per line, with each comma-separated entry potentially
+# looking like one of the above:
+# * ix.c (chi), co.c (ff), blurp.h: descr
+sub change_log_line_extract_file_list ($)
+{
+  my ($line) = @_;
+
+  # First, remove any parenthesized and bracketed quantities:
+  $line =~ s/\([^)]+\)//g;
+  $line =~ s/\[[^]]+\]//g;
+
+  my @comma_sep = split ',', $line;
+
+  my @file_list;
+  foreach my $ent (@comma_sep)
+    {
+      $ent =~ s/^ +//;
+      $ent =~ s/ .*//;
+      $ent =~ s/:$//;
+      push @file_list, $ent;
+    }
+  return @file_list;
+}
+
 # Look backwards from line number $LINENO in ChangeLog file, $LOG_FILE,
 # for the preceding line that tells which file is affected.
 # For example, if $LOG_FILE starts like this, and $LINENO is 4 (because
@@ -462,16 +492,16 @@ sub find_relevant_file_name($$)
   #
   # In that case, search any following sequence of \t-prefixed lines.
   my $is_summary_line;
-  my $file_name;
+  my $file_name_line;
   if (@searchable_lines == 0)
     {
       while (defined (my $line = <$fh>))
 	{
 	  $line =~ /^\t/
 	    or last;
-	  if ($line =~ /^\t\* (\S+) /)
+	  if ($line =~ /^\t\*(.*)/)
 	    {
-	      $file_name = $1;
+	      $file_name_line = $1;
 	      $is_summary_line = 1;
 	      last;
 	    }
@@ -481,44 +511,19 @@ sub find_relevant_file_name($$)
     {
       while (defined (my $line = pop @searchable_lines))
 	{
-	  $line =~ /^\t\* (\S+) /
-	    and ($file_name = $1), last;
+	  $line =~ /^\t\*(.*)/
+	    and ($file_name_line = $1), last;
 	}
     }
-  defined $file_name
+  defined $file_name_line
     or die "$ME: $log_file: can't find name of file in block containing "
       . "line $line_no\n";
 
-  $file_name =~ s/:$//;
+  my @names = change_log_line_extract_file_list ($file_name_line);
+  my $file_name = shift @names
+    or die "$ME: $log_file:$line_no: `*'-line with no file names?\n";
+
   return ($file_name, $is_summary_line);
-}
-
-# Given the part of a ChangeLog line after a leading "\t* ",
-# return the list of named files.  E.g.,
-# * foo.c: descr
-# * lib/bar.c (func): descr
-# * glarp.c (struct) [member]: descr
-# and multiple files per line, with each comma-separated entry potentially
-# looking like one of the above:
-# * ix.c (chi), co.c (ff), blurp.h: descr
-sub change_log_line_extract_file_list ($)
-{
-  my ($line) = @_;
-
-  # First, remove any parenthesized and bracketed quantities:
-  $line =~ s/\([^)]+\)//g;
-  $line =~ s/\[[^]]+\]//g;
-
-  my @comma_sep = split ',', $line;
-
-  my @file_list;
-  foreach my $ent (@comma_sep)
-    {
-      $ent =~ s/^ +//;
-      $ent =~ s/ .*//;
-      push @file_list, $ent;
-    }
-  return @file_list;
 }
 
 sub main
