@@ -79,6 +79,11 @@ my $vc_cmd =
    },
    HG() => # aka mercurial
    {
+    # Don't rely on mercurial, if you don't have to.
+    # For example, this command "hg commit non-existent f1 f2" succeeds
+    # I.e., it exits successfully with status 0 and checks in changes to
+    # f1 and f2, even though the "non-existent" file doesn't exist.  Nasty.
+    # This happens at least with mercurial-0.9.1.
     DIFF_COMMAND => [qw(hg diff -p -a --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
     COMMIT_COMMAND => [qw(hg ci -l)],
@@ -144,6 +149,8 @@ the --commit option.
                   VC must be one of: $vc_list
    --diff       determine which version control system manages the first
                   FILE, then use that to print diffs of the named FILES
+   --print-vc-list
+                print the list of recognized version control names
    --help       display this help and exit
    --version    output version information and exit
    --verbose	generate verbose output
@@ -519,12 +526,14 @@ sub main
   my $commit;
   my $simple_diff;
   my $vc_name;
+  my $print_vc_list;
   GetOptions
     (
      'vc=s' => sub { $vc_name = $_[1] },
 
      diff => \$simple_diff,
      commit => \$commit,
+     'print-vc-list' => sub { print join (' ', sort keys %$vc_cmd), "\n"; exit },
      debug => \$debug,
      verbose => \$verbose,
      help => sub { usage 0 },
@@ -894,6 +903,8 @@ B<vc-dwim> [OPTIONS] --commit CHANGELOG_FILE...
 
 B<vc-dwim> [OPTIONS] --diff FILE...
 
+B<vc-dwim> [OPTIONS] --print-vc-list
+
 =head1	DESCRIPTION
 
 By default, each command line argument is expected to be a
@@ -930,15 +941,19 @@ the --commit option.
 
 perform the commit, too
 
-=item B<--vc=VC>
-
-Don't guess the version control system: use VC.
-VC must be one of: FIXME $vc_list
-
 =item B<--diff>
 
 Determine which version control system manages the first
 FILE, then use that to print diffs of the named FILES.
+
+=item B<--print-vc-list>
+
+Print the list of recognized version control names, then exit.
+
+=item B<--vc=VC>
+
+Don't guess the version control system: use VC.
+VC must be one of the following: @VC_LIST@
 
 =item B<--help>
 
@@ -955,18 +970,6 @@ Generate verbose output.
 =item B<--debug>
 
 Generate debug output.
-
-=item B<--verbose>
-
-Show progress messages.
-
-=item B<--help>
-
-Emit usage hints.
-
-=item B<--version>
-
-Display program version.
 
 =back
 

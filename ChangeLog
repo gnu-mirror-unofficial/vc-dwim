@@ -1,5 +1,8 @@
 2006-09-05  Jim Meyering  <jim@meyering.net>
 
+	* configure.ac: Version 0.1.1.
+	* vc-dwim.pl: Add --print-vc-list option.  Clean up documentation.
+
 	Don't annotate summary lines, and fix a bug.
 	* vc-dwim.pl (find_relevant_file): Return a pair.
 	(main): Update caller.  Don't add prefix on a summary line.
