@@ -1,5 +1,8 @@
 2006-09-05  Jim Meyering  <jim@meyering.net>
 
+	* Makefile.am (gen_vc_name_list): Define.  Used to put list
+	of recognized version control systems in perldoc output.
+
 	* configure.ac: Version 0.1.1.
 	* vc-dwim.pl: Add --print-vc-list option.  Clean up documentation.
 

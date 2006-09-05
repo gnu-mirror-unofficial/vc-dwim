@@ -9,6 +9,9 @@ dist_perllib_DATA = \
   Coda.pm \
   ProcessStatus.pm
 
+gen_vc_name_list = \
+  (./vc-dwim --print-vc-list) 2>/dev/null || echo cg cvs hg svn
+
 ## We can't use configure to do the substitution here; we must do it
 ## by hand.  We use a funny notation here to avoid configure
 ## substitutions in our text.
@@ -18,6 +21,7 @@ do_subst = sed \
   -e 's,[@]PERL[@],$(PERL),g' \
   -e 's,[@]SHELL[@],$(SHELL),g' \
   -e 's,[@]VERSION[@],$(VERSION),g' \
+  -e 's,[@]VC_LIST[@],'"$$($(gen_vc_name_list))",g \
   -e 's,[@]configure_input[@],Generated from $@.pl; do not edit by hand.,g' \
   -e 's,[@]datadir[@],$(datadir),g'
 
