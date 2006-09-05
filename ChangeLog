@@ -1,5 +1,8 @@
 2006-09-05  Jim Meyering  <jim@meyering.net>
 
+	* vc-dwim.pl (usage): Remove now-duplicated/redundant --help text.
+	Instead, generate nearly the same output using Pod::PlainText.
+
 	* Makefile.am (SUBDIRS): Prepend ".", so that we're sure to build
 	in this directory, updating vc-dwim if needed, before running tests.
 

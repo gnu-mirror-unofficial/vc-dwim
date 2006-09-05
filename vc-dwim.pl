@@ -114,50 +114,13 @@ sub usage ($)
   else
     {
       my $vc_list = join (', ', sort keys %$vc_cmd);
-      print $STREAM <<EOF;
-Usage: $ME [OPTIONS] CHANGELOG_FILE...
-  or:  $ME [OPTIONS] --commit CHANGELOG_FILE...
-  or:  $ME [OPTIONS] --diff FILE...
 
-OPTIONS:
-
-By default, command line each argument is expected to be a version-controlled
-ChangeLog file.  In this default mode, $ME works by first computing diffs to
-any named ChangeLog files, and then parsing that output to determine which
-named files are being changed.  Then, it diffs the named files and prints the
-resulting output.  One advantage of using this tool is that before printing
-any diffs, it ensures that there is no editor temporary file corresponding
-to any affected file.  The existence of such a temporary can mean that you
-have unsaved changes, usually a bad thing.  Another common error you can
-avoid with this tool is that in which you create a new file, add its name to
-Makefiles, mention the addition in ChangeLog, but forget to e.g., "git add"
-(or "hg add", etc.)  the file to the version control system.  $ME detects this
-discrepancy and fails with a diagnostic explaining the probably situation.
-You might also have simply mistyped the file name in the ChangeLog.  Similarly,
-if diff output suggests you have "cvs remove"d a file, then that file should
-no longer exist.  If it does, $ME detects the problem.
-
-This tool automatically detects which version control system affects the
-listed files, and uses that.  If it guesses wrong, you can override its
-guess with the --vc=VC option.
-
-Once you are happy with your ChangeLog-derived diffs, you can commit
-those changes and the ChangeLog simply by rerunning the command with
-the --commit option.
-
-   --commit     perform the commit, too
-   --vc=VC      do not guess the version control system: use VC
-                  VC must be one of: $vc_list
-   --diff       determine which version control system manages the first
-                  FILE, then use that to print diffs of the named FILES
-   --print-vc-list
-                print the list of recognized version control names
-   --help       display this help and exit
-   --version    output version information and exit
-   --verbose	generate verbose output
-   --debug	generate debug output
-
-EOF
+      *STDIN = *DATA;
+      eval 'use Pod::PlainText';
+      die $@ if $@;
+      my $parser = Pod::PlainText->new (sentence => 1, width => 78);
+      # Read POD from STDIN and write to STDOUT.
+      $parser->parse_from_filehandle;
     }
   exit $exit_code;
 }
@@ -926,12 +889,12 @@ mention the addition in ChangeLog, but forget to e.g., "git add" (or
 "hg add", etc.)  the file to the version control system.  B<vc-dwim>
 detects this discrepancy and fails with a diagnostic explaining the
 probable situation.  You might also have simply mistyped the file name in
-the ChangeLog.  Similarly, if diff output suggests you've "cvs remove"d
+the ChangeLog.  Similarly, if diff output suggests you have "cvs remove"d
 a file, then that file should no longer exist.  If it does, B<vc-dwim>
 detects the problem.
 
 This tool automatically detects which version control system affects the
-listed files, and uses that.  If it guesses wrong, you can override it's
+listed files, and uses that.  If it guesses wrong, you can override its
 guess with the --vc=VC option.
 
 Once you are happy with your ChangeLog-derived diffs, you can commit
@@ -981,8 +944,8 @@ Generate debug output.
 =head1	RESTRICTIONS
 
 Relies on fairly strict adherence to recommended ChangeLog syntax.
-This tool detects editor temporaries created by Emacs.
-FIXME: add support to detect other-editor (e.g., vim) temporaries.
+Detects editor temporaries created by Emacs.
+Eventually, it will detect temporaries created by other editors.
 
 =head1	AUTHOR
 
