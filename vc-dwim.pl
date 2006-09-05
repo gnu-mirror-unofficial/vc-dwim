@@ -138,7 +138,7 @@ if diff output suggests you have "cvs remove"d a file, then that file should
 no longer exist.  If it does, $ME detects the problem.
 
 This tool automatically detects which version control system affects the
-listed files, and uses that.  If it guesses wrong, you can override it is
+listed files, and uses that.  If it guesses wrong, you can override its
 guess with the --vc=VC option.
 
 Once you are happy with your ChangeLog-derived diffs, you can commit
