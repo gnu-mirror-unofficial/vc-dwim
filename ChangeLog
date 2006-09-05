@@ -1,5 +1,8 @@
 2006-09-05  Jim Meyering  <jim@meyering.net>
 
+	* Makefile.am (SUBDIRS): Prepend ".", so that we're sure to build
+	in this directory, updating vc-dwim if needed, before running tests.
+
 	Better parsing.
 	* vc-dwim.pl (change_log_line_extract_file_list): Move this function
 	"up", to precede new use...
