@@ -401,14 +401,15 @@ sub run_command
 
 # Look backwards from line number $LINENO in ChangeLog file, $LOG_FILE,
 # for the preceding line that tells which file is affected.
-# For example, if $LOG_FILE starts like this, and $LINENO is 4,
+# For example, if $LOG_FILE starts like this, and $LINENO is 4 (because
+# you've just written the entry for the change to "main"), then this
+# function returns the file name from line 3: "cvci".
 # -------
 # 2006-08-24  Jim Meyering  <jim@meyering.net>
 #
 #	* cvci (get_new_changelog_lines): Allow removed ChangeLog lines.
 #	(main): Prepare to use offsets.
 # -------
-# then this function must return "cvci".
 sub find_relevant_file($$)
 {
   my ($log_file, $line_no) = @_;
