@@ -402,15 +402,21 @@ sub run_command
 # Look backwards from line number $LINENO in ChangeLog file, $LOG_FILE,
 # for the preceding line that tells which file is affected.
 # For example, if $LOG_FILE starts like this, and $LINENO is 4 (because
-# you've just written the entry for the change to "main"), then this
-# function returns the file name from line 3: "cvci".
+# you've just added the entry for "main"), then this function returns
+# the file name from line 3: "cvci".
 # -------
 # 2006-08-24  Jim Meyering  <jim@meyering.net>
 #
 #	* cvci (get_new_changelog_lines): Allow removed ChangeLog lines.
 #	(main): Prepare to use offsets.
 # -------
-sub find_relevant_file($$)
+#
+# If the line in question (at $LINENO) is a summary line, then there
+# will be no preceding "*"-marked line.  In that case, return the first
+# _following_ "*"-marked file name, assuming there is no intervening
+# blank line.  If there is no such file name, die.
+# Return the pair, <file_name, is_summary_line>.
+sub find_relevant_file_name($$)
 {
   my ($log_file, $line_no) = @_;
 
@@ -448,6 +454,7 @@ sub find_relevant_file($$)
   # +       (main): Prepare to use offsets.
   #
   # In that case, search any following sequence of \t-prefixed lines.
+  my $is_summary_line;
   my $file_name;
   if (@searchable_lines == 0)
     {
@@ -455,8 +462,12 @@ sub find_relevant_file($$)
 	{
 	  $line =~ /^\t/
 	    or last;
-	  $line =~ /^\t\* (\S+) /
-	    and ($file_name = $1), last;
+	  if ($line =~ /^\t\* (\S+) /)
+	    {
+	      $file_name = $1;
+	      $is_summary_line = 1;
+	      last;
+	    }
 	}
     }
   else
@@ -472,7 +483,7 @@ sub find_relevant_file($$)
       . "line $line_no\n";
 
   $file_name =~ s/:$//;
-  return $file_name;
+  return ($file_name, $is_summary_line);
 }
 
 # Given the part of a ChangeLog line after a leading "\t* ",
@@ -658,9 +669,12 @@ sub main
 	  $offset += 2;
 	}
 
-      # If the first line is empty, remove it.
-      $log_lines[0] eq '+'
-	and shift @log_lines;
+      # Ignore any leading "+"-only (i.e., added, blank) lines.
+      while (@log_lines && $log_lines[0] eq '+')
+	{
+	  shift @log_lines;
+	  ++$offset;
+	}
 
       # If the last line is empty, remove it.
       $log_lines[$#log_lines] eq '+'
@@ -709,10 +723,17 @@ sub main
 	    {
 	      if ($line !~ /^\* (\S+) /)
 		{
-		  my $file = find_relevant_file ($log, $offset);
-		  my $colon = ($line =~ /^\([^\)]+\)(?:\s*\[[^\]]+\])?: /
-			       ? '' : ':');
-		  $line = "* $file$colon $line";
+		  my ($file, $is_summary_line) =
+		    find_relevant_file_name ($log, $offset);
+		  # If this is a summary line, don't modify it.
+		  # Otherwise, add the "* $file" prefix, using the name
+		  # we've just derived, for the log message.
+		  if (! $is_summary_line)
+		    {
+		      my $colon = ($line =~ /^\([^\)]+\)(?:\s*\[[^\]]+\])?: /
+				   ? '' : ':');
+		      $line = "* $file$colon $line";
+		    }
 		}
 	    }
 	  undef $offset;

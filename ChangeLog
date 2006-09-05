@@ -1,5 +1,12 @@
 2006-09-05  Jim Meyering  <jim@meyering.net>
 
+	Don't annotate summary lines, and fix a bug.
+	* vc-dwim.pl (find_relevant_file): Return a pair.
+	(main): Update caller.  Don't add prefix on a summary line.
+	(main): Update $offset also when removing leading blank lines.
+
+	* tests/leading-comment: Fix it.
+
 	* vc-dwim.pl (find_relevant_file): Rename from find_parent_file.
 
 2006-09-04  Jim Meyering  <jim@meyering.net>

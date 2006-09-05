@@ -38,9 +38,8 @@ echo bow > f || fail=1
 
 vc-dwim ChangeLog > out || fail=1
 
-# FIXME: The "* f: " prefix doesn't belong on the "Summary..." line.
 cat <<\EOF > exp || fail=1
-* f: Summary...
+Summary...
 * f: X.
 (dog): bark.
 diff --git a/f b/f
