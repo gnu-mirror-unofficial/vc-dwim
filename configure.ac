@@ -1,4 +1,4 @@
-AC_INIT([vc-dwim], [0.1.2], [jim@meyering.net])
+AC_INIT([vc-dwim], [0.1.3-pre], [jim@meyering.net])
 
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([dist-bzip2])

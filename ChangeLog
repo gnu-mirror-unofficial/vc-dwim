@@ -1,5 +1,6 @@
 2006-09-06  Jim Meyering  <jim@meyering.net>
 
+	* configure.ac: Version 0.1.3-pre.
 	* configure.ac: Version 0.1.2.
 
 	Performance tweak.  Probably not worthwhile, seeing as how it's
