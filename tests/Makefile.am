@@ -9,6 +9,8 @@ TESTS_ENVIRONMENT = \
 
 XFAIL_TESTS = subdir
 TESTS = \
+  cl-but-no-diff \
   leading-comment \
   no-star \
-  subdir
+  subdir \
+  subdir-cvs

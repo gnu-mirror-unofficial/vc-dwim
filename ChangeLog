@@ -1,3 +1,8 @@
+2006-09-06  Jim Meyering  <jim@meyering.net>
+
+	* tests/Makefile.am (TESTS): Add cl-but-no-diff and subdir-cvs.
+	* tests/subdir-cvs: New file.
+
 2006-09-05  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim.pl (verbose_cmd): Quote meta-characters.

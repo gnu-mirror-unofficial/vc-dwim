@@ -1,0 +1,64 @@
+#!/bin/sh
+# While running "vc-dwim ChangeLog" in a directory beneath the one containing
+# an .hg or .git repository, it does work when CVS is the version control system.
+
+if test "$VERBOSE" = yes; then
+  set -x
+  vc-dwim --version
+fi
+
+pwd=`pwd`
+t0=`echo "$0"|sed 's,.*/,,'`.tmp; tmp=$t0/$$
+trap 'status=$?; cd $pwd; chmod -R u+rwx $t0; rm -rf $t0 && exit $status' 0
+trap '(exit $?); exit $?' 1 2 13 15
+
+framework_failure=0
+mkdir -p $tmp || framework_failure=1
+cd $tmp || framework_failure=1
+
+repo=$pwd/$tmp/repo
+cvs -f -Q -d $repo init 2> /dev/null || framework_failure=1
+
+mkdir d || framework_failure=1
+cd d
+mkdir s || framework_failure=1
+touch s/f s/ChangeLog || framework_failure=1
+cvs -f -Q -d $repo import -m msg m M M0 || framework_failure=1
+cvs -f -Q -d $repo co m || framework_failure=1
+cd m || framework_failure=1
+
+if test $framework_failure = 1; then
+  echo "$0: failure in testing framework" 1>&2
+  (exit 1); exit 1
+fi
+
+fail=0
+
+cat <<EOF > s/ChangeLog || fail=1
+2006-09-04  Jim Meyering  <jim@meyering.net>
+
+	* f: X.
+EOF
+echo bow > s/f || fail=1
+cd s
+
+vc-dwim ChangeLog > out 2>&1 || fail=1
+
+sed 's/RCS file:.*//;s/^[-+][-+][-+] f.*//' out > k; mv k out
+cat <<\EOF > exp || fail=1
+* f: X.
+Index: f
+===================================================================
+
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 f
+
+
+@@ -0,0 +1 @@
++bow
+EOF
+
+cmp out exp || fail=1
+test $fail = 1 && diff out exp 2> /dev/null
+
+(exit $fail); exit $fail
