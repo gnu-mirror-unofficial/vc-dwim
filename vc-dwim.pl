@@ -885,9 +885,9 @@ mention the addition in ChangeLog, but forget to e.g., "git add" (or
 "hg add", etc.)  the file to the version control system.  B<vc-dwim>
 detects this discrepancy and fails with a diagnostic explaining the
 probable situation.  You might also have simply mistyped the file name in
-the ChangeLog.  Similarly, if diff output suggests you have "cvs remove"d
-a file, then that file should no longer exist.  If it does, B<vc-dwim>
-detects the problem.
+the ChangeLog.  Similarly, if diff output suggests you are in the process
+of removing a file, then that file should no longer exist.  If it does
+still exist, B<vc-dwim> reports the problem.
 
 This tool automatically detects which version control system affects the
 listed files, and uses that.  If it guesses wrong, you can override its
