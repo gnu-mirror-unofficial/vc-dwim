@@ -29,7 +29,6 @@ use strict;
 use warnings;
 use Getopt::Long;
 use File::Basename; # for dirname
-use Tie::IxHash;
 
 BEGIN
 {
@@ -608,6 +607,8 @@ sub main
   # Construct the log message.
   my @log_msg_lines;
 
+  eval 'use Tie::IxHash';
+  die $@ if $@;
   # Make $log_msg_file an ordered hash, so we ignore duplicate file names,
   # i.e. a file name can appear more than once in a ChangeLog, yet their
   # ordering is preserved.  Then, the diff output (using this list of files)

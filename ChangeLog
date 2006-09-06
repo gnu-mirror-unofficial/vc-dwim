@@ -1,5 +1,10 @@
 2006-09-06  Jim Meyering  <jim@meyering.net>
 
+	Performance tweak.  Probably not worthwhile, seeing as how it's
+	not based on profiling, but for a command like "./vc-dwim --diff",
+	it does avoid loading the module.
+	* vc-dwim.pl (main): "use" Tie::IxHash only if we'll need it.
+
 	* vc-dwim.pl: Remove now-unnecessary "use dir ...".
 
 	* tests/Makefile.am (TESTS): Add cl-but-no-diff and subdir-cvs.
