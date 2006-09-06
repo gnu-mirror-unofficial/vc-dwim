@@ -20,10 +20,10 @@
 #  operating on ChangeLog in that subdirectory.
 # FIXME: Consider using only the first, non-"*" ChangeLog line(s)
 # as the log message.
-# FIXME: Add RCS
-# write Documentation section
+# FIXME: Add support for RCS and SVK.
 
 # FIXME: Optional: warn if there are modified files not listed in ChangeLogs
+# FIXME: Add an option to make --commit fail if this is the case.
 
 use strict;
 use warnings;
