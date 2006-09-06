@@ -1,5 +1,7 @@
 2006-09-06  Jim Meyering  <jim@meyering.net>
 
+	* configure.ac: Version 0.1.2.
+
 	Performance tweak.  Probably not worthwhile, seeing as how it's
 	not based on profiling, but for a command like "./vc-dwim --diff",
 	it does avoid loading the module.
