@@ -46,9 +46,6 @@ BEGIN
   $ENV{'SHELL'} = '@SHELL@' if exists $ENV{'DJGPP'};
 }
 
-# FIXME: I really should publish both Coda and ProcessStatus.
-# Then this script would simply "use" them, without the "use lib" kludge.
-use lib dirname ($0);
 use Coda;
 use ProcessStatus qw($PROCESS_STATUS);
 

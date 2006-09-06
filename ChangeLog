@@ -1,5 +1,7 @@
 2006-09-06  Jim Meyering  <jim@meyering.net>
 
+	* vc-dwim.pl: Remove now-unnecessary "use dir ...".
+
 	* tests/Makefile.am (TESTS): Add cl-but-no-diff and subdir-cvs.
 	* tests/subdir-cvs: New file.
 
