@@ -939,6 +939,10 @@ Generate debug output.
 
 =head1	RESTRICTIONS
 
+This tool can be useful to you only if you use a version control system.
+It's most useful if you maintain a ChangeLog file and create a log entry
+per file per "commit" operation.
+
 Relies on fairly strict adherence to recommended ChangeLog syntax.
 Detects editor temporaries created by Emacs.
 Eventually, it will detect temporaries created by other editors.
