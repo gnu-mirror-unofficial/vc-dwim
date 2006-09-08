@@ -1,6 +1,7 @@
 #!/bin/sh
-# Demonstrate that using a ChangeLog in a subdir does not work from that subdir.
-# It does work when run from the top level.
+# Demonstrate that using a ChangeLog in a subdir works from that subdir,
+# when using git.  See the diff_outputs_full_file_names method for why
+# this is different.  It's easy when run from the top level.
 
 if test "$VERBOSE" = yes; then
   set -x
@@ -40,7 +41,13 @@ cd s
 vc-dwim ChangeLog > out 2>&1 || fail=1
 
 cat <<\EOF > exp || fail=1
-FIXME
+* f: X.
+diff --git a/s/f b/s/f
+index e69de29..de03f25 100644
+--- a/s/f
++++ b/s/f
+@@ -0,0 +1 @@
++bow
 EOF
 
 cmp out exp || fail=1

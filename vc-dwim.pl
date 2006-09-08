@@ -701,7 +701,9 @@ sub main
     }
   foreach my $f (@affected_files)
     {
-      if ( ! $seen{$f})
+      my $full_name = ($vc->diff_outputs_full_file_names()
+		       ? $vc->full_file_name($f) : $f);
+      if ( ! $seen{$full_name})
 	{
 	  warn "$ME: $f is listed in the ChangeLog entry, but not in diffs.\n"
 	    . "Did you forget to \"$vc_name add\" it?\n";

@@ -1,3 +1,16 @@
+2006-09-09  Jim Meyering  <jim@meyering.net>
+
+	Work even when run from a subdir with git or hg.
+	* VC.pm (full_file_name, diff_outputs_full_file_names): New methods.
+	(new): Record depth of "." relative to "top" level directory, when
+	using a VC like hg or git.
+	* vc-dwim.pl (main): When checking whether each affected file
+	is listed in the "diff" output, look up full name, if necessary,
+	i.e., for hg or git.
+	* tests/subdir: Adapt test, now that this finally works.
+	* tests/Makefile.am (XFAIL_TESTS): Remove, now that this test
+	no longer fails.
+
 2006-09-08  Jim Meyering  <jim@meyering.net>
 
 	* VC.pm: New file.  Factored out of...

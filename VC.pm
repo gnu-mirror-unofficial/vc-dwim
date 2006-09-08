@@ -7,6 +7,7 @@ use warnings;
 
 use Carp;
 use File::Basename; # for dirname
+use File::Spec;
 
 ###############################################################################
 # BEGIN user-configurable section
@@ -90,10 +91,12 @@ sub new($%)
   exists $self->{name}
     and return bless $self, $class;
 
+  my $depth = 0;;
   my ($root_dev, $root_ino, undef) = stat '/';
   # For any other, check parents, potentially all the way up to /.
   while (1)
     {
+      ++$depth;
       $d .= '/..';
       if (-d "$d/.git/objects") {
 	$self->{name} = CG;
@@ -101,8 +104,11 @@ sub new($%)
 	$self->{name} = HG;
       }
 
-      exists $self->{name}
-	and return bless $self, $class;
+      if (exists $self->{name})
+	{
+	  $self->{depth} = $depth;
+	  return bless $self, $class;
+	}
 
       my ($dev, $ino, undef) = stat $d;
       $ino == $root_ino && $dev == $root_dev
@@ -120,14 +126,14 @@ sub name()
 sub commit_cmd()
 {
   my $self = shift;
-  my $cmd_ref = $vc_cmd->{$self->{name}}->{COMMIT_COMMAND};
+  my $cmd_ref = $vc_cmd->{$self->name()}->{COMMIT_COMMAND};
   return @$cmd_ref;
 }
 
 sub diff_cmd()
 {
   my $self = shift;
-  my $cmd_ref = $vc_cmd->{$self->{name}}->{DIFF_COMMAND};
+  my $cmd_ref = $vc_cmd->{$self->name()}->{DIFF_COMMAND};
   return @$cmd_ref;
 }
 
@@ -135,8 +141,34 @@ sub valid_diff_exit_status
 {
   my $self = shift;
   my $exit_status = shift;
-  my $h = $vc_cmd->{$self->{name}}->{VALID_DIFF_EXIT_STATUS};
+  my $h = $vc_cmd->{$self->name()}->{VALID_DIFF_EXIT_STATUS};
   return exists $h->{$exit_status};
+}
+
+# True if running diff from a sub-directory outputs +++/--- lines
+# with full names, i.e. relative to the top level directory.
+# hg and git do this.  svn and cvs output "."-relative names.
+sub diff_outputs_full_file_names()
+{
+  my $self = shift;
+  return $self->name() eq CG || $self->name() eq HG;
+}
+
+# Given a "."-relative file name, return an equivalent full one.
+sub full_file_name
+{
+  my $self = shift;
+  my $file = shift;
+  my $depth = $self->{depth} || 0;
+  $depth
+    or return $file;
+
+  eval 'use Cwd';
+  die $@ if $@;
+  my @dirs = File::Spec->splitdir( cwd() );
+
+  # Take the last $depth components of $PWD, and prepend them to $file:
+  return File::Spec->catfile(@dirs[-$depth..-1], $file);
 }
 
 sub supported_vc_names()
