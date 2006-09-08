@@ -46,55 +46,11 @@ BEGIN
 }
 
 use Coda;
+use VC;
 use ProcessStatus qw($PROCESS_STATUS);
 
 our $VERSION = '@VERSION@';
 (my $ME = $0) =~ s|.*/||;
-
-# This VC-selecting business belongs in a class of its own.
-use constant
-  {
-    CVS => 'cvs',
-    CG => 'cg',
-    HG => 'hg',
-    SVN => 'svn',
-  };
-
-my $vc_cmd =
-  {
-   CVS() =>
-   {
-    DIFF_COMMAND => [qw(cvs -f -Q -n diff -Nu --)],
-    VALID_DIFF_EXIT_STATUS => {0 => 1, 1 => 1},
-    COMMIT_COMMAND => [qw(cvs ci -F)],
-   },
-   CG() => # aka cogito/git
-   {
-    DIFF_COMMAND => [qw(git-diff --)],
-    VALID_DIFF_EXIT_STATUS => {0 => 1},
-    COMMIT_COMMAND => [qw(cg-commit -M)],
-   },
-   HG() => # aka mercurial
-   {
-    # Don't rely on mercurial, if you don't have to.
-    # For example, this command "hg commit non-existent f1 f2" succeeds
-    # I.e., it exits successfully with status 0 and checks in changes to
-    # f1 and f2, even though the "non-existent" file doesn't exist.  Nasty.
-    # This happens at least with mercurial-0.9.1.
-    DIFF_COMMAND => [qw(hg diff -p -a --)],
-    VALID_DIFF_EXIT_STATUS => {0 => 1},
-    COMMIT_COMMAND => [qw(hg ci -l)],
-   },
-   SVN() => # aka subversion
-   {
-    DIFF_COMMAND => [qw(svn diff --)],
-    VALID_DIFF_EXIT_STATUS => {0 => 1},
-    COMMIT_COMMAND => [qw(svn ci -F)],
-   },
-  };
-my $vc;
-my $vc_diff;
-my $vc_commit;
 
 my $verbose = 0;
 my $debug = 0;
@@ -116,43 +72,6 @@ sub usage ($)
       $parser->parse_from_filehandle (*DATA);
     }
   exit $exit_code;
-}
-
-# Given a file name, F, determine which version control system to use.
-# Examine its directory, and possibly all of its parents.
-sub vc_name($)
-{
-  my ($f) = @_;
-  my $d = dirname $f;
-
-  # These are quick and easy:
-  -d "$d/CVS"
-    and return CVS;
-  -d "$d/.svn"
-    and return SVN;
-
-  -d "$d/.git/objects" and return CG;
-  -d "$d/.hg" and return HG;
-
-  my ($root_dev, $root_ino, undef) = stat '/';
-  # For any other, we have to check parents, potentially all the way up to /.
-  while (1)
-    {
-      $d .= '/..';
-      -d "$d/.git/objects" and return CG;
-      -d "$d/.hg" and return HG;
-      my ($dev, $ino, undef) = stat $d;
-      $ino == $root_ino && $dev == $root_dev
-	and last;
-    }
-  return undef;
-}
-
-sub valid_diff_exit_status($)
-{
-  my ($exit_status) = @_;
-  my $h = $vc->{VALID_DIFF_EXIT_STATUS};
-  return exists $h->{$exit_status};
 }
 
 # Return nonzero if F is a "."-relative name, with no leading "./".
@@ -183,11 +102,11 @@ sub verbose_cmd ($)
 }
 
 # Return an array of lines from running $VC diff -u on the named files.
-sub get_diffs ($)
+sub get_diffs ($$)
 {
-  my ($f) = @_;
+  my ($vc, $f) = @_;
 
-  my @cmd = (@$vc_diff, @$f);
+  my @cmd = ($vc->diff_cmd(), @$f);
   $verbose
     and verbose_cmd \@cmd;
   open PIPE, '-|', @cmd
@@ -199,7 +118,7 @@ sub get_diffs ($)
   if ( ! close PIPE)
     {
       # Die if VC diff exits with unexpected status.
-      valid_diff_exit_status ($? >> 8)
+      $vc->valid_diff_exit_status($? >> 8)
 	or die "$ME: error closing pipe from `"
 	  . join (' ', @cmd) . "': $PROCESS_STATUS\n";
     }
@@ -208,11 +127,11 @@ sub get_diffs ($)
 }
 
 # Choke if this diff removes any lines, or if there are no added lines.
-sub get_new_changelog_lines ($)
+sub get_new_changelog_lines ($$)
 {
-  my ($f) = @_;
+  my ($vc, $f) = @_;
 
-  my $diff_lines = get_diffs ([$f]);
+  my $diff_lines = get_diffs ($vc, [$f]);
   my @added_lines;
   # Ignore everything up to first line with unidiff offsets: ^@@...@@
 
@@ -487,15 +406,17 @@ sub main
 {
   my $commit;
   my $simple_diff;
-  my $vc_name;
+  # FIXME my $vc_name;
   my $print_vc_list;
   GetOptions
     (
-     'vc=s' => sub { $vc_name = $_[1] },
+     # FIXME: this isn't quite working for hg, git
+     # 'vc=s' => sub { $vc_name = $_[1] },
 
      diff => \$simple_diff,
      commit => \$commit,
-     'print-vc-list' => sub { print join (' ', sort keys %$vc_cmd), "\n"; exit },
+     'print-vc-list' =>
+       sub { print join (' ', VC::supported_vc_names()), "\n"; exit },
      debug => \$debug,
      verbose => \$verbose,
      help => sub { usage 0 },
@@ -506,8 +427,8 @@ sub main
   @ARGV == 0
     and (warn "$ME: no FILE specified\n"), usage 1;
 
-  defined $vc_name && !exists $vc_cmd->{$vc_name}
-    and die "$ME: $vc_name: not a supported version control system\n";
+#  defined $vc_name && !exists $vc_cmd->{$vc_name}
+#    and die "$ME: $vc_name: not a supported version control system\n";
 
   my $fail;
 
@@ -516,11 +437,10 @@ sub main
       $commit
 	and (warn "$ME: you can't use --diff with --commit\n"), usage 1;
       my $f = $ARGV[0];
-      $vc_name ||= vc_name $f
+      my $vc = VC->new ($f)
 	or die "$ME: can't determine version control system for $f\n";
-      my $vc = $vc_cmd->{$vc_name};
-      my $vc_diff = $vc->{DIFF_COMMAND};
-      my @cmd = (@$vc_diff, @ARGV);
+      my @vc_diff = $vc->diff_cmd();
+      my @cmd = (@vc_diff, @ARGV);
 
       $verbose
 	and verbose_cmd \@cmd;
@@ -568,24 +488,23 @@ sub main
   my %vc_per_arg;
   foreach my $f (@changelog_file_name)
     {
-      $any_vc_name = vc_name $f;
+      my $vc = VC->new($f);
+      $any_vc_name = $vc->name();
       $vc_per_arg{$f} = $any_vc_name;
     }
   1 < keys %vc_per_arg
     and die "$ME: ChangeLog files are managed by more than one version-"
       . "control system\n";
 
-  defined $vc_name
-    or $vc_name = $any_vc_name;
-
   # FIXME: list the offending files.
   ! defined $any_vc_name
     and die "$ME: some file(s) are managed by an unknown"
       . " version-control system\n";
 
-  $vc = $vc_cmd->{$vc_name};
-  $vc_diff = $vc->{DIFF_COMMAND};
-  $vc_commit = $vc->{COMMIT_COMMAND};
+  my $vc = VC->new ($changelog_file_name[0]);
+  my $vc_name = $vc->name();
+  my @vc_diff = $vc->diff_cmd();
+  my @vc_commit = $vc->commit_cmd();
 
   # Key is ChangeLog file name, value is a ref to list of
   # lines added to that file.
@@ -593,7 +512,7 @@ sub main
   # Extract added lines from each ChangeLog.
   foreach my $log (@changelog_file_name)
     {
-      my $new_lines = get_new_changelog_lines $log;
+      my $new_lines = get_new_changelog_lines $vc, $log;
       if (@$new_lines == 0)
 	{
 	  warn "$ME: no $log diffs?\n";
@@ -749,7 +668,7 @@ sub main
 
   # Collect diffs of non-ChangeLog files.
   # But don't print diff output unless we're sure everything is ok.
-  my $diff_lines = get_diffs \@affected_files;
+  my $diff_lines = get_diffs $vc, \@affected_files;
 
   # Record the name of each file marked for removal, according to diff output.
   my %is_removed_file;
@@ -768,7 +687,7 @@ sub main
       $diff_line =~ /^[-+]{3} (\S+)(?:[ \t]|$)/
 	or next;
       my $file_name = $1;
-      if ($vc_name eq CG || $vc_name eq HG)
+      if ($vc_name eq VC::CG || $vc_name eq VC::HG)
 	{
 	  # Remove the fake leading "a/" component that git and hg add.
 	  $file_name =~ s,^[ab]/,,;
@@ -829,7 +748,7 @@ sub main
       close $fh
 	or die "$ME: failed to write $commit_log_filename: $!\n";
 
-      my @cmd = (@$vc_commit, $commit_log_filename, '--',
+      my @cmd = (@vc_commit, $commit_log_filename, '--',
 		 @changelog_file_name, @affected_files);
       my $options =
 	{

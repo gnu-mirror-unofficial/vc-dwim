@@ -1,3 +1,9 @@
+2006-09-08  Jim Meyering  <jim@meyering.net>
+
+	* VC.pm: New file.  Factored out of...
+	* vc-dwim.pl: ...here.
+	* Makefile.am (dist_perllib_DATA): Add VC.pm.
+
 2006-09-06  Jim Meyering  <jim@meyering.net>
 
 	* configure.ac: Version 0.1.3-pre.

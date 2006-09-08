@@ -7,7 +7,8 @@ CLEANFILES = $(bin_SCRIPTS)
 perllibdir = $(pkgdatadir)
 dist_perllib_DATA = \
   Coda.pm \
-  ProcessStatus.pm
+  ProcessStatus.pm \
+  VC.pm
 
 gen_vc_name_list = \
   (./vc-dwim --print-vc-list) 2>/dev/null || echo cg cvs hg svn
