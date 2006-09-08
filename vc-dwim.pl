@@ -122,6 +122,14 @@ sub get_diffs ($$)
 	  . join (' ', @cmd) . "': $PROCESS_STATUS\n";
     }
 
+  # Remove the single space from what would otherwise be empty
+  # lines in unified diff output.
+  foreach my $i (0..@added_lines-1)
+    {
+      $added_lines[$i] eq ' '
+	and $added_lines[$i] = '';
+    }
+
   return \@added_lines
 }
 
@@ -151,7 +159,7 @@ sub get_new_changelog_lines ($$)
       ++$offset_in_hunk;
       $found_first_unidiff_marker_line
 	or next;
-      $line =~ /^[- ]/
+      $line eq '' || $line =~ /^[- ]/
 	and next;
       $line =~ /^\+/
 	or die "$ME: unexpected diff output on line $.:\n$line";

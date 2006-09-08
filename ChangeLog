@@ -3,6 +3,8 @@
 	* vc-dwim.pl: Update comments.
 	(usage): Calling parse_from_filehandle with *DATA doesn't
 	work after all.  Revert that part of the 2006-09-05 change.
+	(get_diffs): Remove some useless trailing spaces from unidiff output.
+	(main): Handle unidiff output that may now include empty lines.
 
 	* configure.ac: Version 0.1.3.
 
