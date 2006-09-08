@@ -1,6 +1,8 @@
 2006-09-09  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim.pl: Update comments.
+	(usage): Calling parse_from_filehandle with *DATA doesn't
+	work after all.  Revert that part of the 2006-09-05 change.
 
 	* configure.ac: Version 0.1.3.
 

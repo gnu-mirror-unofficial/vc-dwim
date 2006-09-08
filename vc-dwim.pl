@@ -67,7 +67,8 @@ sub usage ($)
       die $@ if $@;
       my $parser = Pod::PlainText->new (sentence => 1, width => 78);
       # Read POD from __END__ (below) and write to STDOUT.
-      $parser->parse_from_filehandle (*DATA);
+      *STDIN = *DATA;
+      $parser->parse_from_filehandle;
     }
   exit $exit_code;
 }
