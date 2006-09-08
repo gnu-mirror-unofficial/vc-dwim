@@ -12,15 +12,13 @@
 # a line giving the relative directory name, e.g. [./] or [m4/].
 
 # Options?
-# --diff/--no-diff (do or don't print diffs)
-# --changelog
-# print diffs by default, and enable --changelog
-#   if all command line args are ChangeLog files.
-# FIXME: work also when run from a subdirectory,
-#  operating on ChangeLog in that subdirectory.
+
+# FIXME: Rework --vc=VC_NAME support so it works with VC.pm.
+# FIXME: rename VC.pm, e.g., to XX::VC.pm.
+
 # FIXME: Consider using only the first, non-"*" ChangeLog line(s)
 # as the log message.
-# FIXME: Add support for RCS and SVK.
+# FIXME: Add support for RCS, SVK, bzr, monotone, etc.
 
 # FIXME: Optional: warn if there are modified files not listed in ChangeLogs
 # FIXME: Add an option to make --commit fail if this is the case.

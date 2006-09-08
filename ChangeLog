@@ -1,5 +1,7 @@
 2006-09-09  Jim Meyering  <jim@meyering.net>
 
+	* vc-dwim.pl: Update comments.
+
 	* configure.ac: Version 0.1.3.
 
 	Work even when run from a subdir with git or hg.
