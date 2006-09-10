@@ -13,6 +13,8 @@
 
 # Options?
 
+# FIXME: doesn't honor any of the $CVSROOT, $GIT*, etc. envvars.  Should it?
+
 # FIXME: Rework --vc=VC_NAME support so it works with VC.pm.
 # FIXME: rename VC.pm, e.g., to XX::VC.pm.
 
