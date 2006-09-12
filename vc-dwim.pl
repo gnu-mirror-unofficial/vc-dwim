@@ -181,15 +181,18 @@ sub get_new_changelog_lines ($$)
   return \@added_lines
 }
 
-# For emacs, the temporary is a symlink named ".#ChangeLog",
+# For emacs, the temporary is a symlink named "$dir/.#$base",
 # with useful information in the link name part.
+# For Vim, the temporary is a regular file named "$dir/.$base.swp".
 sub exists_editor_backup ($)
 {
   my ($f) = @_;
   my $d = dirname $f;
   $f = basename $f;
   -f "$d/#$f#" || -l "$d/.#$f"
-    and return 1;
+    and return 1; # Emacs
+  -f "$d/.$f.swp"
+    and return 1; # Vim
   return 0;
 }
 
@@ -874,7 +877,7 @@ It's most useful if you maintain a ChangeLog file and create a log entry
 per file per "commit" operation.
 
 Relies on fairly strict adherence to recommended ChangeLog syntax.
-Detects editor temporaries created by Emacs.
+Detects editor temporaries created by Emacs and Vim.
 Eventually, it will detect temporaries created by other editors.
 
 =head1	AUTHOR

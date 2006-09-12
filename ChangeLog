@@ -1,3 +1,7 @@
+2006-09-12  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim.pl (exists_editor_backup): Recognize Vim temporaries, too.
+
 2006-09-09  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim.pl: Update comments.
