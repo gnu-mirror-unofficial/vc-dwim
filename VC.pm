@@ -73,7 +73,7 @@ sub new($%)
   my $self = {};
 
   my $file = shift
-    or croak "$ME: missing FILE argument\n";
+    or croak "$ME: missing FILE argument";
 
   my $d = dirname $file;
 
