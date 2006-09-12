@@ -108,8 +108,7 @@ sub get_diffs ($$)
   my ($vc, $f) = @_;
 
   my @cmd = ($vc->diff_command(), @$f);
-  $verbose
-    and verbose_cmd \@cmd;
+  verbose_cmd \@cmd						if $verbose;
   open PIPE, '-|', @cmd
     or die "$ME: failed to run `" . join (' ', @cmd) . "': $!\n";
   # Ignore everything up to first ^@@...@@$ line, which should be line #8.
@@ -235,8 +234,7 @@ sub run_command
 	}
     }
 
-  $verbose
-    and verbose_cmd \@cmd;
+  verbose_cmd \@cmd						if $verbose;
 
   use vars qw (*SAVE_OUT *SAVE_ERR);
 
@@ -451,9 +449,7 @@ sub main
       my @vc_diff = $vc->diff_command();
       my @cmd = (@vc_diff, @ARGV);
 
-      $verbose
-	and verbose_cmd \@cmd;
-
+      verbose_cmd \@cmd						if $verbose;
       exec @cmd;
       exit 1;
     }
