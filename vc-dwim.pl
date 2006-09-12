@@ -107,7 +107,7 @@ sub get_diffs ($$)
 {
   my ($vc, $f) = @_;
 
-  my @cmd = ($vc->diff_cmd(), @$f);
+  my @cmd = ($vc->diff_command(), @$f);
   $verbose
     and verbose_cmd \@cmd;
   open PIPE, '-|', @cmd
@@ -448,7 +448,7 @@ sub main
       my $f = $ARGV[0];
       my $vc = VC->new ($f)
 	or die "$ME: can't determine version control system for $f\n";
-      my @vc_diff = $vc->diff_cmd();
+      my @vc_diff = $vc->diff_command();
       my @cmd = (@vc_diff, @ARGV);
 
       $verbose
@@ -512,8 +512,8 @@ sub main
 
   my $vc = VC->new ($changelog_file_name[0]);
   my $vc_name = $vc->name();
-  my @vc_diff = $vc->diff_cmd();
-  my @vc_commit = $vc->commit_cmd();
+  my @vc_diff = $vc->diff_command();
+  my @vc_commit = $vc->commit_command();
 
   # Key is ChangeLog file name, value is a ref to list of
   # lines added to that file.

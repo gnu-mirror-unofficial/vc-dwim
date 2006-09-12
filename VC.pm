@@ -117,32 +117,44 @@ sub new($%)
   return undef;
 }
 
-sub name()
+sub AUTOLOAD
 {
   my $self = shift;
-  return $self->{name};
-}
 
-sub commit_cmd()
-{
-  my $self = shift;
-  my $cmd_ref = $vc_cmd->{$self->name()}->{COMMIT_COMMAND};
-  return @$cmd_ref;
-}
+  # If called as $obj->foo, $AUTOLOAD will be __PACKAGE__::foo
+  (my $what = $AUTOLOAD) =~ s/^.*:://;		# e.g. name, commit_command
 
-sub diff_cmd()
-{
-  my $self = shift;
-  my $cmd_ref = $vc_cmd->{$self->name()}->{DIFF_COMMAND};
-  return @$cmd_ref;
-}
+  # Existing field in our object (e.g. ->name)?
+  if (exists $self->{$field}) {
+    return $self->{$field};
+  }
 
-sub valid_diff_exit_status
-{
-  my $self = shift;
-  my $exit_status = shift;
-  my $h = $vc_cmd->{$self->name()}->{VALID_DIFF_EXIT_STATUS};
-  return exists $h->{$exit_status};
+  # One of the diff/commit info elements defined at top?
+  my $href = $vc_cmd->{$self->name()};
+  if (exists $href->{uc $what}) {
+    my $ans = $href->{uc $what};
+
+    # Two possibilities: a list or a hash
+    if (ref($ans) eq 'ARRAY') {
+      # list: return the elements (dereferenced)
+      return @$ans;
+    }
+    elsif (ref($ans) eq 'HASH') {
+      # hash: we must be given an arg.  check if it's in the hash.
+      @_      or croak "$ME: ->$what() requires an argument";
+      @_ == 1 or croak "$ME: ->$what() requires only ONE argument";
+
+      # We only care if the element exists; ignore the actual value
+      return exists $ans->{$_[0]};
+    }
+    else {
+      # Eek!  Not an array or a hash
+      croak "$ME: Internal error: ->$what() is neither array nor hash";
+    }
+  }
+
+  # Unknown.
+  croak "$ME: Unknown method ->$what";
 }
 
 # True if running diff from a sub-directory outputs +++/--- lines
