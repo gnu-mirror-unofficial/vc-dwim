@@ -1,5 +1,7 @@
 2006-09-13  Jim Meyering  <jim@meyering.net>
 
+	* README-devel: New file.
+
 	* vc-dwim.pl (Doc): Say to report bugs to the author.
 
 	* VC.pm (new): Remove trailing newline.
