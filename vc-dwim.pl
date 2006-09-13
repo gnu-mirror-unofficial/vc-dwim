@@ -884,6 +884,6 @@ Eventually, it will detect temporaries created by other editors.
 
 Jim Meyering <jim@meyering.net>
 
-Please report bugs or suggestions to <FIXME>
+Please report bugs or suggestions to the author.
 
 =cut

@@ -1,5 +1,7 @@
 2006-09-13  Jim Meyering  <jim@meyering.net>
 
+	* vc-dwim.pl (Doc): Say to report bugs to the author.
+
 	* VC.pm (new): Remove trailing newline.
 	Unlike die/warn, croak doesn't need/use it.  From Ed Santiago.
 
