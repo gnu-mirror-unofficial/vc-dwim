@@ -1,3 +1,8 @@
+2006-09-13  Jim Meyering  <jim@meyering.net>
+
+	* VC.pm (new): Remove trailing newline.
+	Unlike die/warn, croak doesn't need/use it.  From Ed Santiago.
+
 2006-09-12  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim.pl (exists_editor_backup): Recognize Vim temporaries, too.
