@@ -1,0 +1,34 @@
+Update the bug-report-to address in the documentation.
+
+Add a "make distcheck" rule that does something like this:
+# FIXME: rather than "hg clone . dst", use checkout-dot NEW_DEST_DIR
+tmp = $(TMPDIR)/vc-dwim-$$$$
+some_check_hook:
+	rm -rf $(tmp)
+	hg clone . $(tmp)
+	cd $(tmp)
+	aclocal && autoheader && automake && autoconf && ./configure
+	make distcheck
+
+# FIXME: Provide a way to work when ChangeLog isn't version-controlled.
+# E.g., allow ChangeLog to be a not-version-controlled symlink to a
+# version controlled ChangeLog in some other hierarchy, possibly using
+# a different program for version control.
+
+# FIXME: Optional: warn if there are modified files not listed in ChangeLogs
+# FIXME: Add an option to make --commit fail if this is the case.
+
+# FIXME: Maybe add an option to put the user in an editor, starting with our
+# slightly formatted ChangeLog-derived log entry.
+
+# FIXME: doesn't honor any of the $CVSROOT, $GIT*, etc. envvars.  Should it?
+
+# FIXME: Rework --vc=VC_NAME support so it works with VC.pm.
+# FIXME: rename VC.pm, e.g., to XX::VC.pm.
+
+# FIXME: Consider using only the first, non-"*" ChangeLog line(s)
+# as the log message.
+
+# FIXME: Add support for SVK, bzr, monotone, etc.
+# FIXME: RCS is a pain because its commit log contents must come via -m'...'
+# on the command line.
