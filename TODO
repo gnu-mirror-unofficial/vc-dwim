@@ -34,3 +34,8 @@ the working directory.
 # FIXME: Add support for SVK, bzr, monotone, etc.
 # FIXME: RCS is a pain because its commit log contents must come via -m'...'
 # on the command line.
+
+When the ChangeLog is written by the person doing the commit,
+do not include it in the log message.  If it's written by someone
+else, do include it, by way of attribution.
+This probably a candidate for an option.
