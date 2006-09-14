@@ -9,6 +9,8 @@ some_check_hook:
 	cd $(tmp)
 	aclocal && autoheader && automake && autoconf && ./configure
 	make distcheck
+and then compare with the result of "make distcheck" in
+the working directory.
 
 # FIXME: Provide a way to work when ChangeLog isn't version-controlled.
 # E.g., allow ChangeLog to be a not-version-controlled symlink to a

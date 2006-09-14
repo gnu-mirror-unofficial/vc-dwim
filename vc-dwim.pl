@@ -11,20 +11,6 @@
 # for them, unifying all entries in the log-msg file, each preceded by
 # a line giving the relative directory name, e.g. [./] or [m4/].
 
-# Options?
-
-# FIXME: doesn't honor any of the $CVSROOT, $GIT*, etc. envvars.  Should it?
-
-# FIXME: Rework --vc=VC_NAME support so it works with VC.pm.
-# FIXME: rename VC.pm, e.g., to XX::VC.pm.
-
-# FIXME: Consider using only the first, non-"*" ChangeLog line(s)
-# as the log message.
-# FIXME: Add support for RCS, SVK, bzr, monotone, etc.
-
-# FIXME: Optional: warn if there are modified files not listed in ChangeLogs
-# FIXME: Add an option to make --commit fail if this is the case.
-
 use strict;
 use warnings;
 use Getopt::Long;
@@ -554,13 +540,12 @@ sub main
       my $offset = shift @log_lines;
       $offset = $$offset;
 
-      # FIXME: extract this to use customized user name/email.
-      # FIXME: and add an option to disable entirely.
-      # If the first line matches "date  name  email", and it's my name,
-      # then ignore the line.  The following one, too, which should be blank.
+      # If the first line matches "date  name  email" (for now, just
+      # check for date), and it's my name, then ignore the line.  e.g.,
       # 2006-08-19  Jim Meyering  <jim@meyering.net>
+      # Ignore the following one, too, which should be blank.
       if (3 <= @log_lines
-	  && $log_lines[0] =~ /^\+\d{4}-\d\d-\d\d  Jim Meyering  /)
+	  && $log_lines[0] =~ /^\+\d{4}-\d\d-\d\d  /)
 	{
 	  if ($log_lines[1] ne '+')
 	    {
