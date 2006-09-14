@@ -112,10 +112,10 @@ sub get_diffs ($$)
 
   # Remove the single space from what would otherwise be empty
   # lines in unified diff output.
-  foreach my $i (0..@added_lines-1)
+  foreach my $line (@added_lines)
     {
-      $added_lines[$i] eq ' '
-	and $added_lines[$i] = '';
+      $line eq ' '
+	and $line = '';
     }
 
   return \@added_lines
