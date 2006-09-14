@@ -12,28 +12,29 @@ some_check_hook:
 and then compare with the result of "make distcheck" in
 the working directory.
 
-# FIXME: Provide a way to work when ChangeLog isn't version-controlled.
-# E.g., allow ChangeLog to be a not-version-controlled symlink to a
-# version controlled ChangeLog in some other hierarchy, possibly using
-# a different program for version control.
+Provide a way to work when ChangeLog isn't version-controlled.
+E.g., allow ChangeLog to be a not-version-controlled symlink to a
+version controlled ChangeLog in some other hierarchy, possibly using
+a different program for version control.
 
-# FIXME: Optional: warn if there are modified files not listed in ChangeLogs
-# FIXME: Add an option to make --commit fail if this is the case.
+Optional: warn if there are modified files not listed in ChangeLogs
+Add an option to make --commit fail if this is the case.
 
-# FIXME: Maybe add an option to put the user in an editor, starting with our
-# slightly formatted ChangeLog-derived log entry.
+Maybe add an option to put the user in an editor, starting with our
+slightly formatted ChangeLog-derived log entry.
 
-# FIXME: doesn't honor any of the $CVSROOT, $GIT*, etc. envvars.  Should it?
+This code doesn't honor any of the $CVSROOT, $GIT*, etc. envvars.  Should it?
 
-# FIXME: Rework --vc=VC_NAME support so it works with VC.pm.
-# FIXME: rename VC.pm, e.g., to XX::VC.pm.
+Rework --vc=VC_NAME support so it works with VC.pm.
 
-# FIXME: Consider using only the first, non-"*" ChangeLog line(s)
-# as the log message.
+Rename VC.pm, e.g., to XX::VC.pm.
 
-# FIXME: Add support for SVK, bzr, monotone, etc.
-# FIXME: RCS is a pain because its commit log contents must come via -m'...'
-# on the command line.
+Consider using only the first, non-"*" ChangeLog line(s)
+as the log message.
+
+Add support for SVK, bzr, monotone, etc.
+RCS is a pain because its commit log contents must come via -m'...'
+on the command line.
 
 When the ChangeLog is written by the person doing the commit,
 do not include it in the log message.  If it's written by someone
