@@ -1,5 +1,7 @@
 2006-09-14  Jim Meyering  <jim@meyering.net>
 
+	* vc-dwim.pl (valid_file_name): Fix erroneous regexp.
+
 	* vc-dwim.pl (get_diffs): Simplify a loop.  From Ed Santiago.
 
 	* vc-dwim.pl: Move a bunch of comments into...

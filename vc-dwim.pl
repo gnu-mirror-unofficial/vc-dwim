@@ -70,7 +70,7 @@ sub valid_file_name($)
     and return 0;
 
   # No "." or "/", and it a gimme.
-  $f =~ m!^[^./]$!
+  $f !~ m![./]!
     and return 1;
 
   my @comp = split '/', $f;
