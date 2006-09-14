@@ -1,10 +1,10 @@
 AC_INIT([vc-dwim], [0.1.3], [jim@meyering.net])
 
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([dist-bzip2])
+AM_INIT_AUTOMAKE([1.9.6 dist-bzip2])
 
 # Minimum Autoconf version required.
-AC_PREREQ(2.60)
+AC_PREREQ(2.59)
 
 # Where to generate output; srcdir location.
 AC_CONFIG_HEADERS([config.h:config.in])dnl Keep filename to 8.3 for MS-DOS.
