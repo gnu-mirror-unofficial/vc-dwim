@@ -1,3 +1,7 @@
+2006-09-15  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim.pl (main): Fix detection of multiple VCS.
+
 2006-09-14  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim.pl (valid_file_name): Fix erroneous regexp.

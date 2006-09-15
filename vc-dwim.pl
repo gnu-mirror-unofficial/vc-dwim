@@ -484,15 +484,25 @@ sub main
   # in use for its directory.  Choke if they're not all the same.
   my $any_vc_name;
   my %vc_per_arg;
+  my %seen_vc;
   foreach my $f (@changelog_file_name)
     {
-      my $vc = VC->new($f);
+      my $vc = VC->new($f)
+	or next;
       $any_vc_name = $vc->name();
+      $seen_vc{$any_vc_name} = 1;
       $vc_per_arg{$f} = $any_vc_name;
     }
-  1 < keys %vc_per_arg
-    and die "$ME: ChangeLog files are managed by more than one version-"
-      . "control system\n";
+  if (1 < keys %seen_vc)
+    {
+      warn "$ME: ChangeLog files are managed by more than one version-"
+	. "control system\n";
+      foreach my $k (sort keys %vc_per_arg)
+	{
+	  warn "$k: $vc_per_arg{$k}\n";
+	}
+      exit 1;
+    }
 
   # FIXME: list the offending files.
   ! defined $any_vc_name
