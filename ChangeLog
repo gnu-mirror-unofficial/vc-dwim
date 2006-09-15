@@ -1,12 +1,11 @@
 2006-09-15  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim.pl (main): Fix detection of multiple VCS.
-	FIXME: add a test for this
+	* tests/two-vc: New file.  Test for the above.
 
 2006-09-14  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim.pl (valid_file_name): Fix erroneous regexp.
-	FIXME: add a test for this
 
 	* vc-dwim.pl (get_diffs): Simplify a loop.  From Ed Santiago.
 
