@@ -498,9 +498,8 @@ sub main
       . "control system:\n",
 	map {"  $_: $vc_per_arg{$_}\n"} (sort keys %vc_per_arg);
 
-  # FIXME: list the offending files.
   ! defined $any_vc_name
-    and die "$ME: some file(s) are managed by an unknown"
+    and die "$ME: no FILE is managed by a supported"
       . " version-control system\n";
 
   my $vc = VC->new ($changelog_file_name[0]);
