@@ -28,7 +28,7 @@ our %EXPORT_TAGS = (default => \@EXPORT_OK);
 
 use constant
   {
-    CG  => 'cg',  # FIXME: maybe call this GIT/'git'
+    GIT  => 'cg',  # FIXME: maybe call this GIT/'git'
     CVS => 'cvs',
     HG  => 'hg',
     SVN => 'svn',
@@ -42,7 +42,7 @@ my $vc_cmd =
     VALID_DIFF_EXIT_STATUS => {0 => 1, 1 => 1},
     COMMIT_COMMAND => [qw(cvs ci -F)],
    },
-   CG() => # aka cogito/git
+   GIT() => # aka cogito/git
    {
     DIFF_COMMAND => [qw(git-diff --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
@@ -83,7 +83,7 @@ sub new($%)
   } elsif (-d "$d/.svn") {
     $self->{name} = SVN;
   } elsif (-d "$d/.git/objects") {
-    $self->{name} = CG;
+    $self->{name} = GIT;
   } elsif (-d "$d/.hg") {
     $self->{name} = HG;
   }
@@ -99,7 +99,7 @@ sub new($%)
       ++$depth;
       $d .= '/..';
       if (-d "$d/.git/objects") {
-	$self->{name} = CG;
+	$self->{name} = GIT;
       } elsif (-d "$d/.hg") {
 	$self->{name} = HG;
       }
@@ -151,7 +151,7 @@ sub valid_diff_exit_status
 sub diff_outputs_full_file_names()
 {
   my $self = shift;
-  return $self->name() eq CG || $self->name() eq HG;
+  return $self->name() eq GIT || $self->name() eq HG;
 }
 
 # Given a "."-relative file name, return an equivalent full one.

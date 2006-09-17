@@ -493,16 +493,10 @@ sub main
       $seen_vc{$any_vc_name} = 1;
       $vc_per_arg{$f} = $any_vc_name;
     }
-  if (1 < keys %seen_vc)
-    {
-      warn "$ME: ChangeLog files are managed by more than one version-"
-	. "control system\n";
-      foreach my $k (sort keys %vc_per_arg)
-	{
-	  warn "$k: $vc_per_arg{$k}\n";
-	}
-      exit 1;
-    }
+  1 < keys %seen_vc
+    and die "$ME: ChangeLog files are managed by more than one version-"
+      . "control system:\n",
+	map {"$_: $vc_per_arg{$_}\n"} (sort keys %vc_per_arg);
 
   # FIXME: list the offending files.
   ! defined $any_vc_name
@@ -694,7 +688,7 @@ sub main
       $diff_line =~ /^[-+]{3} (\S+)(?:[ \t]|$)/
 	or next;
       my $file_name = $1;
-      if ($vc_name eq VC::CG || $vc_name eq VC::HG)
+      if ($vc_name eq VC::GIT || $vc_name eq VC::HG)
 	{
 	  # Remove the fake leading "a/" component that git and hg add.
 	  $file_name =~ s,^[ab]/,,;
