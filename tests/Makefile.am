@@ -7,6 +7,10 @@ TESTS_ENVIRONMENT = \
   perllibdir="`cd $(top_srcdir); pwd`" \
   PATH="$(VG_PATH_PREFIX)`pwd`/..$(PATH_SEPARATOR)$$PATH"
 
+XFAIL_TESTS = \
+  no-vc \
+  symlinked-changelog
+
 TESTS = \
   no-vc \
   symlinked-changelog \

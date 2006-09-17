@@ -2,6 +2,7 @@
 
 	* tests/symlinked-changelog: New file.
 	* tests/Makefile.am (TESTS): Add symlinked-changelog.
+	(XFAIL_TESTS): Expect two failures.
 
 	* vc-dwim.pl (main): Indent the list of offending file-name/VC-name
 	pairs in a diagnostic.
