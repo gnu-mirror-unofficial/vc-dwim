@@ -8,6 +8,7 @@ TESTS_ENVIRONMENT = \
   PATH="$(VG_PATH_PREFIX)`pwd`/..$(PATH_SEPARATOR)$$PATH"
 
 TESTS = \
+  no-vc \
   symlinked-changelog \
   two-vc \
   cl-but-no-diff \
