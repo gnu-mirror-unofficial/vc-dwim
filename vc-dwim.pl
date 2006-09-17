@@ -891,6 +891,14 @@ Once you are happy with your ChangeLog-derived diffs, you can commit
 those changes and the ChangeLog simply by rerunning the command with
 the --commit option.
 
+But what if you'd like to use this spiffy new tool on a project
+that doesn't have or want a ChangeLog file?  In that case, you
+can maintain your own, private version-controlled ChangeLog file.
+Then just make a symlink to it from the top level directory of the
+hierarchy in which you'd like to use it and everything should work.
+Your private ChangeLog file need not even use the same version control
+system as the rest of the project hierarchy.
+
 =head1	OPTIONS
 
 =over 4

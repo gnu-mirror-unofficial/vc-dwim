@@ -1,5 +1,9 @@
 2006-09-17  Jim Meyering  <jim@meyering.net>
 
+	* configure.ac (VERSION): 0.1.4.
+	* vc-dwim.pl (DESCRIPTION): Describe new feature.
+	* TODO: Remove this item.
+
 	With this change, commits also work with a symlinked ChangeLog.
 	* vc-dwim.pl (main): Don't create the log message file and perform
 	the commit here.  Instead, do both...

@@ -12,11 +12,6 @@ some_check_hook:
 and then compare with the result of "make distcheck" in
 the working directory.
 
-Provide a way to work when ChangeLog isn't version-controlled.
-E.g., allow ChangeLog to be a not-version-controlled symlink to a
-version controlled ChangeLog in some other hierarchy, possibly using
-a different program for version control.
-
 Optional: warn if there are modified files not listed in ChangeLogs
 Add an option to make --commit fail if this is the case.
 
