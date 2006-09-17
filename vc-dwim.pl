@@ -121,7 +121,7 @@ sub get_diffs ($$)
   return \@added_lines
 }
 
-# Choke if this diff removes any lines, or if there are no added lines.
+# Parse a ChangeLog diff: ignore removed lines, collect added ones.
 sub get_new_changelog_lines ($$)
 {
   my ($vc, $f) = @_;
@@ -510,16 +510,44 @@ sub main
   # Key is ChangeLog file name, value is a ref to list of
   # lines added to that file.
   my %added_log_lines;
-  # Extract added lines from each ChangeLog.
+
+  # If there is only one file and it's a symlink to a version-controlled
+  # ChangeLog in some other directory, then work as usual, but check in
+  # that ChangeLog separately from the affected files.
+  if (@changelog_file_name == 1 && -l $changelog_file_name[0])
+    {
+      my $log = $changelog_file_name[0];
+      eval 'use Cwd';
+      die $@ if $@;
+      my $link_dest = Cwd::abs_path($log)
+	or die "$ME: $log: abs_path failed: $!\n";
+      my $changelog_vc = VC->new ($link_dest);
+      # Save working directory, chdir to dirname, perform diff, then return.
+      my $initial_wd = Cwd::getcwd();
+      my $parent_dir = dirname $link_dest;
+      chdir $parent_dir
+	or die "$ME: unable to chdir to $parent_dir: $!\n";
+      $added_log_lines{$log} = get_new_changelog_lines ($changelog_vc,
+							basename ($link_dest));
+      chdir $initial_wd
+	or die "$ME: unable to restore working directory $initial_wd: $!\n";
+    }
+  else
+    {
+      # Extract added lines from each ChangeLog.
+      foreach my $log (@changelog_file_name)
+	{
+	  $added_log_lines{$log} = get_new_changelog_lines $vc, $log;
+	}
+    }
   foreach my $log (@changelog_file_name)
     {
-      my $new_lines = get_new_changelog_lines $vc, $log;
-      if (@$new_lines == 0)
+      my $line_list = $added_log_lines{$log};
+      if (@$line_list == 0)
 	{
 	  warn "$ME: no $log diffs?\n";
 	  $fail = 1;
 	}
-      $added_log_lines{$log} = $new_lines;
     }
   $fail
     and exit 1;
@@ -706,7 +734,7 @@ sub main
       if ( ! $seen{$full_name})
 	{
 	  warn "$ME: $f is listed in the ChangeLog entry, but not in diffs.\n"
-	    . "Did you forget to \"$vc_name add\" it?\n";
+	    . "Did you forget to add it?\n";
 	  $fail = 1;
 	}
     }

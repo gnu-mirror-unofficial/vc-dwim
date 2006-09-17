@@ -42,7 +42,7 @@ vc-dwim g/ChangeLog m/ChangeLog 2> out && fail=1
 
 cat <<\EOF > exp || fail=1
 vc-dwim: ChangeLog files are managed by more than one version-control system:
-  g/ChangeLog: cg
+  g/ChangeLog: git
   m/ChangeLog: hg
 EOF
 

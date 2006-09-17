@@ -8,8 +8,7 @@ TESTS_ENVIRONMENT = \
   PATH="$(VG_PATH_PREFIX)`pwd`/..$(PATH_SEPARATOR)$$PATH"
 
 XFAIL_TESTS = \
-  no-vc \
-  symlinked-changelog
+  no-vc
 
 TESTS = \
   no-vc \
