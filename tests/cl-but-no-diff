@@ -45,7 +45,7 @@ vc-dwim ChangeLog > out 2>&1 && fail=1
 
 cat <<\EOF > exp || fail=1
 vc-dwim: not-mod is listed in the ChangeLog entry, but not in diffs.
-Did you forget to "cg add" it?
+Did you forget to add it?
 EOF
 
 cmp out exp || fail=1

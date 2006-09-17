@@ -1,5 +1,6 @@
 2006-09-17  Jim Meyering  <jim@meyering.net>
 
+
 	* vc-dwim.pl (main): Handle a ChangeLog that is symlinked to a
 	version-controlled ChangeLog file in another directory.
 
@@ -8,6 +9,7 @@
 
 	* VC.pm (GIT): Change string value from 'cg' to 'git'.
 	* tests/two-vc (vc-dwim): Adjust expected output accordingly.
+	* tests/cl-but-no-diff: Likewise.
 
 	* Makefile.am: Include date and hash in --version output.
 	(vc-dwim): Declare to be "-dirty" if *any* file in this
