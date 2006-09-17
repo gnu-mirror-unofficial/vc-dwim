@@ -31,7 +31,7 @@ do_subst = sed \
 ## Use chmod a-w to prevent people from editing the wrong file by accident.
 vc-dwim: vc-dwim.pl Makefile
 	rm -f $@ $@.tmp
-	dirty=`hg stat -nm $<`;			\
+	dirty=`hg stat -nm`;			\
 	test -n "$$dirty" && dirty='-dirty';	\
 	rev=$$(hg log --limit=1 --template='{date|shortdate}.{node|short}\n' $<);\
 	$(do_subst) $(srcdir)/$@.pl >$@.tmp
