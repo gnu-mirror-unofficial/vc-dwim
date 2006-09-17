@@ -1,5 +1,8 @@
 2006-09-17  Jim Meyering  <jim@meyering.net>
 
+	* tests/symlinked-changelog: New file.
+	* tests/Makefile.am (TESTS): Add symlinked-changelog.
+
 	* vc-dwim.pl (main): Indent the list of offending file-name/VC-name
 	pairs in a diagnostic.
 	* tests/two-vc (vc-dwim): Update expected output, accordingly.
