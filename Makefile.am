@@ -21,7 +21,7 @@ do_subst = sed \
   -e 's,[@]PATH_SEPARATOR[@],$(PATH_SEPARATOR),g' \
   -e 's,[@]PERL[@],$(PERL),g' \
   -e 's,[@]SHELL[@],$(SHELL),g' \
-  -e 's,[@]VERSION[@],$(VERSION),g' \
+  -e 's,[@]VERSION[@],$(VERSION) ('"$$rev$$dirty"'),g' \
   -e 's,[@]VC_LIST[@],'"$$($(gen_vc_name_list))",g \
   -e 's,[@]configure_input[@],Generated from $@.pl; do not edit by hand.,g' \
   -e 's,[@]datadir[@],$(datadir),g'
@@ -31,6 +31,9 @@ do_subst = sed \
 ## Use chmod a-w to prevent people from editing the wrong file by accident.
 vc-dwim: vc-dwim.pl Makefile
 	rm -f $@ $@.tmp
+	dirty=`hg stat -nm $<`;			\
+	test -n "$$dirty" && dirty='-dirty';	\
+	rev=$$(hg log --limit=1 --template='{date|shortdate}.{node|short}\n' $<);\
 	$(do_subst) $(srcdir)/$@.pl >$@.tmp
 	chmod a-w+x $@.tmp
 	mv -f $@.tmp $@

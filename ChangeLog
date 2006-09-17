@@ -1,5 +1,7 @@
 2006-09-17  Jim Meyering  <jim@meyering.net>
 
+	* Makefile.am: Include date and hash in --version output.
+
 	* tests/symlinked-changelog: New file.
 	* tests/Makefile.am (TESTS): Add symlinked-changelog.
 	(XFAIL_TESTS): Expect two failures.
