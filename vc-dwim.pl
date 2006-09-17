@@ -496,7 +496,7 @@ sub main
   1 < keys %seen_vc
     and die "$ME: ChangeLog files are managed by more than one version-"
       . "control system:\n",
-	map {"$_: $vc_per_arg{$_}\n"} (sort keys %vc_per_arg);
+	map {"  $_: $vc_per_arg{$_}\n"} (sort keys %vc_per_arg);
 
   # FIXME: list the offending files.
   ! defined $any_vc_name

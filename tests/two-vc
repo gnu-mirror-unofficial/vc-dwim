@@ -41,9 +41,9 @@ fail=0
 vc-dwim g/ChangeLog m/ChangeLog 2> out && fail=1
 
 cat <<\EOF > exp || fail=1
-vc-dwim: ChangeLog files are managed by more than one version-control system
-g/ChangeLog: cg
-m/ChangeLog: hg
+vc-dwim: ChangeLog files are managed by more than one version-control system:
+  g/ChangeLog: cg
+  m/ChangeLog: hg
 EOF
 
 cmp out exp || fail=1
