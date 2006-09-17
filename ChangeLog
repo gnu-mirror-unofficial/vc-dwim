@@ -1,5 +1,6 @@
 2006-09-17  Jim Meyering  <jim@meyering.net>
 
+	With this change, diffs work with a symlinked ChangeLog.
 	* vc-dwim.pl (main): Handle a ChangeLog that is symlinked to a
 	version-controlled ChangeLog file in another directory.
 
