@@ -400,6 +400,59 @@ sub find_relevant_file_name($$)
   return ($file_name, $is_summary_line);
 }
 
+# Check in the files in @$file_list_arg, using the lines in @$log_msg_lines
+# as the log message.  $vc tells which version control system to use.
+# If there's only one file, say F, and its name starts with "/", then
+# do "chdir(dirname(F))" before performing the commit (committing
+# "basename(F)" in that case), and restore the initial working directory
+# afterwards.
+sub do_commit ($$$)
+{
+  my ($vc, $log_msg_lines, $file_list_arg) = @_;
+
+  my @file_list = @$file_list_arg;
+  my $initial_wd;
+  if (@file_list == 1 && $file_list[0] =~ m,^/,)
+    {
+      eval 'use Cwd';
+      die $@ if $@;
+      # Save working directory, chdir to dirname, perform diff, then return.
+      $initial_wd = Cwd::getcwd();
+      my $parent_dir = dirname $file_list[0];
+      chdir $parent_dir
+	or die "$ME: unable to chdir to $parent_dir: $!\n";
+      @file_list = ( basename ($file_list[0]) );
+    }
+
+  # Write commit log to a file.
+  my ($fh, $commit_log_filename)
+    = File::Temp::tempfile ('vc-dwim-log-XXXXXX', DIR => '.', UNLINK => 0);
+  print $fh join ("\n", @$log_msg_lines), "\n";
+  close $fh
+    or die "$ME: failed to write $commit_log_filename: $!\n";
+
+  my @vc_commit = $vc->commit_cmd();
+  my @cmd = (@vc_commit, $commit_log_filename, '--', @file_list);
+
+  my $options =
+    {
+     DEBUG => $debug,
+     VERBOSE => $verbose,
+     DIE_UPON_FAILURE => 0,
+     INHIBIT_STDOUT => 0,
+    };
+  run_command ($options, @cmd);
+
+  # FIXME: do this via exit/die/signal handler.
+  unlink $commit_log_filename;
+
+  if (defined $initial_wd)
+    {
+      chdir $initial_wd
+	or die "$ME: unable to restore working directory $initial_wd: $!\n";
+    }
+}
+
 sub main
 {
   my $commit;
@@ -505,7 +558,6 @@ sub main
   my $vc = VC->new ($changelog_file_name[0]);
   my $vc_name = $vc->name();
   my @vc_diff = $vc->diff_cmd();
-  my @vc_commit = $vc->commit_cmd();
 
   # Key is ChangeLog file name, value is a ref to list of
   # lines added to that file.
@@ -514,21 +566,24 @@ sub main
   # If there is only one file and it's a symlink to a version-controlled
   # ChangeLog in some other directory, then work as usual, but check in
   # that ChangeLog separately from the affected files.
+  my $symlinked_changelog;
+  my $vc_changelog;
   if (@changelog_file_name == 1 && -l $changelog_file_name[0])
     {
       my $log = $changelog_file_name[0];
       eval 'use Cwd';
       die $@ if $@;
-      my $link_dest = Cwd::abs_path($log)
+      $symlinked_changelog = Cwd::abs_path($log)
 	or die "$ME: $log: abs_path failed: $!\n";
-      my $changelog_vc = VC->new ($link_dest);
+      $vc_changelog = VC->new ($symlinked_changelog);
       # Save working directory, chdir to dirname, perform diff, then return.
       my $initial_wd = Cwd::getcwd();
-      my $parent_dir = dirname $link_dest;
+      my $parent_dir = dirname $symlinked_changelog;
       chdir $parent_dir
 	or die "$ME: unable to chdir to $parent_dir: $!\n";
-      $added_log_lines{$log} = get_new_changelog_lines ($changelog_vc,
-							basename ($link_dest));
+      $added_log_lines{$log}
+	= get_new_changelog_lines ($vc_changelog,
+				   basename ($symlinked_changelog));
       chdir $initial_wd
 	or die "$ME: unable to restore working directory $initial_wd: $!\n";
     }
@@ -771,26 +826,16 @@ sub main
       eval 'use File::Temp';
       die $@ if $@;
 
-      # Write commit log to a file.
-      my ($fh, $commit_log_filename)
-	= File::Temp::tempfile ('vc-dwim-log-XXXXXX', DIR => '.', UNLINK => 0);
-      print $fh join ("\n", @log_msg_lines), "\n";
-      close $fh
-	or die "$ME: failed to write $commit_log_filename: $!\n";
-
-      my @cmd = (@vc_commit, $commit_log_filename, '--',
-		 @changelog_file_name, @affected_files);
-      my $options =
+      if ($symlinked_changelog)
 	{
-	 DEBUG => $debug,
-	 VERBOSE => $verbose,
-	 DIE_UPON_FAILURE => 0,
-	 INHIBIT_STDOUT => 0,
-	};
-      run_command ($options, @cmd);
-
-      # FIXME: do this via exit/die/signal handler.
-      unlink $commit_log_filename;
+	  do_commit $vc_changelog, [''], [$symlinked_changelog];
+	  do_commit $vc, \@log_msg_lines, [@affected_files];
+	}
+      else
+	{
+	  do_commit $vc, \@log_msg_lines,
+	    [@changelog_file_name, @affected_files];
+	}
     }
 }
 

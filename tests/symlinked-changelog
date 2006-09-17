@@ -41,7 +41,7 @@ fi
 
 fail=0
 
-cd m && vc-dwim ChangeLog > out || fail=1
+(cd m && vc-dwim ChangeLog) > out || fail=1
 
 cut -b1-7 out > k; mv k out
 cat <<\EOF > exp || fail=1
@@ -51,6 +51,24 @@ diff -r
 +++ b/f
 @@ -0,0
 +a
+EOF
+
+cmp out exp || fail=1
+test $fail = 1 && diff out exp 2> /dev/null
+
+(cd m && vc-dwim --commit ChangeLog) > out || fail=1
+
+cut -b1-7 out > k; mv k out
+cat <<\EOF > exp || fail=1
+* f: X.
+diff -r
+--- a/f
++++ b/f
+@@ -0,0
++a
+M Chang
+Committ
+f
 EOF
 
 cmp out exp || fail=1
