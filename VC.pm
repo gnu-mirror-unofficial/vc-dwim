@@ -28,7 +28,7 @@ our %EXPORT_TAGS = (default => \@EXPORT_OK);
 
 use constant
   {
-    GIT  => 'cg',  # FIXME: maybe call this GIT/'git'
+    GIT  => 'git',
     CVS => 'cvs',
     HG  => 'hg',
     SVN => 'svn',
@@ -47,12 +47,14 @@ my $vc_cmd =
     DIFF_COMMAND => [qw(git-diff --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
     COMMIT_COMMAND => [qw(cg-commit -M)],
+    # is-version-controlled-file: true, if "cg-status -n -S '?' FILE" produces output
    },
    HG() => # aka mercurial
    {
     DIFF_COMMAND => [qw(hg diff -p -a --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
     COMMIT_COMMAND => [qw(hg ci -l)],
+    # is-version-controlled-file: true, if "hg st -nu FILE" produces output
    },
    SVN() => # aka subversion
    {

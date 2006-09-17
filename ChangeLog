@@ -1,5 +1,7 @@
 2006-09-17  Jim Meyering  <jim@meyering.net>
 
+	* VC.pm (GIT): Change string value from 'cg' to 'git'.
+
 	* Makefile.am: Include date and hash in --version output.
 	(vc-dwim): Declare to be "-dirty" if *any* file in this
 	hierarchy has not-checked-in changes.
