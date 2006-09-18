@@ -1,3 +1,7 @@
+2006-09-18  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim.pl (main): Remove the --vc=VC_NAME option.
+
 2006-09-17  Jim Meyering  <jim@meyering.net>
 
 	* configure.ac (VERSION): 0.1.4.

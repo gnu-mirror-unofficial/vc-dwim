@@ -457,13 +457,9 @@ sub main
 {
   my $commit;
   my $simple_diff;
-  # FIXME my $vc_name;
   my $print_vc_list;
   GetOptions
     (
-     # FIXME: this isn't quite working for hg, git
-     # 'vc=s' => sub { $vc_name = $_[1] },
-
      diff => \$simple_diff,
      commit => \$commit,
      'print-vc-list' =>
@@ -477,9 +473,6 @@ sub main
   # Make sure we have at least one FILE argument.
   @ARGV == 0
     and (warn "$ME: no FILE specified\n"), usage 1;
-
-#  defined $vc_name && !exists $vc_cmd->{$vc_name}
-#    and die "$ME: $vc_name: not a supported version control system\n";
 
   my $fail;
 
@@ -883,10 +876,6 @@ the ChangeLog.  Similarly, if diff output suggests you are in the process
 of removing a file, then that file should no longer exist.  If it does
 still exist, B<vc-dwim> reports the problem.
 
-This tool automatically detects which version control system affects the
-listed files, and uses that.  If it guesses wrong, you can override its
-guess with the --vc=VC option.
-
 Once you are happy with your ChangeLog-derived diffs, you can commit
 those changes and the ChangeLog simply by rerunning the command with
 the --commit option.
@@ -915,11 +904,6 @@ FILE, then use that to print diffs of the named FILES.
 =item B<--print-vc-list>
 
 Print the list of recognized version control names, then exit.
-
-=item B<--vc=VC>
-
-Don't guess the version control system: use VC.
-VC must be one of the following: @VC_LIST@
 
 =item B<--help>
 
