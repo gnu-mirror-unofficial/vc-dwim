@@ -603,13 +603,11 @@ sub main
   # Construct the log message.
   my @log_msg_lines;
 
-  eval 'use Tie::IxHash';
-  die $@ if $@;
-  # Make $log_msg_file an ordered hash, so we ignore duplicate file names,
-  # i.e. a file name can appear more than once in a ChangeLog, yet their
-  # ordering is preserved.  Then, the diff output (using this list of files)
-  # has the same ordering.
-  my $log_msg_file = Tie::IxHash->new;
+  # Collect the list of affected files, retaining the order in which they
+  # they appear in the ChangeLog, but ignoring duplicates.
+  # Then, the diff output (using this list of files) has the same ordering.
+  my %seen_affected_file;
+  my @affected_files;
 
   foreach my $log (@changelog_file_name)
     {
@@ -714,7 +712,9 @@ sub main
 	      foreach my $file (change_log_line_extract_file_list ($f_spec))
 		{
 		  my $rel_file = ($rel_dir eq '.' ? $file : "$rel_dir/$file");
-		  $log_msg_file->Push($rel_file, undef);
+		  exists $seen_affected_file{$rel_file}
+		    or push @affected_files, $rel_file;
+		  $seen_affected_file{$rel_file} = 1;
 		}
 	    }
 	}
@@ -724,7 +724,6 @@ sub main
 	}
     }
 
-  my @affected_files = $log_msg_file->Keys;
   # print "affected files:\n", join ("\n", @affected_files), "\n";
 
   @affected_files == 0
