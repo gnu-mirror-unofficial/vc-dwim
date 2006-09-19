@@ -411,18 +411,6 @@ sub do_commit ($$$)
   my ($vc, $log_msg_lines, $file_list_arg) = @_;
 
   my @file_list = @$file_list_arg;
-  my $initial_wd;
-  if (@file_list == 1 && $file_list[0] =~ m,^/,)
-    {
-      eval 'use Cwd';
-      die $@ if $@;
-      # Save working directory, chdir to dirname, perform diff, then return.
-      $initial_wd = Cwd::getcwd();
-      my $parent_dir = dirname $file_list[0];
-      chdir $parent_dir
-	or die "$ME: unable to chdir to $parent_dir: $!\n";
-      @file_list = ( basename ($file_list[0]) );
-    }
 
   # Write commit log to a file.
   my ($fh, $commit_log_filename)
@@ -445,12 +433,20 @@ sub do_commit ($$$)
 
   # FIXME: do this via exit/die/signal handler.
   unlink $commit_log_filename;
+}
 
-  if (defined $initial_wd)
-    {
-      chdir $initial_wd
-	or die "$ME: unable to restore working directory $initial_wd: $!\n";
-    }
+# Run $CODE from a different directory, then restore the initial
+# working directory.  Die if anything fails.
+sub do_at($$)
+{
+  my ($dest_dir, $code) = @_;
+  my $initial_wd = Cwd::getcwd()
+    or die "$ME: getcwd failed: $!\n";
+  chdir $dest_dir
+    or die "$ME: unable to chdir to $dest_dir: $!\n";
+  &$code;
+  chdir $initial_wd
+    or die "$ME: unable to restore working directory $initial_wd: $!\n";
 }
 
 sub main
@@ -557,8 +553,8 @@ sub main
   my %added_log_lines;
 
   # If there is only one file and it's a symlink to a version-controlled
-  # ChangeLog in some other directory, then work as usual, but check in
-  # that ChangeLog separately from the affected files.
+  # ChangeLog in some other directory, then record the version control
+  # system it uses, as well as its absolute file name.
   my $symlinked_changelog;
   my $vc_changelog;
   if (@changelog_file_name == 1 && -l $changelog_file_name[0])
@@ -570,15 +566,11 @@ sub main
 	or die "$ME: $log: abs_path failed: $!\n";
       $vc_changelog = VC->new ($symlinked_changelog);
       # Save working directory, chdir to dirname, perform diff, then return.
-      my $initial_wd = Cwd::getcwd();
-      my $parent_dir = dirname $symlinked_changelog;
-      chdir $parent_dir
-	or die "$ME: unable to chdir to $parent_dir: $!\n";
-      $added_log_lines{$log}
-	= get_new_changelog_lines ($vc_changelog,
-				   basename ($symlinked_changelog));
-      chdir $initial_wd
-	or die "$ME: unable to restore working directory $initial_wd: $!\n";
+      do_at (dirname ($symlinked_changelog),
+	     sub {
+	       $added_log_lines{$log}
+		 = get_new_changelog_lines ($vc_changelog,
+					    basename $symlinked_changelog)});
     }
   else
     {
@@ -820,7 +812,9 @@ sub main
 
       if ($symlinked_changelog)
 	{
-	  do_commit $vc_changelog, [''], [$symlinked_changelog];
+	  do_at (dirname ($symlinked_changelog),
+		 sub { do_commit ($vc_changelog, [''],
+				  [basename ($symlinked_changelog)])});
 	  do_commit $vc, \@log_msg_lines, [@affected_files];
 	}
       else

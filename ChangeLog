@@ -1,3 +1,10 @@
+2006-09-19  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim.pl (main): Factor out some chdir/run-cmd/chdir-back
+	duplication, into...
+	(do_at): ...this new function.  Used for both --diff and --commit.
+	Die also if Cwd::getcwd fails -- yes, it can happen.
+
 2006-09-18  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim.pl (main): Rewrite not to use Tie::IxHash.
