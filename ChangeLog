@@ -1,5 +1,8 @@
 2006-09-21  Jim Meyering  <jim@meyering.net>
 
+	* configure.ac (VERSION): 0.2.
+	* NEWS: Record today's date.
+
 	* Makefile.am (vc-dwim): Don't include parentheses in --version
 	output if they would be empty.
 
