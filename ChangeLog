@@ -1,3 +1,7 @@
+2006-09-21  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim.pl (main): Simplify a regexp.
+
 2006-09-19  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim.pl (main): Factor out some chdir/run-cmd/chdir-back

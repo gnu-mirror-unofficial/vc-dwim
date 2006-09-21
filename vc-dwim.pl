@@ -690,7 +690,7 @@ sub main
 		  # we've just derived, for the log message.
 		  if (! $is_summary_line)
 		    {
-		      my $colon = ($line =~ /^\([^\)]+\)(?:\s*\[[^\]]+\])?: /
+		      my $colon = ($line =~ /^\(.+?\)(?:\s*\[.+?\])?: /
 				   ? '' : ':');
 		      $line = "* $file$colon $line";
 		    }
