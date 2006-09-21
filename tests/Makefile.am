@@ -11,6 +11,7 @@ XFAIL_TESTS = \
   no-vc
 
 TESTS = \
+  cl-other-user \
   no-vc \
   symlinked-changelog \
   two-vc \

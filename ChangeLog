@@ -1,5 +1,12 @@
 2006-09-21  Jim Meyering  <jim@meyering.net>
 
+	* vc-dwim.pl (find_relevant_file_name): Don't die for irregular
+	ChangeLog lines.  Instead, return (undef, 1).  Adjust caller.
+	(main): Allow a blank line between summary line(s) and per-file entries.
+
+	* tests/cl-other-user: New file.
+	* tests/Makefile.am (TESTS): Add it.
+
 	* vc-dwim.pl (main): Simplify a regexp.
 
 2006-09-19  Jim Meyering  <jim@meyering.net>

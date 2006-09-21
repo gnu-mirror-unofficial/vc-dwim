@@ -327,7 +327,8 @@ sub change_log_line_extract_file_list ($)
 # If the line in question (at $LINENO) is a summary line, then there
 # will be no preceding "*"-marked line.  In that case, return the first
 # _following_ "*"-marked file name, assuming there is no intervening
-# blank line.  If there is no such file name, die.
+# blank line.  If there is no such file name, presume the specified
+# line is part of a summary, and return <undef, 1>.
 # Return the pair, <file_name, is_summary_line>.
 sub find_relevant_file_name($$)
 {
@@ -391,9 +392,11 @@ sub find_relevant_file_name($$)
 	    and ($file_name_line = $1), last;
 	}
     }
-  defined $file_name_line
-    or die "$ME: $log_file: can't find name of file in block containing "
-      . "line $line_no\n";
+  if ( ! defined $file_name_line)
+    {
+      $is_summary_line = 1;
+      return (undef, $is_summary_line);
+    }
 
   my @names = change_log_line_extract_file_list ($file_name_line);
   my $file_name = shift @names
@@ -656,6 +659,7 @@ sub main
 
       my $rel_dir = dirname $log;
 
+      my $in_summary_lines = 1;
       # Extract file list from each group of log lines.
       foreach my $line (@log_lines)
 	{
@@ -685,11 +689,28 @@ sub main
 		{
 		  my ($file, $is_summary_line) =
 		    find_relevant_file_name ($log, $offset);
+
+		  if (! defined $file)
+		    {
+		      # Don't complain if it looks like an indented
+		      # ChangeLog date line.
+		      if ($in_summary_lines || $line =~ /^\t\d{4}-\d\d-\d\d  /)
+			{
+			  # don't even warn
+			}
+		      else
+			{
+			  die "$ME: $log:$offset: cannot find name of "
+			    . "file in block containing this line:\n$line\n";
+			}
+		    }
+
 		  # If this is a summary line, don't modify it.
 		  # Otherwise, add the "* $file" prefix, using the name
 		  # we've just derived, for the log message.
 		  if (! $is_summary_line)
 		    {
+		      $in_summary_lines = 0;
 		      my $colon = ($line =~ /^\(.+?\)(?:\s*\[.+?\])?: /
 				   ? '' : ':');
 		      $line = "* $file$colon $line";
