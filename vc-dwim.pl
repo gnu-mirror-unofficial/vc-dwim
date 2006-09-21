@@ -1,6 +1,8 @@
 #!@PERL@ -w
 # -*- perl -*-
+# vc-dwim - a version-control-agnostic ChangeLog diff and commit tool
 # @configure_input@
+#
 # Given a command like vc-dwim ChangeLog lib/ChangeLog..., check that each
 # ChangeLog has been modified, determine the list of affected files from
 # the added lines in the ChangeLog diffs.  Ensure that there is no editor
@@ -14,7 +16,7 @@
 use strict;
 use warnings;
 use Getopt::Long;
-use File::Basename; # for dirname
+use File::Basename; # for basename and dirname
 
 BEGIN
 {
@@ -836,7 +838,7 @@ __END__
 
 =head1	NAME
 
-vc-dwim - use new ChangeLog entries to direct and cross check a
+vc-dwim - use new ChangeLog entries to direct and cross-check a
 version-control "diff" or "commit" command
 
 =head1	SYNOPSIS
