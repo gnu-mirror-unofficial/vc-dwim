@@ -8,11 +8,8 @@
 # coda: the closing section of a musical composition [syn: {finale}]
 #    [From WordNet (r) 2.0 (August 2003)]
 #
-#
 # This package is intended to be "use"d very early on.
 # It simply sets up actions to be executed at the end of execution.
-#
-# $Id: Coda.pm,v 1.6 2005/02/14 09:00:26 meyering Exp $
 
 package Coda;
 
@@ -29,9 +26,10 @@ END {
     # Nobody ever checks the status of print()s.  That's okay, because
     # if any do fail, we're usually[*] guaranteed to get an indicator
     # when we close() the file handle.
-    # [*] Beware the exception: due to a long-standing bug in Perl,
-    # still not fixed in 5.003 to 5.9.1.  See the report and patch here:
+    # [*] Beware the exception, due to a bug in Perl that affected
+    # 5.003 through 5.9.1.  See the report and patch here:
     # http://www.xray.mpe.mpg.de/mailing-lists/perl5-porters/2004-12/msg00072.html
+    # or http://bugs.debian.org/285435.
     #
     # If stdout is already closed, we're done.
     defined fileno STDOUT
