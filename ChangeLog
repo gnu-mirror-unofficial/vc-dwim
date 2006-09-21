@@ -1,5 +1,7 @@
 2006-09-21  Jim Meyering  <jim@meyering.net>
 
+	* README: Write it.
+
 	* tests/Makefile.am (XFAIL): Remove.
 	* tests/no-vc: New test.  Disabled for now.
 

@@ -1,1 +1,70 @@
-FIXME: run "perldoc vc-dwim" for more info
+vc-dwim is a version-control-agnostic ChangeLog diff and commit tool.
+
+It is useful if you like to maintain a ChangeLog file describing
+the changes you make to version-controlled files.  vc-dwim works with
+the following version control systems: git, mercurial, svn, and cvs.
+It should be easy to add support for more.
+
+What can it do?
+===============
+vc-dwim can save you from making some small mistakes when using
+version control programs from the command line.
+
+For example, if you have unsaved changes in an editor buffer and use
+vc-dwim to print diffs or to commit changes involving that file, it will
+detect the problem, tell you about it, and fail.  This works as long as
+you use Emacs or Vim.
+
+Another common error you can avoid with this tool is the one where you
+create a new file, add its name to Makefiles, etc., mention the addition
+in a ChangeLog, but forget to e.g., "git add" (or "hg add", etc.) the
+file to the version control system.  vc-dwim detects this discrepancy
+and fails with a diagnostic explaining the probable situation.  You might
+also have simply mistyped the file name in the ChangeLog.
+
+How does this author use vc-dwim?
+=================================
+
+Print diffs of arbitrary files:
+------------------------------
+I have an alias to show all or specified diffs:
+
+    cv='vc-dwim --diff'
+
+I use that when I want to see diffs of a specified file, regardless
+of whether I have written new ChangeLog entries for it.
+It works the same for cvs, git, hg, svn repositories, as long as
+all you want are the difference between your local copy and the
+checked out version.
+
+Print diffs of files with new ChangeLog entries:
+-----------------------------------------------
+Often, I have made local changes to a file, and I have also added at
+least one corresponding entry to one or more ChangeLog file.  Then, I use
+"vc-dwim ChangeLog" to print the diffs for which there are ChangeLog
+entries, warning about the potential problems mentioned above (editor
+temporaries that can imply there are unsaved changes, and files listed
+in ChangeLog, but not "cvs add"ed).
+
+Commit changes to files with new ChangeLog entries:
+--------------------------------------------------
+Use "vc-dwim --commit ChangeLog"
+or  "vc-dwim --commit ChangeLog lib/ChangeLog src/ChangeLog"
+to commit the changes you would see without the --commit option.
+
+Assuming I have completed a change and have documented everything in
+one or more ChangeLog file, I run "vc-dwim --commit ChangeLog" to commit
+that ChangeLog file and the files "implied" by the new ChangeLog lines.
+The commit log message is derived from the added ChangeLog lines.  With a
+single ChangeLog file, the log message is nearly identical to the list
+of added lines.  One leading TAB is removed and any "date  user-name  <email>"
+lines are elided.  When there are two or more ChangeLog files, the log
+message includes a line for each indicating the affected directory.
+For example:
+
+[ChangeLog]
+* some-file-in-top-level-dir: ...
+[lib/ChangeLog]
+* lib.c: ...
+[m4/ChangeLog]
+* foo.m4: ...
