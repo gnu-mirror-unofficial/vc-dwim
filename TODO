@@ -31,7 +31,17 @@ Add support for SVK, bzr, monotone, etc.
 RCS is a pain because its commit log contents must come via -m'...'
 on the command line.
 
-When the ChangeLog is written by the person doing the commit,
-do not include it in the log message.  If it's written by someone
-else, do include it, by way of attribution.
-This probably a candidate for an option.
+When the ChangeLog date line includes the names of the person
+doing the commit, do not include it in the log message.
+Otherwise, do include it, by way of attribution.
+This is probably a candidate for an option.
+
+Record any module dependencies.
+  use Pod::PlainText;
+  use IO::File;
+  use Cwd;
+  use File::Temp;
+  use Getopt::Long;
+  use File::Basename; # for basename and dirname
+
+Record some Perl version number requirement.
