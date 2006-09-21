@@ -1,5 +1,6 @@
 2006-09-21  Jim Meyering  <jim@meyering.net>
 
+	* configure.ac (VERSION): 0.1.5.
 	* README: Write it.
 
 	* tests/Makefile.am (XFAIL): Remove.
