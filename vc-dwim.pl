@@ -875,30 +875,28 @@ B<vc-dwim> [OPTIONS] --print-vc-list
 =head1	DESCRIPTION
 
 By default, each command line argument is expected to be a
-version-controlled ChangeLog file.  In this default mode, B<vc-dwim> works
-by first computing diffs of any named ChangeLog files, and then parsing
-that output to determine which named files are being changed.  Then, it
-diffs the named files and prints the resulting output.  One advantage
-of using this tool is that before printing any diffs, it ensures that
-there is no editor temporary file corresponding to any affected file.
-The existence of such a temporary can mean that you have unsaved changes,
-usually a bad thing.  Another common error you can avoid with this tool
-is the one where you create a new file, add its name to Makefiles, etc.,
-mention the addition in ChangeLog, but forget to e.g., "git add" (or
-"hg add", etc.)  the file to the version control system.  B<vc-dwim>
+version-controlled ChangeLog file.  In this default mode, B<vc-dwim>
+works by first computing diffs of any named ChangeLog files, and then
+parsing that output to determine which named files are being changed.
+Then, it diffs the affected files and prints the resulting output.  One
+advantage of using this tool is that before printing any diffs, it warns
+you if it sees that a ChangeLog or an affected file has unsaved changes.
+It detects that by searching for an editor temporary file corresponding
+to each affected file.  Another common error you can avoid with this
+tool is the one where you create a new file, add its name to Makefiles,
+etc., mention the addition in ChangeLog, but forget to e.g., "git add"
+(or "hg add", etc.) the file to the version control system.  B<vc-dwim>
 detects this discrepancy and fails with a diagnostic explaining the
-probable situation.  You might also have simply mistyped the file name in
-the ChangeLog.  Similarly, if diff output suggests you are in the process
-of removing a file, then that file should no longer exist.  If it does
-still exist, B<vc-dwim> reports the problem.
+probable situation.  You might also have simply mistyped the file name
+in the ChangeLog.
 
 Once you are happy with your ChangeLog-derived diffs, you can commit
 those changes and the ChangeLog simply by rerunning the command with
 the --commit option.
 
-But what if you'd like to use this spiffy new tool on a project
-that doesn't have or want a ChangeLog file?  In that case, you
-can maintain your own, private version-controlled ChangeLog file.
+But what if you'd like to use B<vc-dwim> on a project that doesn't have
+or want a ChangeLog file?  In that case, you can maintain your own,
+private, version-controlled ChangeLog file in a different hierarchy.
 Then just make a symlink to it from the top level directory of the
 hierarchy in which you'd like to use it and everything should work.
 Your private ChangeLog file need not even use the same version control
