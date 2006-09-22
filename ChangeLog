@@ -1,3 +1,9 @@
+2006-09-22  Jim Meyering  <jim@meyering.net>
+
+	* VC.pm ($vc_cmd): Declare via "our", so that we can ...
+	* Makefile.am (gen_vc_name_list): ...get the list of VC programs
+	without relying on ./vc-dwim, a circular dependency.
+
 2006-09-21  Jim Meyering  <jim@meyering.net>
 
 	* configure.ac (VERSION): 0.2.

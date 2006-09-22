@@ -34,7 +34,7 @@ use constant
     SVN => 'svn',
   };
 
-my $vc_cmd =
+our $vc_cmd =
   {
    CVS() =>
    {

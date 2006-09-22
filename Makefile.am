@@ -11,7 +11,7 @@ dist_perllib_DATA = \
   VC.pm
 
 gen_vc_name_list = \
-  (./vc-dwim --print-vc-list) 2>/dev/null || echo cg cvs hg svn
+  $(PERL) -MVC -e 'print join(" ",sort(keys %$VC::vc_cmd))'
 
 ## We can't use configure to do the substitution here; we must do it
 ## by hand.  We use a funny notation here to avoid configure
@@ -35,7 +35,8 @@ vc-dwim: vc-dwim.pl Makefile
 	rm -f $@ $@.tmp
 	dirty=`hg stat -nm`;						\
 	test -n "$$dirty" && dirty='-dirty';				\
-	rev=$$(hg log --limit=1 --template=$(hg_log_template) $<);	\
+	rev=$$(hg log --limit=1 --template=$(hg_log_template)		\
+	  $(srcdir)/vc-dwim.pl);					\
 	ver_suffix="$$rev$$dirty";					\
 	test -n "$$ver_suffix" && ver_suffix="($$ver_suffix)";		\
 	$(do_subst) $(srcdir)/$@.pl >$@.tmp
