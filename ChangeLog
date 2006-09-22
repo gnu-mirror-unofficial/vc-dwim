@@ -3,6 +3,8 @@
 	* VC.pm ($vc_cmd): Declare via "our", so that we can ...
 	* Makefile.am (gen_vc_name_list): ...get the list of VC programs
 	without relying on ./vc-dwim, a circular dependency.
+	(vc-dwim): Use $(srcdir)/vc-dwim.pl, not the GNU-make specific "$<".
+	Reported by Ralf Wildenhues.
 
 2006-09-21  Jim Meyering  <jim@meyering.net>
 
