@@ -36,7 +36,7 @@ vc-dwim: vc-dwim.pl Makefile
 	dirty=`hg stat -nm`;						\
 	test -n "$$dirty" && dirty='-dirty';				\
 	rev=$$(hg log --limit=1 --template=$(hg_log_template)		\
-	  $(srcdir)/vc-dwim.pl);					\
+	  $(srcdir)/vc-dwim.pl) || : ;					\
 	ver_suffix="$$rev$$dirty";					\
 	test -n "$$ver_suffix" && ver_suffix="($$ver_suffix)";		\
 	$(do_subst) $(srcdir)/$@.pl >$@.tmp
