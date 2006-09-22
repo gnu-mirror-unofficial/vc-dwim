@@ -1,5 +1,8 @@
 2006-09-22  Jim Meyering  <jim@meyering.net>
 
+	* vc-dwim.pl: Consistently say that this file is covered by the
+	GPL (rather than a mix of GPL and LGPL).  Reported by Ralf Wildenhues.
+
 	* VC.pm ($vc_cmd): Declare via "our", so that we can ...
 	* Makefile.am (gen_vc_name_list): ...get the list of VC programs
 	without relying on ./vc-dwim, a circular dependency.
