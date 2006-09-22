@@ -26,7 +26,7 @@ do_subst = sed						\
   -e 's,[@]configure_input[@],Generated from $@.pl; do not edit by hand.,g' \
   -e 's,[@]datadir[@],$(datadir),g'
 
-hg_log_template='{date|shortdate}.{node|short}\n'
+hg_version = hg log --limit=1 --template='{date|shortdate}.{node|short}\n'
 
 ## These files depend on Makefile so they are rebuilt if $(VERSION),
 ## $(datadir) or other do_subst'ituted variables change.
@@ -35,10 +35,9 @@ vc-dwim: vc-dwim.pl Makefile
 	rm -f $@ $@.tmp
 	dirty=`hg stat -nm`;						\
 	test -n "$$dirty" && dirty='-dirty';				\
-	rev=$$(hg log --limit=1 --template=$(hg_log_template)		\
-	  $(srcdir)/vc-dwim.pl) || : ;					\
+	rev=$$($(am__cd) $(srcdir); $(hg_version) vc-dwim.pl) || : ;	\
 	ver_suffix="$$rev$$dirty";					\
-	test -n "$$ver_suffix" && ver_suffix="($$ver_suffix)";		\
+	test -n "$$ver_suffix" && ver_suffix=" ($$ver_suffix)";		\
 	$(do_subst) $(srcdir)/$@.pl >$@.tmp
 	chmod a-w+x $@.tmp
 	mv -f $@.tmp $@

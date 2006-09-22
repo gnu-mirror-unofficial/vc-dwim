@@ -1,5 +1,8 @@
 2006-09-22  Jim Meyering  <jim@meyering.net>
 
+	* Makefile.am (vc-dwim): Compute hg version string of vc-dwim.pl even
+	when doing a non-srcdir build.  Suggestion from Ralf Wildenhues.
+
 	* Makefile.am (vc-dwim): Don't fail if hg doesn't recognize the
 	--limit or --template options.  Reported by Ralf Wildenhues.
 	(gen_vc_name_list): Adjust so it works also in a non-srcdir build.
