@@ -1,5 +1,9 @@
 2006-09-22  Jim Meyering  <jim@meyering.net>
 
+	* VC.pm: Undo last change.  Instead, add this...
+	(vc_names): ...new function.
+	* Makefile.am (gen_vc_name_list): Use the function, not the variable.
+
 	* configure.ac (AM_INIT_AUTOMAKE): Add 'check-news'.
 
 	* NEWS: Mention these portability fixes.

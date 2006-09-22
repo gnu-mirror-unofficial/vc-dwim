@@ -34,7 +34,7 @@ use constant
     SVN => 'svn',
   };
 
-our $vc_cmd =
+my $vc_cmd =
   {
    CVS() =>
    {
@@ -117,6 +117,11 @@ sub new($%)
 	and last;
     }
   return undef;
+}
+
+sub vc_names()
+{
+  return sort keys %$vc_cmd;
 }
 
 sub name()
