@@ -22,6 +22,9 @@ file to the version control system.  vc-dwim detects this discrepancy
 and fails with a diagnostic explaining the probable situation.  You might
 also have simply mistyped the file name in the ChangeLog.
 
+Also, vc-dwim makes it a little easier/safer to commit a strict subset
+of the modified files in a working directory.  But no one ever does *that*.
+
 How does this author use vc-dwim?
 =================================
 
