@@ -1,7 +1,7 @@
-AC_INIT([vc-dwim], [0.2], [jim@meyering.net])
+AC_INIT([vc-dwim], [0.2.1-devel], [jim@meyering.net])
 
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([1.9.6 foreign dist-bzip2])
+AM_INIT_AUTOMAKE([1.9.6 foreign dist-bzip2 check-news])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.59)

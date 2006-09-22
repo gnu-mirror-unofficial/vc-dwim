@@ -1,5 +1,9 @@
 2006-09-22  Jim Meyering  <jim@meyering.net>
 
+	* configure.ac (AM_INIT_AUTOMAKE): Add 'check-news'.
+
+	* NEWS: Mention these portability fixes.
+
 	* Makefile.am (vc-dwim): Compute hg version string of vc-dwim.pl even
 	when doing a non-srcdir build.  Suggestion from Ralf Wildenhues.
 

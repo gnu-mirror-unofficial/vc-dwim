@@ -1,3 +1,10 @@
 vc-dwim NEWS                                          -*- outline -*-
 
+* Major changes in release 0.2.1-devel (2006-??-??)
+
+** Bug fixes
+
+  build framework is more portable
+
+
 * public release 0.2 (2006-09-21)
