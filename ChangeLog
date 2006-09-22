@@ -2,6 +2,7 @@
 
 	* Makefile.am (vc-dwim): Don't fail if hg doesn't recognize the
 	--limit or --template options.  Reported by Ralf Wildenhues.
+	(gen_vc_name_list): Adjust so it works also in a non-srcdir build.
 
 	* vc-dwim.pl: Consistently say that this file is covered by the
 	GPL (rather than a mix of GPL and LGPL).  Reported by Ralf Wildenhues.
