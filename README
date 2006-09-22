@@ -40,11 +40,14 @@ checked out version.
 Print diffs of files with new ChangeLog entries:
 -----------------------------------------------
 Often, I have made local changes to a file, and I have also added at
-least one corresponding entry to one or more ChangeLog file.  Then, I use
-"vc-dwim ChangeLog" to print the diffs for which there are ChangeLog
-entries, warning about the potential problems mentioned above (editor
-temporaries that can imply there are unsaved changes, and files listed
-in ChangeLog, but not "cvs add"ed).
+least one corresponding entry in a ChangeLog file.  Then, I use "vc-dwim
+ChangeLog" to print the diffs for which there are ChangeLog entries,
+warning about the potential problems mentioned above (editor temporaries
+that can imply there are unsaved changes, and files listed in ChangeLog,
+but not "cvs add"ed).  If your changes affect files covered by more than
+one ChangeLog, you might use "vc-dwim ChangeLog lib/ChangeLog", or
+more concisely, "vc-dwim {,lib/}ChangeLog".
+
 
 Commit changes to files with new ChangeLog entries:
 --------------------------------------------------
