@@ -33,9 +33,9 @@ hg_version = hg log --limit=1 --template='{date|shortdate}.{node|short}\n'
 ## Use chmod a-w to prevent people from editing the wrong file by accident.
 vc-dwim: vc-dwim.pl Makefile
 	rm -f $@ $@.tmp
-	dirty=`hg stat -nm`;						\
+	dirty=`hg stat -nm 2>/dev/null`;				\
 	test -n "$$dirty" && dirty='-dirty';				\
-	rev=$$($(am__cd) $(srcdir); $(hg_version) vc-dwim.pl) || : ;	\
+	rev=$$($(am__cd) $(srcdir);$(hg_version) vc-dwim.pl 2>/dev/null)||:; \
 	ver_suffix="$$rev$$dirty";					\
 	test -n "$$ver_suffix" && ver_suffix=" ($$ver_suffix)";		\
 	$(do_subst) $(srcdir)/$@.pl >$@.tmp
