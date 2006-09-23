@@ -42,8 +42,11 @@ vc-dwim: vc-dwim.pl Makefile
 	chmod a-w+x $@.tmp
 	mv -f $@.tmp $@
 
+tag_name = v$(VERSION)
 release: distcheck
+	hg log -r $(tag_name) > /dev/null 2>&1 \
+	  && { echo 'tag, $(tag_name), is already used'; exit 1; } 1>&2
 	dirty=`hg stat -nm 2>/dev/null`; test -z "$$dirty" \
 	  || { echo modified files remain:; \
 	       echo "$$dirty" | tr ' ' '\n'; exit 1; } 1>&2
-	hg tag v$(VERSION)
+	hg tag $(tag_name)
