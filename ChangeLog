@@ -1,5 +1,8 @@
 2006-09-23  Jim Meyering  <jim@meyering.net>
 
+	* tests/require-hg: Discard stderr output.
+	* tests/require-git: Likewise.
+
 	* tests/cl-but-no-diff: Require git.
 
 	* tests/Makefile.am (EXTRA_DIST): Add require-git and require-hg.

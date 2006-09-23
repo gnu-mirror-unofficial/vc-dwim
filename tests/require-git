@@ -1,6 +1,6 @@
 # -*- sh -*-
 have_git=1
-git_version=$(git --version)
+git_version=$(git --version 2> /dev/null)
 if test $? != 0; then
   have_git=0
 else
