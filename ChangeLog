@@ -1,5 +1,16 @@
 2006-09-23  Jim Meyering  <jim@meyering.net>
 
+	Arrange to skip tests that use hg or git, if they're not available.
+	* tests/require-git, tests/require-hg: New files.
+	* tests/two-vc: Require git and hg.
+	* tests/symlinked-changelog: Likewise.
+	* tests/cl-other-user: Require git.
+	* tests/leading-comment: Likewise.
+	* tests/no-star: Likewise.
+	* tests/subdir: Likewise.
+
+	* tests/subdir-cvs: Clarify comment.
+
 	* Makefile.am (gen_vc_name_list): Remove stray closing paren.
 	Don't use double quotes.
 

@@ -1,6 +1,7 @@
 #!/bin/sh
-# While running "vc-dwim ChangeLog" in a directory beneath the one containing
-# an .hg or .git repository, it does work when CVS is the version control system.
+# Running "vc-dwim ChangeLog" in a directory beneath the one containing
+# an .hg or .git repository is a little tricky internally.
+# It "just works" when CVS is the version control system.
 
 if test "$VERBOSE" = yes; then
   set -x
