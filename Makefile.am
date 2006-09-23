@@ -11,7 +11,7 @@ dist_perllib_DATA = \
   VC.pm
 
 gen_vc_name_list = \
-  $(PERL) -I$(srcdir) -MVC -e 'print join(" ",VC::vc_names()))'
+  $(PERL) -I$(srcdir) -MVC -e 'print join(q( ),VC::vc_names())'
 
 ## We can't use configure to do the substitution here; we must do it
 ## by hand.  We use a funny notation here to avoid configure
