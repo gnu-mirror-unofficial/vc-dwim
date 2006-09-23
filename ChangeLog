@@ -1,3 +1,9 @@
+2006-09-23  Jim Meyering  <jim@meyering.net>
+
+	* tests/Makefile.am (perllibdir): Use $(am__cd), rather than
+	just "cd", since the former may produce unwanted output.
+	Suggestion from Ralf Wildenhues.
+
 2006-09-22  Jim Meyering  <jim@meyering.net>
 
 	* VC.pm: Undo last change.  Instead, add this...
