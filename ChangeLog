@@ -1,5 +1,8 @@
 2006-09-23  Jim Meyering  <jim@meyering.net>
 
+	* configure.ac: Version 0.2.2-devel.
+	* NEWS: Update.
+
 	* configure.ac: Version 0.2.1.
 	* NEWS: Update the release date.
 
