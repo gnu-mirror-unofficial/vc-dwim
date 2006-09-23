@@ -1,4 +1,6 @@
-EXTRA_DIST = $(TESTS)
+EXTRA_DIST = $(TESTS) \
+  require-git \
+  require-hg
 
 TESTS_ENVIRONMENT = \
   top_srcdir=$(top_srcdir) \

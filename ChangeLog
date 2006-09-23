@@ -1,5 +1,7 @@
 2006-09-23  Jim Meyering  <jim@meyering.net>
 
+	* tests/Makefile.am (EXTRA_DIST): Add require-git and require-hg.
+
 	Arrange to skip tests that use hg or git, if they're not available.
 	* tests/require-git, tests/require-hg: New files.
 	* tests/two-vc: Require git and hg.
