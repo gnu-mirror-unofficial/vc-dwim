@@ -2,6 +2,7 @@
 
 	* tests/require-hg: Discard stderr output.
 	* tests/require-git: Likewise.
+	* Makefile.am (vc-dwim): Likewise.
 
 	* tests/cl-but-no-diff: Require git.
 
