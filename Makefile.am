@@ -35,9 +35,12 @@ vc-dwim: vc-dwim.pl Makefile
 	rm -f $@ $@.tmp
 	dirty=`hg stat -nm 2>/dev/null`;				\
 	test -n "$$dirty" && dirty='-dirty';				\
-	rev=$$($(am__cd) $(srcdir);$(hg_version) vc-dwim.pl 2>/dev/null)||:; \
+	rev=$$($(am__cd) $(srcdir);$(hg_version) $@.pl 2>/dev/null)||:; \
 	ver_suffix="$$rev$$dirty";					\
 	test -n "$$ver_suffix" && ver_suffix=" ($$ver_suffix)";		\
 	$(do_subst) $(srcdir)/$@.pl >$@.tmp
 	chmod a-w+x $@.tmp
 	mv -f $@.tmp $@
+
+release: distcheck
+	hg tag v$(VERSION)
