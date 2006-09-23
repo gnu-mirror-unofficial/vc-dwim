@@ -3,6 +3,9 @@
 	* configure.ac: Version 0.2.1.
 	* NEWS: Update the release date.
 
+	* Makefile.am (vc-dwim): Get revision from ".", not vc-dwim.pl.
+	(release): Don't tag if there are pending changes.
+
 	* Makefile.am (vc-dwim): Factor: s/vc-dwim/$@/.
 	(release): New target.
 
