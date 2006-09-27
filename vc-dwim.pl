@@ -178,7 +178,7 @@ sub get_new_changelog_lines ($$)
     }
 
   @added_lines == 0
-    and die "$ME: $f contains no additional lines\n";
+    and die "$ME: $f contains no newly added lines\n";
 
   $found_first_unidiff_marker_line
     or die "$ME: $f: no unidiff output\n";

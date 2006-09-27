@@ -3,6 +3,8 @@
 	* vc-dwim.pl (DESCRIPTION): In the default mode, mention that
 	the ChangeLog must be locally modified.
 	(get_new_changelog_lines): Bail out right away if diff output is empty.
+	Give a diagnostics, when "diff" shows no newly added lines,
+	and when it produces no output at all.
 
 2006-09-23  Jim Meyering  <jim@meyering.net>
 
