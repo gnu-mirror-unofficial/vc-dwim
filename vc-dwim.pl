@@ -139,6 +139,12 @@ sub get_new_changelog_lines ($$)
   my ($vc, $f) = @_;
 
   my $diff_lines = get_diffs ($vc, [$f]);
+  if (@$diff_lines == 0)
+    {
+      my $vc_name = $vc->name();
+      die qq|$ME: "$vc_name diff $f" produced no output\n|;
+    }
+
   my @added_lines;
   # Ignore everything up to first line with unidiff offsets: ^@@...@@
 
@@ -170,11 +176,12 @@ sub get_new_changelog_lines ($$)
       $push_offset = 0;
       push @added_lines, $line;
     }
+
+  @added_lines == 0
+    and die "$ME: $f contains no additional lines\n";
+
   $found_first_unidiff_marker_line
     or die "$ME: $f: no unidiff output\n";
-
-  0 < @added_lines
-    or die "$ME: $f is not modified\n";
 
   return \@added_lines
 }
@@ -884,10 +891,10 @@ B<vc-dwim> [OPTIONS] --print-vc-list
 
 =head1	DESCRIPTION
 
-By default, each command line argument is expected to be a
+By default, each command line argument should be a locally modified,
 version-controlled ChangeLog file.  In this default mode, B<vc-dwim>
-works by first computing diffs of any named ChangeLog files, and then
-parsing that output to determine which named files are being changed.
+works by first computing diffs of those files and parsing the
+diff output to determine which named files are being changed.
 Then, it diffs the affected files and prints the resulting output.  One
 advantage of using this tool is that before printing any diffs, it warns
 you if it sees that a ChangeLog or an affected file has unsaved changes.

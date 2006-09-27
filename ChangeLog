@@ -1,3 +1,9 @@
+2006-09-27  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim.pl (DESCRIPTION): In the default mode, mention that
+	the ChangeLog must be locally modified.
+	(get_new_changelog_lines): Bail out right away if diff output is empty.
+
 2006-09-23  Jim Meyering  <jim@meyering.net>
 
 	* configure.ac: Version 0.2.2-devel.
