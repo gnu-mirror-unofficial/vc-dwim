@@ -488,17 +488,13 @@ sub main
      version => sub { print "$ME version $VERSION\n"; exit },
     ) or usage 1;
 
-  # Make sure we have at least one FILE argument.
-  @ARGV == 0
-    and (warn "$ME: no FILE specified\n"), usage 1;
-
   my $fail;
 
   if ($simple_diff)
     {
       $commit
 	and (warn "$ME: you can't use --diff with --commit\n"), usage 1;
-      my $f = $ARGV[0];
+      my $f = defined $ARGV[0] ? $ARGV[0] : '.';
       my $vc = VC->new ($f)
 	or die "$ME: can't determine version control system for $f\n";
       my @vc_diff = $vc->diff_cmd();
@@ -510,6 +506,9 @@ sub main
       exec @cmd;
       exit 1;
     }
+
+  @ARGV == 0
+    and @ARGV = qw(ChangeLog);
 
   my @changelog_file_name = @ARGV;
 
@@ -881,19 +880,21 @@ version-control "diff" or "commit" command
 
 =head1	SYNOPSIS
 
-B<vc-dwim> [OPTIONS] CHANGELOG_FILE...
+B<vc-dwim> [OPTIONS] [CHANGELOG_FILE...]
 
 B<vc-dwim> [OPTIONS] --commit CHANGELOG_FILE...
 
-B<vc-dwim> [OPTIONS] --diff FILE...
+B<vc-dwim> [OPTIONS] --diff [FILE...]
 
 B<vc-dwim> [OPTIONS] --print-vc-list
 
 =head1	DESCRIPTION
 
 By default, each command line argument should be a locally modified,
-version-controlled ChangeLog file.  In this default mode, B<vc-dwim>
-works by first computing diffs of those files and parsing the
+version-controlled ChangeLog file.  If there is no command line argument,
+B<vc-dwim> tries to use the ChangeLog file in the current directory.
+In this default mode, B<vc-dwim> works by first computing diffs of those
+files and parsing the
 diff output to determine which named files are being changed.
 Then, it diffs the affected files and prints the resulting output.  One
 advantage of using this tool is that before printing any diffs, it warns
@@ -930,7 +931,9 @@ perform the commit, too
 =item B<--diff>
 
 Determine which version control system manages the first
-FILE, then use that to print diffs of the named FILES.
+FILE, then use that to print diffs of the named FILEs.
+If no FILE is specified, print all diffs for the current
+hierarchy.
 
 =item B<--print-vc-list>
 
