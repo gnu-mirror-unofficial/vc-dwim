@@ -1,3 +1,9 @@
+2006-10-06  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim.pl (main): Accept a two-line ChangeLog attribution.
+	* tests/two-line-attr: New test for the above.
+	* tests/Makefile.am (TESTS): Add new test name.
+
 2006-09-28  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim.pl (main): Make a single ChangeLog argument optional,

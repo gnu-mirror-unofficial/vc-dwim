@@ -634,18 +634,26 @@ sub main
       # check for date), and it's my name, then ignore the line.  e.g.,
       # 2006-08-19  Jim Meyering  <jim@meyering.net>
       # Ignore the following one, too, which should be blank.
-      if (3 <= @log_lines
+      my $n_log_lines = @log_lines;
+      if (3 <= $n_log_lines
 	  && $log_lines[0] =~ /^\+\d{4}-\d\d-\d\d  /)
 	{
-	  if ($log_lines[1] ne '+')
+	  shift @log_lines;
+
+	  # Accept and ignore a second ChangeLog attribution line.  E.g.,
+	  # 2006-09-29  user one  <u1@example.org>
+	  #         and user two  <u2@example.org>
+	  $log_lines[0] =~ /^\+\tand [^<]+<.*>$/
+	    and shift @log_lines;
+
+	  if ($log_lines[0] ne '+')
 	    {
-	      $log_lines[1] =~ s/^\+//;
+	      $log_lines[0] =~ s/^\+//;
 	      die "$ME:$log: unexpected, non-blank line after first:\n"
-		. $log_lines[1] . "\n";
+		. $log_lines[0] . "\n";
 	    }
 	  shift @log_lines;
-	  shift @log_lines;
-	  $offset += 2;
+	  $offset += ($n_log_lines - @log_lines);
 	}
 
       # Ignore any leading "+"-only (i.e., added, blank) lines.

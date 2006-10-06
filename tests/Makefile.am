@@ -10,6 +10,7 @@ TESTS_ENVIRONMENT = \
   PATH="$(VG_PATH_PREFIX)`pwd`/..$(PATH_SEPARATOR)$$PATH"
 
 TESTS = \
+  two-line-attr \
   cl-other-user \
   no-vc \
   symlinked-changelog \
