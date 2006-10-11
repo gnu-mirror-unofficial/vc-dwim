@@ -1,3 +1,8 @@
+2006-10-11  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim.pl (main): Disable git's pager, which would otherwise
+	default to pipe to $PAGER, now, for "git diff".
+
 2006-10-06  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim.pl (main): Accept a two-line ChangeLog attribution.
