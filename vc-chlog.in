@@ -1,0 +1,459 @@
+#! /bin/sh
+# vc-chlog - generate a GCS-style ChangeLog entry from a diff
+# 
+# Copyright (C) 2006  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+
+func_version ()
+{
+  echo "$progname version @VERSION@"
+  func_exit $?
+}
+
+
+func_help ()
+{
+  echo "\
+Usage: $progname [OPTION]... [FILE]...
+Create a proto ChangeLog entry for FILEs (the whole tree by default).
+
+Options:
+      --address ADDRESS  use ADDRESS as email address
+      --stdin            read unified diff from stdin instead of with vc-dwim
+      --tabsize COLS     assume tab stops at each COLS instead of 8
+      --user-name NAME   use NAME as user name
+      --width COLS       wrap ChangeLog entry at COLS instead of 72
+
+      --debug            inhibit temp file cleanup
+      --help             display this help and exit
+      --version          output version information and exit
+
+Environment:
+AWK, CTAGS, TMPDIR, and USER are honored.
+
+Files:
+\`~/.${progname}rc' and \`.${progname}rc' may contain default options,
+possibly with double-quoted arguments, and comment lines starting with \`#'.
+
+Report bugs to <Ralf.Wildenhues@gmx.de>."
+  func_exit $?
+}
+
+
+# TODO:
+#
+# - work with non-unidiff diff formats.
+#
+# - check whether `ctags -x' output format is portable enough now.
+#
+# - cope with spaces in identifiers (e.g., texinfo node names).
+#
+# - allow a language-dependent setting of which kinds of identifiers to use
+#   (for exuberant ctags).
+#
+# - changing a comment before a function causes the previous function to be
+#   added to the list, erroneously.  Apply some heuristic for this?
+#
+# - work with trees that have multiple ChangeLog files.
+#   Could probably easier be achieved by whoever calls this program.
+#
+# - deal with new files (only those already added to VCS?)
+
+
+LC_ALL=C
+export LC_ALL
+
+progname=vc-chlog
+: ${debug=}
+: ${AWK=awk}
+: ${CTAGS=ctags}
+: ${textwidth=72}
+: ${tabstop=8}
+: ${TMPDIR=/tmp}
+: ${INT_MAX=2147483647}
+: ${stdin=false}
+: ${take_old_file_into_account=:}
+
+today=`date +%Y-%m-%d`
+test -z "$USER" && USER=`id -nu`
+test -z "$user_name" &&
+  user_name=`finger $USER | sed -n '
+      /.*Name: /{
+	s///p
+	q
+      }'`
+test -z "$email_address" &&
+  email_address=$USER@`hostname`.`(domainname) 2>/dev/null || hostname -d`
+
+ctags_strip_type_column=false
+case `$CTAGS --version 2>/dev/null` in
+Exuberant\ Ctags*) # contrary to POSIX, this ctags prints an extra column.
+  ctags_strip_type_column=: ;;
+esac
+
+# From here on, uninitialized variables and unchecked commands are erroneous:
+set -eu
+
+
+# func_exit STATUS
+func_exit ()
+{
+  (exit $1); exit $1
+}
+
+
+# func_error MESSAGE
+func_error ()
+{
+  echo "$@" >&2
+  func_exit 1
+}
+
+
+# func_tempdir
+# Create a temporary directory, take care of cleanup etc.
+func_tempdir ()
+{
+  tmp=
+  trap 'exit_status=$?
+	test -z "$debug" && test -n "$tmp" && rm -rf "$tmp"
+	exit $exit_status' 0
+  for sig in 1 2 13 15; do
+    trap 'func_exit 1' $sig
+  done
+
+  {
+    tmp=`(umask 077 && mktemp -d "$TMPDIR/vccXXXXXX") 2>/dev/null` &&
+    test -n "$tmp" && test -d "$tmp"
+  } || {
+    tmp=$TMPDIR/vcc$$-$RANDOM
+    (umask 077 && mkdir "$tmp")
+  } || func_exit $?
+}
+
+
+# func_debug_pipe FILENAME
+# For debugging, save intermediate data in a temporary directory.
+func_debug_pipe ()
+{
+  if test -n "$debug"; then
+    tee "$tmp/$1"
+  else
+    cat
+  fi
+}
+
+
+# func_basename FILENAME
+func_basename ()
+{
+  (basename "$1") 2>/dev/null || echo "$1" | sed 's,.*/,,'
+}
+
+
+# func_extract_changed_lines
+# From a diff file, extract file names and line number ranges of changes.
+# This function returns lines of the form
+#   FILENAME RANGE1 [RANGE2]...
+# with each range of the form
+#   A-B-C-D
+# meaning that lines A to B (inclusive) in the old file were changed,
+#          and lines C to D (inclusive) in the new file were changed.
+# If lines were purely added or purely removed, then A-B or C-D equal 0-0,
+# respectively.
+func_extract_changed_lines ()
+{
+  # state machine: hunk[] is defined if we are inside a hunk
+  #                range[] is (partially) defined if we are reading ^[-+] runs
+  #                file is nonempty if reading a patch for this file
+  $AWK '
+    function output () {
+      if (2 in range || 4 in range) {
+	lines[file] = lines[file] " " \
+	              range[1]+0 "-" range[2]+0 "-" range[3]+0 "-" range[4]+0;
+	delete range;
+      }
+    }
+    /^\+\+\+ / {
+      if (!(1 in hunk)) {	# do not match an added line with 2 pluses at front
+	file = $2;
+	sub("^b/", "", file);   # some vcs use a/ and b/ as diff prefixes
+	files[nfile++] = file;  # track these for stable ordering
+	next;
+      }
+    }
+    /^--- / { if (!(1 in hunk)) next; }
+    /^@@ -[0-9]+,[0-9]+ \+[0-9]+,[0-9]+ @@/ {
+      if (file == "")
+	system("echo >&2 error: hunk but no file in patch at line " NR);
+      if (1 in hunk)
+	system("echo >&2 error: incomplete hunk in patch at line " NR);
+      split($2 "," $3, hunk, ",");
+      hunk[1] = 0 - hunk[1];
+      hunk[2] = hunk[1] + hunk[2];
+      hunk[3] += 0;
+      hunk[4] += hunk[3];
+      oldline = hunk[1];
+      newline = hunk[3];
+      next;
+    }
+    {
+      if (!(1 in hunk)) {	# do not match ^+++ or other gunk below
+	file = "";
+	next;
+      }
+    }
+    /^[^-+ ]/ { system("echo >&2 error: garbage in patch at line " NR); }
+    /^\+/ {
+      if (!(3 in range)) range[3] = newline;
+      range[4] = newline;
+      newline++;
+    }
+    /^-/ {
+      if (!(1 in range)) range[1] = oldline;
+      range[2] = oldline;
+      oldline++;
+    }
+    /^ / {
+      output();
+      oldline++;
+      newline++;
+    }
+    {
+      # test for end of hunk (avoid parse errors in next line)
+      if (1 in hunk && oldline == hunk[2] && newline == hunk[4]) {
+	output();
+	delete hunk;
+      }
+    }
+    END {
+      if (1 in hunk)
+	system("echo >&2 error: incomplete hunk at end of patch");
+      output();
+      for (nfile = 0; nfile in files; nfile++) {
+	print files[nfile] lines[files[nfile]];
+      }
+    }'
+}
+
+
+# func_taglist FILENAME
+# Generate ordered list of line numbers and tags for a file.
+func_taglist ()
+{
+  $CTAGS -x "$1" |
+  if $ctags_strip_type_column; then
+    $AWK '{ print $3, $1; }'
+  else
+    $AWK '{ print $2, $1; }'
+  fi |
+  sort -k1n
+}
+
+
+# func_extract_diff FILENAME
+# From a diff file, extract only the part that applies to one file.
+func_extract_diff ()
+{
+  escaped_name=`echo "$1" | sed 's,/,\\\\/,g'`
+  sed -n "/^--- $escaped_name	/,/^[^ @+-]/p
+          /^--- a\/$escaped_name	/,/^[^ @+-]/p"
+}
+
+
+# func_extract_identifiers
+# Generate a list of files and identifiers from file name and line number ranges
+# by way of tag lists.
+# We first add all tags that we can extract from the new version of the file,
+# in order.  Then we add any tags that appear in ranges in the old file, which
+# we haven't seen yet.  This should cause moved identifiers to appear in the
+# order of the new file.
+# Since the list of ranges stems from the diff, our algorithm cannot be any
+# better than the underlying diff program used: in case of doubt, it may be
+# quite wrong.
+func_extract_identifiers ()
+{
+  nfile=0
+  while read file ranges; do
+    echo "file: $file"
+    tagfile=$tmp/taglist-$nfile
+    oldfile=$tmp/oldfile-$nfile-`func_basename "$file"`
+    nidents=$tmp/nidents-$nfile
+    oidents=$tmp/oidents-$nfile
+    func_extract_diff "$file" < "$patchfile" |
+      patch -o "$oldfile" -p0 -R "$file"
+    func_taglist "$file" >"$tagfile"
+    func_taglist "$oldfile" >"$tagfile-old"
+    exec 5<"$tagfile" 6<"$tagfile-old" 7>"$nidents" 8>"$oidents"
+    nfile=`expr $nfile + 1`
+
+    nident=; ntline=0; nlast_ident=; nlast_tline=0
+    oident=; otline=0; olast_ident=; olast_tline=0
+
+    for range in $ranges; do
+      sIFS=$IFS; IFS=-
+      set x $range
+      IFS=$sIFS
+      oline1=$2; oline2=$3; nline1=$4; nline2=$5
+      test $oline2 -lt $oline1 &&
+	func_error "bad line number range: $oline1-$oline2"
+      test $nline2 -lt $nline1 &&
+	func_error "bad line number range: $nline1-$nline2"
+
+      # Treat the new version of the file.
+      if test $nline1,$nline2 != 0,0; then
+	while test -n "$nlast_tline" && test $nlast_tline -le $nline2; do
+	  if test $nline2 -ge $nlast_tline && test $nline1 -lt $ntline; then
+	    if test -n "$nlast_ident"; then
+	      echo "ident: $nlast_ident" >&7
+	    fi
+	  fi
+
+	  nlast_ident=$nident
+	  nlast_tline=$ntline
+	  read ntline nident <&5 || {
+	    ntline=$INT_MAX
+	    break
+	  }
+	done
+
+	if test -n "$nlast_tline" && test -n "$nlast_ident" &&
+	   test $nline2 -ge $nlast_tline && test $nline1 -lt $ntline; then
+	  echo "ident: $nlast_ident" >&7
+	  nlast_ident=
+	fi
+      fi
+
+      # Now the old version.
+      if test $oline1,$oline2 != 0,0; then
+	while test -n "$olast_tline" && test $olast_tline -le $oline2; do
+	  if test $oline2 -ge $olast_tline && test $oline1 -lt $otline; then
+	    if test -n "$olast_ident"; then
+	      echo "ident: $olast_ident" >&8
+	    fi
+	  fi
+
+	  olast_ident=$oident
+	  olast_tline=$otline
+	  read otline oident <&6 || {
+	    otline=$INT_MAX
+	    break
+	  }
+	done
+
+	if test -n "$olast_tline" && test -n "$olast_ident" &&
+	   test $oline2 -ge $olast_tline && test $oline1 -lt $otline; then
+	  echo "ident: $olast_ident" >&8
+	  olast_ident=
+	fi
+      fi
+    done
+
+    exec 5<&- 6<&- 7>&- 8>&-
+
+    # Now throw out all identifiers from the old version that are already
+    # present in the new list, without destroying order of the new list:
+    cat "$nidents"
+    if $take_old_file_into_account; then
+      sort "$oidents" > "$oidents-sorted"
+      sort "$nidents" | join -t '	' -v 2 - "$oidents-sorted"
+    fi
+  done |
+  uniq
+}
+
+
+# func_pretty_changelog_entry
+# Generate a proto ChangeLog entry from a file and identifier list.
+func_pretty_changelog_entry ()
+{
+  $AWK '
+    # state 0: before printing the header line
+    #       1: before open parenthesis
+    #       2: in parentheses
+    BEGIN {
+      textwidth = "'"$textwidth"'" + 0;
+      tabstop = "'"$tabstop"'" + 0;
+    }
+    /^file: / {
+      if (state == 0)
+	printf ("%s  %s  <%s>\n",
+		"'"$today"'", "'"$user_name"'", "'"$email_address"'");
+      if (state == 1) printf (":");
+      if (state == 2) printf ("):");
+      printf ("\n%s",  "\t* " $2);
+      state = 1;
+      col = tabstop + 2 + length ($2);
+    }
+    /^ident/ {
+      add = 2 + length ($2);
+      if (col + add > textwidth) {
+	if (state == 2) printf (")");
+	printf ("\n\t(%s", $2);
+	col = tabstop + add - 1;
+      } else {
+        col += add;
+	if (state == 1) printf (" (%s", $2);
+	else            printf (", %s", $2);
+      }
+      state = 2;
+    }
+    END {
+      if (state == 1) printf (":\n\n");
+      if (state == 2) printf ("):\n\n");
+    }
+  '
+}
+
+
+# Read ~/.vc-chlogrc and ./.vc-chlogrc.
+# The quoting is delicate, to allow the user to quote arguments; retain spacing.
+sed_remove_comments='/^[	 ]*#/d'
+initfiles=/dev/null
+for file in $HOME/.${progname}rc .${progname}rc; do
+  test -r "$file" && initfiles="$initfiles $file"
+done
+init_options=`sed "$sed_remove_comments" $initfiles | tr '\n' ' '`
+eval set x "$init_options" '${1+"$@"}'
+shift
+
+while test $# -gt 0; do
+  case $1 in
+    --address)   email_address=$2; shift ;;
+    --stdin)     stdin=: ;;
+    --tabsize)   tabstop=$2; shift ;;
+    --width)     textwidth=$2; shift ;;
+    --user-name) user_name=$2; shift ;;
+    --help)      func_help ;;
+    --version)   func_version ;;
+    --debug)     debug=: ;;
+    -*)          func_error "unknown argument $1" ;;
+    --)          shift; break ;;
+    *)           break ;;
+  esac
+  shift
+done
+
+func_tempdir
+patchfile=$tmp/diff
+
+if $stdin; then
+  cat
+else
+  vc-dwim --diff ${1+"$@"}
+fi |
+  tee "$patchfile" |
+  func_extract_changed_lines |
+  func_debug_pipe processed-diff |
+  func_extract_identifiers  |
+  func_debug_pipe sorted |
+  func_pretty_changelog_entry
+
+func_exit 0
+
+# vi:sw=2:

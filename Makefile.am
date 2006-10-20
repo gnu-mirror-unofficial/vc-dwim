@@ -1,7 +1,7 @@
 SUBDIRS = . tests
 
-bin_SCRIPTS = vc-dwim
-EXTRA_DIST = vc-dwim.pl
+bin_SCRIPTS = vc-dwim vc-chlog
+EXTRA_DIST = vc-dwim.pl vc-chlog.in
 CLEANFILES = $(bin_SCRIPTS)
 
 perllibdir = $(pkgdatadir)
@@ -39,6 +39,11 @@ vc-dwim: vc-dwim.pl Makefile
 	ver_suffix="$$rev$$dirty";					\
 	test -n "$$ver_suffix" && ver_suffix=" ($$ver_suffix)";		\
 	$(do_subst) $(srcdir)/$@.pl >$@.tmp
+	chmod a-w+x $@.tmp
+	mv -f $@.tmp $@
+
+vc-chlog: vc-chlog.in Makefile
+	$(do_subst) $(srcdir)/$@.in >$@.tmp
 	chmod a-w+x $@.tmp
 	mv -f $@.tmp $@
 

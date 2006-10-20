@@ -1,0 +1,424 @@
+#! /bin/sh
+# Test vc-chlog.
+
+set -e
+progname=t-vc-chlog
+tmp=$progname-$$
+mkdir $tmp
+cd $tmp
+
+### Set up files ###
+
+: >add-to-empty.c
+
+cat >add-several.c <<\EOF
+int old_function (void)
+{
+  return 2
+    +
+    3;
+}
+
+static int
+another_old_function (void)
+{
+  return old_function ();
+}
+
+EOF
+
+cat >append.c <<\EOF
+int old_function (void)
+{
+  return 2
+    +
+    3;
+}
+
+static int
+another_old_function (void)
+{
+  return old_function ();
+}
+EOF
+
+cat >moved.c <<\EOF
+int old_function (void)
+{
+  return 2
+    +
+    3;
+}
+
+static int
+another_old_function (void)
+{
+  return old_function ();
+}
+
+int global_data = 2;
+
+extern int will_be_moved_1 (int X);
+
+int will_be_moved_2 (int t)
+{
+  return will_be_moved_1 (t);
+}
+
+int keep_this (int t)
+{
+  return 2*t;
+}
+EOF
+
+rm -f new.c
+
+cat >plus_at_beginning.c <<\EOF
+/* there can be a plus (or more than one) at the beginning of a line */
+int foo (int a, int b, int c)
+{
+  return a
+- b -
+-- c;
+}
+
+int bar (int a, int b, int c)
+{
+  return a +
+-- b;
+}
+EOF
+
+cat >prepend.c <<\EOF
+int old_function (void)
+{
+  return 2
+    +
+    3;
+}
+
+static int
+another_old_function (void)
+{
+  return old_function ();
+}
+EOF
+
+cat >remove-several.c <<\EOF
+int old_function (void)
+{
+  return 2
+    +
+    3;
+}
+
+static int
+another_old_function (void)
+{
+  return old_function ();
+}
+
+int global_data = 2;
+
+extern int will_be_gone_1 (int X);
+
+int will_be_gone_2 (int t)
+{
+  return will_be_gone_1 (t);
+}
+
+int keep_this (int t)
+{
+  return 2*t;
+}
+EOF
+
+cat >several-changes-per-hunk.c <<\EOF
+int function (void)
+{
+  return 2
+    +
+    3;
+}
+
+static int
+another_function (void)
+{
+  return function ();
+}
+
+int global_data = 2;
+
+extern int yet_another (int X);
+
+int function3 (int t)
+{
+  return yet_another (t);
+}
+
+int keep_this (int t)
+{
+  return 2*t;
+}
+EOF
+
+### set up patch ###
+
+cat >patch <<\EOF
+--- add-several.c	5 Oct 2006 15:12:00 -0000	1.1.1.1
++++ add-several.c	5 Oct 2006 15:13:09 -0000
+@@ -5,6 +5,15 @@
+     3;
+ }
+ 
++int new_function (void)
++{
++  return old_function ();
++}
++
++extern int another_new_function (void);
++
++int new_data = 17;
++
+ static int
+ another_old_function (void)
+ {
+--- add-to-empty.c	5 Oct 2006 15:12:00 -0000	1.1.1.1
++++ add-to-empty.c	5 Oct 2006 15:13:30 -0000
+@@ -0,0 +1,8 @@
++int new_function (void)
++{
++  return old_function ();
++}
++
++extern int another_new_function (void);
++
++int new_data = 17;
+--- append.c	5 Oct 2006 15:12:00 -0000	1.1.1.1
++++ append.c	5 Oct 2006 15:13:39 -0000
+@@ -10,3 +10,12 @@
+ {
+   return old_function ();
+ }
++
++int new_function (void)
++{
++  return old_function ();
++}
++
++extern int another_new_function (void);
++
++int new_data = 17;
+--- moved.c	5 Oct 2006 15:12:00 -0000	1.1.1.1
++++ moved.c	19 Oct 2006 11:13:50 -0000
+@@ -5,6 +5,11 @@
+     3;
+ }
+ 
++int will_be_moved_2 (int t)
++{
++  return will_be_moved_1 (t);
++}
++
+ static int
+ another_old_function (void)
+ {
+@@ -15,11 +20,6 @@
+ 
+ extern int will_be_moved_1 (int X);
+ 
+-int will_be_moved_2 (int t)
+-{
+-  return will_be_moved_1 (t);
+-}
+-
+ int keep_this (int t)
+ {
+   return 2*t;
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ new.c	20 Oct 2006 06:49:47 -0000
+@@ -0,0 +1,8 @@
++int new_function (void)
++{
++  return old_function ();
++}
++
++extern int another_new_function (void);
++
++int new_data = 17;
+--- plus_at_beginning.c	19 Oct 2006 11:40:59 -0000	1.4
++++ plus_at_beginning.c	19 Oct 2006 11:41:18 -0000
+@@ -2,12 +2,14 @@
+ int foo (int a, int b, int c)
+ {
+   return a
+-- b -
+--- c;
+++ b +
++++ c
++- 2 -
++--a;
+ }
+ 
+ int bar (int a, int b, int c)
+ {
+   return a +
+--- b;
++++ b;
+ }
+--- prepend.c	5 Oct 2006 15:12:00 -0000	1.1.1.1
++++ prepend.c	5 Oct 2006 15:14:20 -0000
+@@ -1,3 +1,11 @@
++int new_function (void)
++{
++  return old_function ();
++}
++
++extern int another_new_function (void);
++
++int new_data = 17;
+ int old_function (void)
+ {
+   return 2
+--- remove-several.c	5 Oct 2006 15:12:00 -0000	1.1.1.1
++++ remove-several.c	5 Oct 2006 15:14:25 -0000
+@@ -13,13 +13,6 @@
+ 
+ int global_data = 2;
+ 
+-extern int will_be_gone_1 (int X);
+-
+-int will_be_gone_2 (int t)
+-{
+-  return will_be_gone_1 (t);
+-}
+-
+ int keep_this (int t)
+ {
+   return 2*t;
+--- several-changes-per-hunk.c	19 Oct 2006 11:15:28 -0000	1.1
++++ several-changes-per-hunk.c	19 Oct 2006 11:16:21 -0000
+@@ -8,10 +8,10 @@
+ static int
+ another_function (void)
+ {
+-  return function ();
++  return 1 + function ();
+ }
+ 
+-int global_data = 2;
++int global_data = 3;
+ 
+ extern int yet_another (int X);
+ 
+@@ -20,7 +20,8 @@
+   return yet_another (t);
+ }
+ 
++/* comment */
+ int keep_this (int t)
+ {
+   return 2*t;
+-}
++} /* comment */
+EOF
+
+# This is what a perfect tool should do:
+cat >really-expected <<\EOF
+	* add-several.c (new_function, new_data):
+	* add-to-empty.c (new_function, new_data):
+	* append.c (new_function, new_data):
+	* moved.c (will_be_moved_2):
+	* new.c (new_function, new_data):
+	* plus_at_beginning.c (foo, bar):
+	* prepend.c (new_function, new_data):
+	* remove-several.c (will_be_gone_2):
+	* several-changes-per-hunk.c (another_function, global_data)
+	(keep_this):
+
+EOF
+
+# This is what it currently does, i.e., including known limitations:
+cat >expected <<\EOF
+	* add-several.c (new_function, new_data):
+	* add-to-empty.c (new_function, new_data):
+	* append.c (another_old_function, new_function, new_data):
+	* moved.c (will_be_moved_2):
+	* new.c (new_function, new_data):
+	* plus_at_beginning.c (foo, bar):
+	* prepend.c (new_function, new_data):
+	* remove-several.c (global_data, will_be_gone_2):
+	* several-changes-per-hunk.c (another_function, global_data)
+	(function3, keep_this):
+
+EOF
+
+patch -p0 < patch
+vc-chlog --stdin < patch | sed 1,2d > stdout
+diff -u stdout expected
+
+# Now for some error checking:
+
+### broken diffs ###
+cat >p2 <<\EOF
+EOF
+cat >expected <<\EOF
+EOF
+vc-chlog --stdin < p2 | sed 1,2d > stdout
+diff -u stdout expected
+
+cat >p3 <<\EOF
+@@ -3,4 +2,7 @@
+EOF
+: >expected
+cat >err-expected <<\EOF
+error: hunk but no file in patch at line 1
+error: incomplete hunk at end of patch
+EOF
+vc-chlog --stdin < p3 >stdout 2>stderr
+diff -u stdout expected
+diff -u stderr err-expected
+
+
+cat >p4 <<\EOF
+--- several-changes-per-hunk.c	19 Oct 2006 11:15:28 -0000	1.1
++++ several-changes-per-hunk.c	19 Oct 2006 11:16:21 -0000
+@@ -8,10 +8,10 @@
+ static int
+ another_function (void)
+ {
+-  return function ();
++  return 1 + function ();
+ }
+ 
+-int global_data = 2;
++int global_data = 3;
+ 
+ extern int yet_another (int X);
+@@ -20,7 +20,8 @@
+   return yet_another (t);
+ }
+ 
++/* comment */
+ int keep_this (int t)
+ {
+   return 2*t;
++} /* comment */
+EOF
+cat >expected <<\EOF
+	* several-changes-per-hunk.c:
+
+EOF
+cat >err-expected <<\EOF
+error: incomplete hunk in patch at line 15
+error: incomplete hunk at end of patch
+patch: **** malformed patch at line 15: @@ -20,7 +20,8 @@
+
+EOF
+vc-chlog --stdin < p4 2>stderr | sed 1,2d > stdout
+diff -u stdout expected
+diff -u stderr err-expected
+
+cd ..
+rm -r $tmp
+exit 0

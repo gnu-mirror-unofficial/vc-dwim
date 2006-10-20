@@ -1,5 +1,11 @@
 2006-10-20  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* vc-chlog.in: New script.
+	* NEWS: Update.
+	* Makefile.am: Update.
+	* tests/t-vc-chlog: New test.
+	* tests/Makefile.am: Update.
+
 	* tests/cl-but-no-diff: Do not use `$status'.
 	* tests/cl-other-user: Likewise.
 	* tests/leading-comment: Likewise.

@@ -19,4 +19,5 @@ TESTS = \
   leading-comment \
   no-star \
   subdir \
-  subdir-cvs
+  subdir-cvs \
+  t-vc-chlog
