@@ -189,6 +189,9 @@ sub get_new_changelog_lines ($$)
 # For emacs, the temporary is a symlink named "$dir/.#$base",
 # with useful information in the link name part.
 # For Vim, the temporary is a regular file named "$dir/.$base.swp".
+# Vim temporaries can also be named .$base.swo, .$base.swn, .$base.swm, etc.
+# so test for a few of those, in the unusual event that one of those
+# exists, but the .swp file does not.
 sub exists_editor_backup ($)
 {
   my ($f) = @_;
@@ -196,8 +199,11 @@ sub exists_editor_backup ($)
   $f = basename $f;
   -f "$d/#$f#" || -l "$d/.#$f"
     and return 1; # Emacs
-  -f "$d/.$f.swp"
-    and return 1; # Vim
+  foreach my $c (qw(p o n m l k))
+    {
+      -f "$d/.$f.swp"
+	and return 1; # Vim
+    }
   return 0;
 }
 
