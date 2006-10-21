@@ -1,5 +1,7 @@
 2006-10-21  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* vc-chlog.in (func_extract_changed_lines): Factor code a bit.
+
 	* vc-chlog.in (func_extract_changed_lines): Detect diffs that
 	contain zero hunks for some file.  Warn, do not output its name.
 	* tests/t-vc-chlog: Adjust.
