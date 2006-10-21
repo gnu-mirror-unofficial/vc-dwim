@@ -405,17 +405,27 @@ cat >p4 <<\EOF
    return 2*t;
 +} /* comment */
 EOF
-cat >expected <<\EOF
-	* several-changes-per-hunk.c:
-
-EOF
+: >expected
 cat >err-expected <<\EOF
 error: incomplete hunk in patch at line 15
 error: incomplete hunk at end of patch
-patch: **** malformed patch at line 15: @@ -20,7 +20,8 @@
-
 EOF
 vc-chlog --stdin < p4 2>stderr | sed 1,2d > stdout
+diff -u stdout expected
+diff -u stderr err-expected
+
+cat >p5 <<\EOF
+--- file1.c	19 Oct 2006 11:15:28 -0000	1.1
++++ file1.c	19 Oct 2006 11:16:21 -0000
+--- file2.c	19 Oct 2006 11:15:28 -0000	1.1
++++ file2.c	19 Oct 2006 11:16:21 -0000
+EOF
+: >expected
+cat >err-expected <<\EOF
+error: empty changes for file file1.c
+error: empty changes for file file2.c
+EOF
+vc-chlog --stdin < p5 2>stderr | sed 1,2d > stdout
 diff -u stdout expected
 diff -u stderr err-expected
 

@@ -181,9 +181,14 @@ func_extract_changed_lines ()
     }
     /^\+\+\+ / {
       if (!(1 in hunk)) {	# do not match an added line with 2 pluses at front
+	if (file != "") {
+	  if (!(file in lines))
+	    system("echo >&2 error: empty changes for file " file);
+	  else
+	    files[nfile++] = file;  # track these for stable ordering
+	}
 	file = $2;
 	sub("^b/", "", file);   # some vcs use a/ and b/ as diff prefixes
-	files[nfile++] = file;  # track these for stable ordering
 	next;
       }
     }
@@ -204,7 +209,13 @@ func_extract_changed_lines ()
     }
     {
       if (!(1 in hunk)) {	# do not match ^+++ or other gunk below
-	file = "";
+	if (file != "") {
+	  if (!(file in lines))
+	    system("echo >&2 error: empty changes for file " file);
+	  else
+	    files[nfile++] = file;  # track these for stable ordering
+	  file = "";
+	}
 	next;
       }
     }
@@ -232,8 +243,16 @@ func_extract_changed_lines ()
       }
     }
     END {
-      if (1 in hunk)
+      if (1 in hunk) {
 	system("echo >&2 error: incomplete hunk at end of patch");
+      } else {
+	if (file != "") {
+	  if (!(file in lines))
+	    system("echo >&2 error: empty changes for file " file);
+	  else
+	    files[nfile++] = file;  # track these for stable ordering
+	}
+      }
       output();
       for (nfile = 0; nfile in files; nfile++) {
 	print files[nfile] lines[files[nfile]];
