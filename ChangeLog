@@ -1,4 +1,15 @@
-2006-10-23  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+2006-10-22  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* tests/cl-but-no-diff: Quote to allow spaces in `pwd` output.
+	* tests/cl-other-user: Likewise.
+	* tests/leading-comment: Likewise.
+	* tests/no-star: Likewise.
+	* tests/no-vc: Likewise.
+	* tests/subdir: Likewise.
+	* tests/subdir-cvs: Likewise.
+	* tests/symlinked-changelog: Likewise.
+	* tests/two-line-attr: Likewise.
+	* tests/two-vc: Likewise.
 
 	* tests/t-vc-chlog: Adjust to style of other tests.
 
