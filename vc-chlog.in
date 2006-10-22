@@ -34,7 +34,7 @@ Options:
       --version          output version information and exit
 
 Environment:
-AWK, CTAGS, TMPDIR, and USER are honored.
+TMPDIR, and USER are honored.
 
 Files:
 \`~/.${progname}rc' and \`.${progname}rc' may contain default options,
@@ -70,8 +70,9 @@ export LC_ALL
 
 progname=vc-chlog
 : ${debug=}
-: ${AWK=awk}
-: ${CTAGS=ctags}
+AWK="@AWK@"
+CTAGS="@CTAGS@"
+ctags_strip_type_column="@ctags_strip_type_column@"
 : ${textwidth=72}
 : ${tabstop=8}
 : ${TMPDIR=/tmp}
@@ -89,12 +90,6 @@ test -z "$user_name" &&
       }'`
 test -z "$email_address" &&
   email_address=$USER@`hostname`.`(domainname) 2>/dev/null || hostname -d`
-
-ctags_strip_type_column=false
-case `$CTAGS --version 2>/dev/null` in
-Exuberant\ Ctags*) # contrary to POSIX, this ctags prints an extra column.
-  ctags_strip_type_column=: ;;
-esac
 
 # From here on, uninitialized variables and unchecked commands are erroneous:
 set -eu
@@ -259,7 +254,7 @@ func_extract_changed_lines ()
 func_taglist ()
 {
   $CTAGS -x "$1" |
-  if $ctags_strip_type_column; then
+  if test $ctags_strip_type_column = yes; then
     $AWK '{ print $3, $1; }'
   else
     $AWK '{ print $2, $1; }'

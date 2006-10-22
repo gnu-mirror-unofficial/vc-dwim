@@ -22,5 +22,27 @@ installed, select the one Automake should use using
   ./configure PERL=/path/to/perl])
 }
 
+AC_PROG_AWK
+AC_CHECK_PROGS([CTAGS], [ctags-exuberant ctags])
+AC_ARG_VAR([CTAGS], [ctags program to use for extracting identifiers])
+# contrary to POSIX, Exuberant Ctags prints an extra column.
+AC_CACHE_CHECK([whether $CTAGS prints an extra column],
+	       [rw_cv_ctags_type_column],
+[cat >conftest.c <<EOF
+int
+f ()
+{
+  return 0;
+}
+EOF
+case `$CTAGS -x conftest.c` in
+  *function*) rw_cv_ctags_type_column=yes ;;
+  *) rw_cv_ctags_type_column=no;;
+esac
+rm -f conftest.c
+])
+AC_SUBST([ctags_strip_type_column], [$rw_cv_ctags_type_column])
+
 AC_CONFIG_FILES([Makefile tests/Makefile])
+AC_CONFIG_FILES([vc-chlog], [chmod +x vc-chlog])
 AC_OUTPUT

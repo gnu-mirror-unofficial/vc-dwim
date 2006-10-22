@@ -42,11 +42,6 @@ vc-dwim: vc-dwim.pl Makefile
 	chmod a-w+x $@.tmp
 	mv -f $@.tmp $@
 
-vc-chlog: vc-chlog.in Makefile
-	$(do_subst) $(srcdir)/$@.in >$@.tmp
-	chmod a-w+x $@.tmp
-	mv -f $@.tmp $@
-
 tag_name = v$(VERSION)
 release: distcheck
 	hg log -r $(tag_name) > /dev/null 2>&1 \

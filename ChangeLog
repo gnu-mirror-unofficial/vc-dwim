@@ -1,5 +1,11 @@
 2006-10-22  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* configure.ac: Compute and substitute AWK, CTAGS,
+	ctags_strip_type_column.  Prefer Exuberant Ctags, do a feature
+	test for the extra column.  Make `vc-chlog' a config file.
+	* Makefile.am: Adjust, no need for manual rule any more.
+	* vc-chlog.in: Adjust.
+
 	* tests/Makefile.am: Ensure `cd' does not fail.
 	* tests/cl-but-no-diff: Likewise.
 	* tests/cl-other-user: Likewise.
