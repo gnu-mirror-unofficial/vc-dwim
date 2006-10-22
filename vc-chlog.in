@@ -1,8 +1,8 @@
 #! /bin/sh
 # vc-chlog - generate a GCS-style ChangeLog entry from a diff
-# 
+#
 # Copyright (C) 2006  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
-# 
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2, or (at your option)
