@@ -1,3 +1,19 @@
+2006-10-22  Jim Meyering  <meyering@rho.meyering.net>
+
+	* tests/trap-setup: New file.  Factor trap-related code out of tests.
+	* tests/Makefile.am (EXTRA_DIST): Add trap-setup.
+	* tests/cl-but-no-diff: Use trap-setup, rather than open-coding it.
+	* tests/cl-other-user: Likewise.
+	* tests/leading-comment: Likewise.
+	* tests/no-star: Likewise.
+	* tests/no-vc: Likewise.
+	* tests/subdir: Likewise.
+	* tests/subdir-cvs: Likewise.
+	* tests/symlinked-changelog: Likewise.
+	* tests/t-vc-chlog: Likewise.
+	* tests/two-line-attr: Likewise.
+	* tests/two-vc: Likewise.
+
 2006-10-22  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	* configure.ac: Compute and substitute AWK, CTAGS,

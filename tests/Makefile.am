@@ -1,6 +1,7 @@
 EXTRA_DIST = $(TESTS) \
   require-git \
-  require-hg
+  require-hg \
+  trap-setup
 
 TESTS_ENVIRONMENT = \
   top_srcdir=$(top_srcdir) \

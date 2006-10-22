@@ -1,0 +1,6 @@
+# -*- sh -*- common set-up code for each test
+
+pwd=`pwd`
+t0=`echo "$0"|sed 's,.*/,,'`.tmp; tmp=$t0/$$
+trap 'status=$?; cd "$pwd" && chmod -R u+rwx $t0 && rm -rf $t0 && exit $status' 0
+trap '(exit $?); exit $?' 1 2 13 15
