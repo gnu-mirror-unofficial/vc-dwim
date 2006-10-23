@@ -130,7 +130,7 @@ sub get_diffs ($$)
 	and $line = '';
     }
 
-  return \@added_lines
+  return \@added_lines;
 }
 
 # Parse a ChangeLog diff: ignore removed lines, collect added ones.
@@ -183,7 +183,7 @@ sub get_new_changelog_lines ($$)
   $found_first_unidiff_marker_line
     or die "$ME: $f: no unidiff output\n";
 
-  return \@added_lines
+  return \@added_lines;
 }
 
 # For emacs, the temporary is a symlink named "$dir/.#$base",
@@ -201,7 +201,7 @@ sub exists_editor_backup ($)
     and return 1; # Emacs
   foreach my $c (qw(p o n m l k))
     {
-      -f "$d/.$f.swp"
+      -f "$d/.$f.sw$c"
 	and return 1; # Vim
     }
   return 0;

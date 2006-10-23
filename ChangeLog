@@ -1,3 +1,10 @@
+2006-10-23  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* vc-chlog.in (func_help): Update TODO.
+	* vc-dwim.pl (get_diffs, get_new_changelog_lines): Add some
+	semicolons.
+	(exists_editor_backup): Actually test the other suffixes.
+
 2006-10-22  Jim Meyering  <meyering@rho.meyering.net>
 
 	* tests/trap-setup: New file.  Factor trap-related code out of tests.

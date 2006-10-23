@@ -52,6 +52,8 @@ Report bugs to <Ralf.Wildenhues@gmx.de>."
 # - check whether `ctags -x' output format is portable enough now.
 #
 # - cope with spaces in identifiers (e.g., texinfo node names).
+#   For that it will be necessary to move away from `ctags -x' (or employ
+#   horrible kludges).
 #
 # - allow a language-dependent setting of which kinds of identifiers to use
 #   (for exuberant ctags).
@@ -61,8 +63,6 @@ Report bugs to <Ralf.Wildenhues@gmx.de>."
 #
 # - work with trees that have multiple ChangeLog files.
 #   Could probably easier be achieved by whoever calls this program.
-#
-# - deal with new files (only those already added to VCS?)
 
 
 LC_ALL=C
