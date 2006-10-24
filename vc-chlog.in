@@ -154,8 +154,11 @@ func_basename ()
 # func_extract_changed_lines
 # From a diff file, extract file names and line number ranges of changes.
 # This function returns lines of the form
-#   FILENAME RANGE1 [RANGE2]...
-# with each range of the form
+#   FILENAME STRIPNUM DIFFLINE1 DIFFLINE2 RANGE1 [RANGE2]...
+# with the interval from DIFFLINE1 to DIFFLINE2 inclusive being the
+# relevant lines in the patch,
+# to be stripped of -p$STRIPNUM prefix slashes (zero or one),
+# and each range of the form
 #   A-B-C-D
 # meaning that lines A to B (inclusive) in the old file were changed,
 #          and lines C to D (inclusive) in the new file were changed.
@@ -167,6 +170,7 @@ func_extract_changed_lines ()
   #                range[] is (partially) defined if we are reading ^[-+] runs
   #                file is nonempty if reading a patch for this file
   $AWK '
+    BEGIN { nfile = 0; }
     function output () {
       if (2 in range || 4 in range) {
 	lines[file] = lines[file] " " \
@@ -178,15 +182,24 @@ func_extract_changed_lines ()
       if (file != "") {
 	if (!(file in lines))
 	  system("echo >&2 error: empty changes for file " file);
-	else
-	  files[nfile++] = file;  # track these for stable ordering
+	else {
+	  # We use NR here instead of NR - 1, because otherwise the last
+	  # line of the file is missing.  Hope no patch program has problems
+	  # with the occasional extra line...
+	  strip[nfile] = hasprefix + 0;
+	  diff[nfile] = start " " NR;
+	  files[nfile] = file;  # track these for stable ordering
+	  nfile = nfile + 1;
+	}
       }
     }
     /^\+\+\+ / {
       if (!(1 in hunk)) {	# do not match an added line with 2 pluses at front
 	record_file();
 	file = $2;
-	sub("^b/", "", file);   # some vcs use a/ and b/ as diff prefixes
+	start = NR - 1;
+	# some vcs use a/ and b/ as diff prefixes. strip them, and remember:
+	hasprefix = sub("^b/", "", file);
 	next;
       }
     }
@@ -243,7 +256,7 @@ func_extract_changed_lines ()
       }
       output();
       for (nfile = 0; nfile in files; nfile++) {
-	print files[nfile] lines[files[nfile]];
+	print files[nfile] " " strip[nfile] " " diff[nfile] "" lines[files[nfile]];
       }
     }'
 }
@@ -263,16 +276,6 @@ func_taglist ()
 }
 
 
-# func_extract_diff FILENAME
-# From a diff file, extract only the part that applies to one file.
-func_extract_diff ()
-{
-  escaped_name=`echo "$1" | sed 's,/,\\\\/,g'`
-  sed -n "/^--- $escaped_name	/,/^[^ @+-]/p
-          /^--- a\/$escaped_name	/,/^[^ @+-]/p"
-}
-
-
 # func_extract_identifiers
 # Generate a list of files and identifiers from file name and line number ranges
 # by way of tag lists.
@@ -286,14 +289,14 @@ func_extract_diff ()
 func_extract_identifiers ()
 {
   nfile=0
-  while read file ranges; do
+  while read file strip diffstart diffend ranges; do
     echo "file: $file"
     tagfile=$tmp/taglist-$nfile
     oldfile=$tmp/oldfile-$nfile-`func_basename "$file"`
     nidents=$tmp/nidents-$nfile
     oidents=$tmp/oidents-$nfile
-    func_extract_diff "$file" < "$patchfile" |
-      patch -o "$oldfile" -p0 -R "$file"
+    sed "${diffstart},${diffend}p;d" "$patchfile" |
+      patch -o "$oldfile" -p$strip -R "$file"
     func_taglist "$file" >"$tagfile"
     func_taglist "$oldfile" >"$tagfile-old"
     exec 5<"$tagfile" 6<"$tagfile-old" 7>"$nidents" 8>"$oidents"

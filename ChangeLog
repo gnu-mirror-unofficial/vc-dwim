@@ -1,3 +1,11 @@
+2006-10-24  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* vc-chlog.in (func_extract_changed_lines): Rewrite to also output
+	the number of prefix slashes to strip, and the start and ending line
+	for each file the patch addresses.
+	(func_extract_identifiers): Adjust, and get rid of...
+	(func_extract_diff): ...removed.  Buggy and unusable.
+
 2006-10-23  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	* vc-chlog.in (func_help): Update TODO.
