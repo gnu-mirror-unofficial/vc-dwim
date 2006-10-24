@@ -4,13 +4,16 @@
 if test "$VERBOSE" = yes; then
   set -x
   vc-chlog --version
+else
+  redirect='>/dev/null'
 fi
 
 . $srcdir/trap-setup
 
-framework_failure=0
-mkdir -p $tmp || framework_failure=1
-cd $tmp || framework_failure=1
+mkdir -p $tmp && cd $tmp || {
+  echo "$0: failure in testing framework" 1>&2
+  (exit 1); exit 1
+}
 
 set -e
 
@@ -331,7 +334,7 @@ cat >patch <<\EOF
 EOF
 
 # This is what a perfect tool should do:
-cat >really-expected <<\EOF
+cat >expected-perfect <<\EOF
 	* add-several.c (new_function, new_data):
 	* add-to-empty.c (new_function, new_data):
 	* append.c (new_function, new_data):
@@ -345,8 +348,9 @@ cat >really-expected <<\EOF
 
 EOF
 
-# This is what it currently does, i.e., including known limitations:
-cat >expected <<\EOF
+# This is what exuberant ctags currently does, i.e., including known
+# limitations:
+cat >expected-exuberant <<\EOF
 	* add-several.c (new_function, new_data):
 	* add-to-empty.c (new_function, new_data):
 	* append.c (another_old_function, new_function, new_data):
@@ -360,11 +364,34 @@ cat >expected <<\EOF
 
 EOF
 
-patch -p0 < patch >stdout
+# This is with ctags.emacs21:
+cat >expected-emacs <<\EOF
+	* add-several.c (new_function):
+	* add-to-empty.c (new_function):
+	* append.c (another_old_function, new_function):
+	* moved.c (will_be_moved_2):
+	* new.c (new_function):
+	* plus_at_beginning.c (foo, bar):
+	* prepend.c (new_function):
+	* remove-several.c (another_old_function, will_be_gone_2):
+	* several-changes-per-hunk.c (another_function, function3)
+	(keep_this):
+
+EOF
+
+eval patch -p0 < patch $redirect
+vc-chlog --debug --stdin < patch | sed 1,2d > stdout
 test "$VERBOSE" != yes || cat stdout
-vc-chlog --stdin < patch | sed 1,2d > stdout
-test "$VERBOSE" != yes || cat stdout
-diff -u stdout expected
+# Yes, all those if..$VERBOSE then..fi are on purpose
+# inside this outer if clause.  Thanks to BSD sh -e...
+success=false
+for file in expected-perfect expected-exuberant expected-emacs; do
+  if eval diff -u $file stdout $redirect; then
+    success=:
+    break
+  fi
+done
+$success
 
 # Now for some error checking:
 
@@ -375,7 +402,7 @@ cat >expected <<\EOF
 EOF
 vc-chlog --stdin < p2 | sed 1,2d > stdout
 test "$VERBOSE" != yes || cat stdout
-diff -u stdout expected
+diff -u expected stdout
 
 cat >p3 <<\EOF
 @@ -3,4 +2,7 @@
@@ -387,8 +414,8 @@ error: incomplete hunk at end of patch
 EOF
 vc-chlog --stdin < p3 >stdout 2>stderr
 test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
-diff -u stdout expected
-diff -u stderr err-expected
+diff -u expected stdout
+diff -u err-expected stderr
 
 
 cat >p4 <<\EOF
@@ -423,8 +450,8 @@ error: incomplete hunk at end of patch
 EOF
 vc-chlog --stdin < p4 2>stderr | sed 1,2d > stdout
 test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
-diff -u stdout expected
-diff -u stderr err-expected
+diff -u expected stdout
+diff -u err-expected stderr
 
 cat >p5 <<\EOF
 --- file1.c	19 Oct 2006 11:15:28 -0000	1.1
@@ -439,7 +466,7 @@ error: empty changes for file file2.c
 EOF
 vc-chlog --stdin < p5 2>stderr | sed 1,2d > stdout
 test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
-diff -u stdout expected
-diff -u stderr err-expected
+diff -u expected stdout
+diff -u err-expected stderr
 
 exit 0

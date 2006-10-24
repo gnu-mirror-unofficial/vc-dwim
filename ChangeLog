@@ -1,5 +1,12 @@
 2006-10-24  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* tests/t-vc-chlog: Fail gracefully upon setup failure.  Compare
+	output of the large test against three possibilities: the "perfect"
+	output, that created by Exuberant Ctags, and that created by Emacs
+	ctags.  Write all comparisons in the form `diff expected actual'.
+	Report of failures fixed by this and the previous patch by
+	Jim Meyering.
+
 	* vc-chlog.in (func_extract_changed_lines): Rewrite to also output
 	the number of prefix slashes to strip, and the start and ending line
 	for each file the patch addresses.
