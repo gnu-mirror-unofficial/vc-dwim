@@ -12,6 +12,10 @@ some_check_hook:
 and then compare with the result of "make distcheck" in
 the working directory.
 
+
+TODO for vc-dwim
+================
+
 Optional: warn if there are modified files not listed in ChangeLogs
 Add an option to make --commit fail if this is the case.
 
@@ -45,3 +49,24 @@ Record any module dependencies.
   use File::Basename; # for basename and dirname
 
 Record some Perl version number requirement.
+
+
+TODO for vc-chlog
+=================
+
+work with non-unidiff diff formats.
+
+check whether `ctags -x' output format is portable enough now.
+
+cope with spaces in identifiers (e.g., texinfo node names).
+For that it will be necessary to move away from `ctags -x' (or employ
+horrible kludges).
+
+allow a language-dependent setting of which kinds of identifiers to use
+(for exuberant ctags).
+
+changing a comment before a function causes the previous function to be
+added to the list, erroneously.  Apply some heuristic for this?
+
+work with trees that have multiple ChangeLog files.
+Could probably easier be achieved by whoever calls this program.

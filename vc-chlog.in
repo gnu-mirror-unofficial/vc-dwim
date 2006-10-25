@@ -45,26 +45,6 @@ Report bugs to <Ralf.Wildenhues@gmx.de>."
 }
 
 
-# TODO:
-#
-# - work with non-unidiff diff formats.
-#
-# - check whether `ctags -x' output format is portable enough now.
-#
-# - cope with spaces in identifiers (e.g., texinfo node names).
-#   For that it will be necessary to move away from `ctags -x' (or employ
-#   horrible kludges).
-#
-# - allow a language-dependent setting of which kinds of identifiers to use
-#   (for exuberant ctags).
-#
-# - changing a comment before a function causes the previous function to be
-#   added to the list, erroneously.  Apply some heuristic for this?
-#
-# - work with trees that have multiple ChangeLog files.
-#   Could probably easier be achieved by whoever calls this program.
-
-
 LC_ALL=C
 export LC_ALL
 
@@ -166,7 +146,7 @@ func_basename ()
 # respectively.
 func_extract_changed_lines ()
 {
-  # state machine: hunk[] is defined if we are inside a hunk
+  # state machine: newhunk[] is defined if we are inside a hunk
   #                range[] is (partially) defined if we are reading ^[-+] runs
   #                file is nonempty if reading a patch for this file
   $AWK '
@@ -194,7 +174,7 @@ func_extract_changed_lines ()
       }
     }
     /^\+\+\+ / {
-      if (!(1 in hunk)) {	# do not match an added line with 2 pluses at front
+      if (!(1 in newhunk)) {	# do not match an added line with 2 pluses at front
 	record_file();
 	file = $2;
 	start = NR - 1;
@@ -203,23 +183,26 @@ func_extract_changed_lines ()
 	next;
       }
     }
-    /^--- / { if (!(1 in hunk)) next; }
-    /^@@ -[0-9]+,[0-9]+ \+[0-9]+,[0-9]+ @@/ {
+    /^--- / { if (!(1 in newhunk)) next; }
+    /^@@ -[0-9]+(,[0-9]+)? \+[0-9]+(,[0-9]+)? @@/ {
       if (file == "")
 	system("echo >&2 error: hunk but no file in patch at line " NR);
-      if (1 in hunk)
+      if (1 in newhunk)
 	system("echo >&2 error: incomplete hunk in patch at line " NR);
-      split($2 "," $3, hunk, ",");
-      hunk[1] = 0 - hunk[1];
-      hunk[2] = hunk[1] + hunk[2];
-      hunk[3] += 0;
-      hunk[4] += hunk[3];
-      oldline = hunk[1];
-      newline = hunk[3];
+      split($2, oldhunk, ",");
+      split($3, newhunk, ",");
+      if (!(2 in oldhunk)) oldhunk[2] = 1;
+      if (!(2 in newhunk)) newhunk[2] = 1;
+      oldhunk[1] = 0 - oldhunk[1];
+      oldhunk[2] += oldhunk[1] - 1;
+      newhunk[1] += 0;
+      newhunk[2] += newhunk[1] - 1;
+      oldline = oldhunk[1] - 1;
+      newline = newhunk[1] - 1;
       next;
     }
     {
-      if (!(1 in hunk)) {	# do not match ^+++ or other gunk below
+      if (!(1 in newhunk)) {	# do not match ^+++ or other gunk below
 	record_file();
 	file = "";
 	next;
@@ -227,29 +210,30 @@ func_extract_changed_lines ()
     }
     /^[^-+ ]/ { system("echo >&2 error: garbage in patch at line " NR); }
     /^\+/ {
+      newline++;
       if (!(3 in range)) range[3] = newline;
       range[4] = newline;
-      newline++;
     }
     /^-/ {
+      oldline++;
       if (!(1 in range)) range[1] = oldline;
       range[2] = oldline;
-      oldline++;
     }
-    /^ / {
+    /^ / || /^$/ {		# GNU diff 2.8.8 may strip trailing spaces :-/
       output();
       oldline++;
       newline++;
     }
     {
       # test for end of hunk (avoid parse errors in next line)
-      if (1 in hunk && oldline == hunk[2] && newline == hunk[4]) {
+      if (1 in newhunk && oldline == oldhunk[2] && newline == newhunk[2]) {
 	output();
-	delete hunk;
+	delete oldhunk;
+	delete newhunk;
       }
     }
     END {
-      if (1 in hunk) {
+      if (1 in newhunk) {
 	system("echo >&2 error: incomplete hunk at end of patch");
       } else {
         record_file();

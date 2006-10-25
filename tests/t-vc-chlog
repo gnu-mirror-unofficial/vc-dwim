@@ -469,4 +469,73 @@ test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
 diff -u expected stdout
 diff -u err-expected stderr
 
+
+### diffs containing an empty line (simulate GNU diff 2.8.8) ###
+
+# note the lines matching `^$' rather than `^ $'.
+cat >p6 <<\EOF
+--- remove-several.c	5 Oct 2006 15:12:00 -0000	1.1.1.1
++++ remove-several.c	5 Oct 2006 15:14:25 -0000
+@@ -13,11 +13,6 @@
+
+ int global_data = 2;
+
+-int will_be_gone_2 (int t)
+-{
+-  return will_be_gone_1 (t);
+-}
+-
+ int keep_this (int t)
+ {
+   return 2*t;
+EOF
+cat >expected <<\EOF
+	* remove-several.c (will_be_gone_2):
+
+EOF
+: >err-expected
+vc-chlog --stdin < p6 2>stderr | sed 1,2d > stdout
+test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
+diff -u expected stdout
+diff -u err-expected stderr
+
+
+### changes that start or end up with one-line files ###
+
+: >add-oneline.c
+cat >p7 <<\EOF
+--- add-oneline.c	5 Oct 2006 15:12:00 -0000	1.1.1.1
++++ add-oneline.c	5 Oct 2006 15:13:30 -0000
+@@ -0,0 +1 @@
++int new_function (void) { return 0; }
+EOF
+cat >expected <<\EOF
+	* add-oneline.c (new_function):
+
+EOF
+: >err-expected
+eval patch -p0 < p7 $redirect
+vc-chlog --stdin < p7 2>stderr | sed 1,2d > stdout
+test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
+diff -u expected stdout
+diff -u err-expected stderr
+
+
+: >remove-oneline.c
+cat >p8 <<\EOF
+--- remove-oneline.c	5 Oct 2006 15:12:00 -0000	1.1.1.1
++++ remove-oneline.c	5 Oct 2006 15:13:30 -0000
+@@ -1 +0,0 @@
+-int new_function (void) { return 0; }
+EOF
+cat >expected <<\EOF
+	* remove-oneline.c (new_function):
+
+EOF
+: >err-expected
+vc-chlog --stdin < p8 2>stderr | sed 1,2d > stdout
+test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
+diff -u expected stdout
+diff -u err-expected stderr
+
 exit 0
