@@ -236,7 +236,7 @@ func_extract_changed_lines ()
       range[2] = oldline;
       oldline++;
     }
-    /^ / {
+    /^ / || /^$/ {		# GNU diff 2.8.8 may strip trailing spaces :-/
       output();
       oldline++;
       newline++;

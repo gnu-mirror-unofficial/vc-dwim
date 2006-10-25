@@ -1,3 +1,9 @@
+2006-10-25  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* vc-chlog.in (func_extract_changed_lines): GNU diff 2.8.8 may
+	strip the prefix space from unchanged empty lines.  Accommodate.
+	* tests/t-vc-chlog: Add test for this.
+
 2006-10-25  Jim Meyering  <jim@meyering.net>
 
 	* tests/cl-but-no-diff: Use "set -e" and clean up syntax.
