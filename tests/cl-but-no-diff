@@ -29,9 +29,9 @@ if test $framework_failure = 1; then
   (exit 1); exit 1
 fi
 
-fail=0
+set -e
 
-cat <<EOF > ChangeLog || fail=1
+cat <<EOF > ChangeLog
 2006-09-04  Jim Meyering  <jim@meyering.net>
 
 	* not-mod: x
@@ -39,14 +39,14 @@ cat <<EOF > ChangeLog || fail=1
 
 EOF
 
-vc-dwim ChangeLog > out 2>&1 && fail=1
+vc-dwim ChangeLog > out 2>&1 && false
 
-cat <<\EOF > exp || fail=1
+cat <<\EOF > exp
 vc-dwim: not-mod is listed in the ChangeLog entry, but not in diffs.
 Did you forget to add it?
 EOF
 
-cmp out exp || fail=1
-test $fail = 1 && diff out exp 2> /dev/null
+cmp out exp \
+  || { diff out exp 2> /dev/null; false; }
 
-(exit $fail); exit $fail
+exit 0
