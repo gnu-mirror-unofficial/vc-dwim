@@ -154,7 +154,7 @@ sub get_new_changelog_lines ($$)
   my $push_offset;
   foreach my $line (@$diff_lines)
     {
-      if ($line =~ /^\@\@ -\d+(?:,\d+)? \+(\d+),\d+ \@\@/)
+      if ($line =~ /^\@\@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? \@\@/)
 	{
 	  $push_offset = 1;
 	  $unidiff_at_offset = $1;
