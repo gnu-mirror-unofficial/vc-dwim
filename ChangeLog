@@ -1,5 +1,7 @@
 2006-10-25  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* configure.ac: Fix error message not to refer to Automake.
+
 	* vc-chlog.in (func_extract_changed_lines): Fix treatment of
 	diffs where either the old or the new file consisted of a single
 	line, i.e., the '@@ ... @@' line has less than four numbers.
