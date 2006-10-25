@@ -154,7 +154,7 @@ sub get_new_changelog_lines ($$)
   my $push_offset;
   foreach my $line (@$diff_lines)
     {
-      if ($line =~ /^\@\@ -\d+,\d+ \+(\d+),\d+ \@\@/)
+      if ($line =~ /^\@\@ -\d+(?:,\d+)? \+(\d+),\d+ \@\@/)
 	{
 	  $push_offset = 1;
 	  $unidiff_at_offset = $1;
@@ -803,6 +803,20 @@ sub main
   my $prev_file;
   foreach my $diff_line (@$diff_lines)
     {
+      # Handle lines like this from git:
+      #
+      # diff --git a/tests/mv/setup b/tests/other-fs-tmpdir
+      # similarity index 100%
+      # rename from tests/mv/setup
+      # rename to tests/other-fs-tmpdir
+      if ($vc_name eq VC::GIT && $diff_line =~ /^rename (from|to) (\S+)$/)
+	{
+	  $1 eq 'from'
+	    and $is_removed_file{$2} = 1;
+	  $seen{$2} = 1;
+	  next;
+	}
+
       # For git and hg, look for lines like /^--- a/dir/file.c\s/,
       # or /^\+\+\+ b/dir/file.c\s/, for an hg-added file.
       # For cvs and svn, there won't be an "a/" or "b/" prefix.

@@ -1,3 +1,13 @@
+2006-10-25  Jim Meyering  <jim@meyering.net>
+
+	* VC.pm (GIT DIFF_COMMAND): Change from 'git-diff' to 'cg-diff'.
+	The latter detects renames by default.
+	* vc-dwim.pl (main): Handle git-diff's rename-indicating syntax.
+	* vc-dwim.pl (get_new_changelog_lines): Recognize a header line
+	with only one comma, e.g., "@@ -1 +1,4 @@".
+	* tests/git-mv: New file.  Test for both of the above changes.
+	* tests/Makefile.am (TESTS): Add git-mv.
+
 2006-10-23  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	* vc-chlog.in (func_help): Update TODO.
