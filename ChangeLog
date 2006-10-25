@@ -1,5 +1,12 @@
 2006-10-25  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* vc-chlog.in (func_extract_changed_lines): Fix treatment of
+	diffs where either the old or the new file consisted of a single
+	line, i.e., the '@@ ... @@' line has less than four numbers.
+	This involved some reordering and renaming, in order to keep
+	thing consistent.
+	* tests/t-vc-chlog: Add a couple of tests.
+
 	* vc-chlog.in (func_extract_changed_lines): GNU diff 2.8.8 may
 	strip the prefix space from unchanged empty lines.  Accommodate.
 	* tests/t-vc-chlog: Add test for this.
