@@ -9,6 +9,7 @@
 	with only one comma, e.g., "@@ -1 +1,4 @@".
 	* tests/git-mv: New file.  Test for both of the above changes.
 	* tests/Makefile.am (TESTS): Add git-mv.
+	* NEWS: Mention this fix.
 
 2006-10-24  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 

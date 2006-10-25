@@ -4,6 +4,11 @@ vc-dwim NEWS                                          -*- outline -*-
 
   new tool vc-chlog for generating proto ChangeLog entries.
 
+** Bug fixes
+
+  vc-dwim can handle more diff syntax, including what you get
+  after a rename via git-mv.
+
 * Major changes in release 0.2.1 (2006-09-23)
 
 ** Bug fixes
