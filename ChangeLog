@@ -1,5 +1,7 @@
 2006-10-25  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* .ctags:  Added.  README refers to it, so let's have it.
+
 	* README: Add a section about vc-chlog, including suggestions
 	for .ctags additions.  Add section header for vc-dwim.
 
