@@ -1,5 +1,7 @@
 2006-10-25  Jim Meyering  <jim@meyering.net>
 
+	* VC.pm ($vc_cmd): Add an option to quiet each commit command.
+
 	* vc-dwim.pl (get_new_changelog_lines): Recognize a header line
 	with no comma, e.g., "@@ -1 +1 @@".
 

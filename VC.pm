@@ -40,21 +40,21 @@ my $vc_cmd =
    {
     DIFF_COMMAND => [qw(cvs -f -Q -n diff -Nu --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1, 1 => 1},
-    COMMIT_COMMAND => [qw(cvs ci -F)],
+    COMMIT_COMMAND => [qw(cvs -Q ci -F)],
     # is-version-controlled-file: search for m!^/REGEX_ESCAPED_FILE/! in CVS/Entries
    },
    GIT() => # aka cogito/git
    {
     DIFF_COMMAND => [qw(cg-diff --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
-    COMMIT_COMMAND => [qw(cg-commit -M)],
+    COMMIT_COMMAND => [qw(cg-commit -q -M)],
     # is-version-controlled-file: true, if "git-rm -n 'FILE'" exits successfully
    },
    HG() => # aka mercurial
    {
     DIFF_COMMAND => [qw(hg diff -p -a --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
-    COMMIT_COMMAND => [qw(hg ci -l)],
+    COMMIT_COMMAND => [qw(hg -q ci -l)],
     # For an existing FILE,
     # is-version-controlled-file: true, if "hg st -nu FILE" produces output
    },
@@ -62,7 +62,7 @@ my $vc_cmd =
    {
     DIFF_COMMAND => [qw(svn diff --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
-    COMMIT_COMMAND => [qw(svn ci -F)],
+    COMMIT_COMMAND => [qw(svn ci -q -F)],
    },
   };
 
