@@ -31,16 +31,7 @@ cat <<EOF >> ChangeLog || framework_failure=1
 	* y: ...this.
 EOF
 
-if test $framework_failure = 1; then
-  echo "$0: failure in testing framework" 1>&2
-  (exit 1); exit 1
-fi
-
-set -e
-
-vc-dwim ChangeLog > out
-
-cat <<\EOF > exp
+cat <<\EOF > exp || framework_failure=1
 * x: Rename to...
 * y: ...this.
 diff --git a/x b/y
@@ -48,6 +39,23 @@ similarity index 100%
 rename from x
 rename to y
 EOF
+
+if test $framework_failure = 1; then
+  echo "$0: failure in testing framework" 1>&2
+  (exit 1); exit 1
+fi
+
+set -e
+
+# Ensure that we get the "rename from..." and "rename to..."
+# lines in diff output.
+vc-dwim --diff x y > out
+grep -v '^*' exp > e1
+cmp out e1 \
+  || { diff out e1 2> /dev/null; false; }
+
+rm -f out
+vc-dwim ChangeLog > out
 
 cmp out exp \
   || { diff out exp 2> /dev/null; false; }
