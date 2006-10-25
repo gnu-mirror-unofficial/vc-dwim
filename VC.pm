@@ -45,7 +45,7 @@ my $vc_cmd =
    },
    GIT() => # aka cogito/git
    {
-    DIFF_COMMAND => [qw(git-diff --)],
+    DIFF_COMMAND => [qw(cg-diff --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
     COMMIT_COMMAND => [qw(cg-commit -M)],
     # is-version-controlled-file: true, if "git-rm -n 'FILE'" exits successfully
