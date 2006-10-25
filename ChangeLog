@@ -1,5 +1,8 @@
 2006-10-25  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* README: Add a section about vc-chlog, including suggestions
+	for .ctags additions.  Add section header for vc-dwim.
+
 	* vc-chlog.in: Move TODO list...
 	* TODO: ...here, and add headings for vc-dwim and vc-chlog.
 

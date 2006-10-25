@@ -1,12 +1,13 @@
 vc-dwim is a version-control-agnostic ChangeLog diff and commit tool.
+vc-chlog is a ChangeLog writing helper tool.
 
 It is useful if you like to maintain a ChangeLog file describing
 the changes you make to version-controlled files.  vc-dwim works with
 the following version control systems: git, mercurial, svn, and cvs.
 It should be easy to add support for more.
 
-What can it do?
-===============
+What can vc-dwim do?
+====================
 vc-dwim can save you from making some small mistakes when using
 version control programs from the command line.
 
@@ -74,3 +75,58 @@ For example:
 * lib.c: ...
 [m4/ChangeLog]
 * foo.m4: ...
+
+
+What can vc-chlog do?
+=====================
+vc-chlog is about writing a GNU Coding Standards-compliant ChangeLog
+entry easily.
+
+Say you have made some changes to your code, ready to be committed.
+The only remaining part is to write a ChangeLog entry: collect the list
+of changed files, in each file list the changed functions, and mention
+all of those, in order to afterwards describe the changes:
+	* file1.c (foo, bar, ...): ...
+	* file2.c (baz): ...
+
+vc-chlog attempts to help with this step.  It scans the diff (obtained
+by "vc-dwim --diff" or passed on standard input with --stdin) for the
+files that were touched and the set of lines that have been changed.
+It then uses the "ctags" program to try to find out in which functions
+those changes have occurred, and formats the file and functions names
+in a prototype ChangeLog entry form on standard output.
+
+There is a crucial assumption behind this idea to work well in practice:
+ctags should be able to generate tags for the identifiers that changed.
+For example, it should list functions in C source files (but not function-
+local or other nested entities); it should list macros in M4 files (e.g.,
+those that serve as input to Autoconf), or it should list "@node"s in
+Texinfo files.  The output of vc-chlog improves with that of ctags.
+
+Exuberant Ctags is a powerful and extensible implementation of this
+command, and therefore preferred.  For example, with the .ctags file in
+this package:
+  --langmap=Sh:+.in
+
+it detects the shell script vc-chlog.in as such.  With a ~/.ctags containing
+  --langdef=Texinfo
+  --langmap=Texinfo:.texi.txi.texinfo
+  --regex-texinfo=/^@node[ ]+([^ ]*)/\1/d,definition/
+
+it detects (currently only the first word of) Texinfo node names.
+Autoconf macros may be tagged by options such as
+  --langdef=m4
+  --langmap=m4:.m4.at.ac.as.m4sh
+  --regex-m4=/^(m4_def(ine|un(|_once))|A[CU]_DEFUN(|_ONCE)|AU_ALIAS)\(\[*([a-zA-Z0-9_()+]+)/\5/d,definition/
+
+
+vc-chlog tries to find out about added as well as removed identifiers
+by examining both the new and the old version of a file.  Here, it works
+hard not to change any file in your working directory, by using "ctags -x"
+and keeping all intermediate files in a temporary directory.
+
+Typically, vc-chlog is exact in the list of files that changed, false
+negatives in the list of identifiers stem from a "ctags" that failed
+to enumerate all identifiers properly, false positives typically stem from
+constructs like nested functions, or changes outside of them, like comments
+before a function.
