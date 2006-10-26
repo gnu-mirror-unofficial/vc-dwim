@@ -94,6 +94,7 @@ func_error ()
 # Create a temporary directory, take care of cleanup etc.
 func_tempdir ()
 {
+  test -z "$debug" || set -x
   tmp=
   trap 'exit_status=$?
 	test -z "$debug" && test -n "$tmp" && rm -rf "$tmp"
@@ -146,6 +147,7 @@ func_basename ()
 # respectively.
 func_extract_changed_lines ()
 {
+  test -z "$debug" || set -x
   # state machine: newhunk[] is defined if we are inside a hunk
   #                range[] is (partially) defined if we are reading ^[-+] runs
   #                file is nonempty if reading a patch for this file
@@ -163,14 +165,12 @@ func_extract_changed_lines ()
 	if (!(file in lines))
 	  system("echo >&2 error: empty changes for file " file);
 	else {
-	  # We use NR here instead of NR - 1, because otherwise the last
-	  # line of the file is missing.  Hope no patch program has problems
-	  # with the occasional extra line...
 	  strip[nfile] = hasprefix + 0;
-	  diff[nfile] = start " " NR;
+	  diff[nfile] = start " " NR - 1;
 	  files[nfile] = file;  # track these for stable ordering
 	  nfile = nfile + 1;
 	}
+	file = "";
       }
     }
     /^\+\+\+ / {
@@ -183,7 +183,6 @@ func_extract_changed_lines ()
 	next;
       }
     }
-    /^--- / { if (!(1 in newhunk)) next; }
     /^@@ -[0-9]+(,[0-9]+)? \+[0-9]+(,[0-9]+)? @@/ {
       if (file == "")
 	system("echo >&2 error: hunk but no file in patch at line " NR);
@@ -204,7 +203,6 @@ func_extract_changed_lines ()
     {
       if (!(1 in newhunk)) {	# do not match ^+++ or other gunk below
 	record_file();
-	file = "";
 	next;
       }
     }
@@ -220,9 +218,9 @@ func_extract_changed_lines ()
       range[2] = oldline;
     }
     /^ / || /^$/ {		# GNU diff 2.8.8 may strip trailing spaces :-/
-      output();
       oldline++;
       newline++;
+      output();
     }
     {
       # test for end of hunk (avoid parse errors in next line)
@@ -236,7 +234,8 @@ func_extract_changed_lines ()
       if (1 in newhunk) {
 	system("echo >&2 error: incomplete hunk at end of patch");
       } else {
-        record_file();
+	NR++;			# the previous record is the last line of the diff.
+	record_file();
       }
       output();
       for (nfile = 0; nfile in files; nfile++) {
@@ -250,6 +249,7 @@ func_extract_changed_lines ()
 # Generate ordered list of line numbers and tags for a file.
 func_taglist ()
 {
+  test -z "$debug" || set -x
   $CTAGS -x "$1" |
   if test $ctags_strip_type_column = yes; then
     $AWK '{ print $3, $1; }'
@@ -272,6 +272,7 @@ func_taglist ()
 # quite wrong.
 func_extract_identifiers ()
 {
+  test -z "$debug" || set -x
   nfile=0
   while read file strip diffstart diffend ranges; do
     echo "file: $file"
@@ -366,6 +367,7 @@ func_extract_identifiers ()
 # Generate a proto ChangeLog entry from a file and identifier list.
 func_pretty_changelog_entry ()
 {
+  test -z "$debug" || set -x
   $AWK '
     # state 0: before printing the header line
     #       1: before open parenthesis

@@ -1,6 +1,6 @@
 # -*- sh -*-
 have_hg=1
-hg_version=$(hg --version 2> /dev/null | sed 1q)
+hg_version=`(hg --version) 2> /dev/null | sed 1q`
 if test $? != 0; then
   have_hg=0
 else

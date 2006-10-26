@@ -380,7 +380,7 @@ cat >expected-emacs <<\EOF
 EOF
 
 eval patch -p0 < patch $redirect
-vc-chlog --debug --stdin < patch | sed 1,2d > stdout
+vc-chlog --stdin < patch | sed 1,2d > stdout
 test "$VERBOSE" != yes || cat stdout
 # Yes, all those if..$VERBOSE then..fi are on purpose
 # inside this outer if clause.  Thanks to BSD sh -e...

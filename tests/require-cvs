@@ -1,0 +1,12 @@
+# -*- sh -*-
+have_cvs=1
+cvs_version=`(cvs --version) 2>/dev/null`
+if test $? != 0; then
+  have_cvs=0
+fi
+
+test $have_cvs = 0 &&
+  {
+    echo "$0: skipping this test, since you lack cvs" 1>&2
+    (exit 77); exit 77
+  }

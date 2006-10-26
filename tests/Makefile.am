@@ -1,4 +1,5 @@
 EXTRA_DIST = $(TESTS) \
+  require-cvs \
   require-git \
   require-hg \
   trap-setup

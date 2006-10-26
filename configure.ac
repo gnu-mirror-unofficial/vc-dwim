@@ -7,7 +7,6 @@ AM_INIT_AUTOMAKE([1.9.6 foreign dist-bzip2 check-news])
 AC_PREREQ(2.59)
 
 # Where to generate output; srcdir location.
-AC_CONFIG_HEADERS([config.h:config.in])dnl Keep filename to 8.3 for MS-DOS.
 AC_CONFIG_SRCDIR([vc-dwim.pl])
 
 AC_PATH_PROG(PERL, perl)

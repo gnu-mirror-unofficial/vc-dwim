@@ -22,7 +22,7 @@ do_subst = sed						\
   -e 's,[@]PERL[@],$(PERL),g'				\
   -e 's,[@]SHELL[@],$(SHELL),g'				\
   -e 's,[@]VERSION[@],$(VERSION)'"$$ver_suffix",g	\
-  -e 's,[@]VC_LIST[@],'"$$($(gen_vc_name_list))",g	\
+  -e 's,[@]VC_LIST[@],'"`$(gen_vc_name_list)`",g	\
   -e 's,[@]configure_input[@],Generated from $@.pl; do not edit by hand.,g' \
   -e 's,[@]datadir[@],$(datadir),g'
 
@@ -31,11 +31,12 @@ hg_version = hg log --limit=1 --template='{date|shortdate}.{node|short}\n'
 ## These files depend on Makefile so they are rebuilt if $(VERSION),
 ## $(datadir) or other do_subst'ituted variables change.
 ## Use chmod a-w to prevent people from editing the wrong file by accident.
+## Write this so it works even when hg is not installed on this system.
 vc-dwim: vc-dwim.pl Makefile
 	rm -f $@ $@.tmp
-	dirty=`hg stat -nm 2>/dev/null`;				\
+	dirty=`($(am__cd) $(srcdir) && hg stat -nm) 2>/dev/null || :`;	\
 	test -n "$$dirty" && dirty='-dirty';				\
-	rev=$$($(am__cd) $(srcdir);$(hg_version) 2> /dev/null) || : ;	\
+	rev=`($(am__cd) $(srcdir) && $(hg_version)) 2>/dev/null || :`;	\
 	ver_suffix="$$rev$$dirty";					\
 	test -n "$$ver_suffix" && ver_suffix=" ($$ver_suffix)";		\
 	$(do_subst) $(srcdir)/$@.pl >$@.tmp
