@@ -1,5 +1,7 @@
 2006-10-26  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* tests/t-vc-chlog: Remove debugging leftover `--debug'.
+
 	* vc-chlog.in [debug] (func_tempdir, func_extract_changed_lines):
 	Add 'set -e'; ksh resets it at function entry.
 	(func_taglist, func_extract_identifiers): Likewise.
