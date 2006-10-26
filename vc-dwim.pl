@@ -477,6 +477,92 @@ sub do_at($$)
     or die "$ME: unable to restore working directory $initial_wd: $!\n";
 }
 
+# Cross-check the file names and operations (change, add, remove) implied
+# by diff output against the names listed in ChangeLog ($affected_files).
+# Ensure that each affected file is mentioned in @$diff_lines
+# Thus, if a new file is listed in a ChangeLog entry, but not e.g.,
+# "hg add"ed, this will catch the error.  Another explanation: a typo,
+# in case you manually (mis)typed the file name in the ChangeLog.
+sub cross_check ($$$)
+{
+  my ($vc, $affected_files, $diff_lines) = @_;
+  my $vc_name = $vc->name();
+
+  # Record the name of each file marked for removal, according to diff output.
+  my %is_removed_file;
+
+  my $fail = 0;
+  my %seen;
+  my $prev_file;
+  foreach my $diff_line (@$diff_lines)
+    {
+      # Handle lines like this from git:
+      #
+      # diff --git a/tests/mv/setup b/tests/other-fs-tmpdir
+      # similarity index 100%
+      # rename from tests/mv/setup
+      # rename to tests/other-fs-tmpdir
+      if ($vc_name eq VC::GIT)
+	{
+	  if ($diff_line =~ /^rename (from|to) (\S+)$/)
+	    {
+	      $1 eq 'from'
+		and $is_removed_file{$2} = 1;
+	      $seen{$2} = 1;
+	      next;
+	    }
+	}
+
+      # For git and hg, look for lines like /^--- a/dir/file.c\s/,
+      # or /^\+\+\+ b/dir/file.c\s/, for an hg-added file.
+      # For cvs and svn, there won't be an "a/" or "b/" prefix.
+      $diff_line =~ /^[-+]{3} (\S+)(?:[ \t]|$)/
+	or next;
+      my $file_name = $1;
+      if ($vc_name eq VC::GIT || $vc_name eq VC::HG)
+	{
+	  # Remove the fake leading "a/" component that git and hg add.
+	  $file_name =~ s,^[ab]/,,;
+	}
+
+      $diff_line =~ /^\+/ && $file_name eq '/dev/null'
+	and $is_removed_file{$prev_file} = 1;
+      $prev_file = $file_name;
+
+      $seen{$file_name} = 1;
+    }
+  foreach my $f (@$affected_files)
+    {
+      my $full_name = ($vc->diff_outputs_full_file_names()
+		       ? $vc->full_file_name($f) : $f);
+      if ( ! $seen{$full_name})
+	{
+	  warn "$ME: $f is listed in the ChangeLog entry, but not in diffs.\n"
+	    . "Did you forget to add it?\n";
+	  $fail = 1;
+	}
+    }
+  $fail
+    and exit 1;
+
+  foreach my $f (@$affected_files)
+    {
+      if (exists $is_removed_file{$f})
+	{
+	  -f $f
+	    and (warn "$ME: $f: to-be-removed file is still here?!?\n"),
+	      $fail = 1, next;
+	}
+      else
+	{
+	  -f $f
+	    or (warn "$ME: $f: no such file\n"), $fail = 1, next;
+	}
+    }
+  $fail
+    and exit 1;
+}
+
 sub main
 {
   my $commit;
@@ -792,79 +878,7 @@ sub main
   # But don't print diff output unless we're sure everything is ok.
   my $diff_lines = get_diffs $vc, \@affected_files;
 
-  # Record the name of each file marked for removal, according to diff output.
-  my %is_removed_file;
-
-  # Ensure that each affected file is mentioned in @$diff_lines
-  # Thus, if a new file is listed in a ChangeLog entry, but not e.g.,
-  # "hg add"ed, this will catch the error.  Another explanation: a typo,
-  # in case you manually (mis)typed the file name in the ChangeLog.
-  my %seen;
-  my $prev_file;
-  foreach my $diff_line (@$diff_lines)
-    {
-      # Handle lines like this from git:
-      #
-      # diff --git a/tests/mv/setup b/tests/other-fs-tmpdir
-      # similarity index 100%
-      # rename from tests/mv/setup
-      # rename to tests/other-fs-tmpdir
-      if ($vc_name eq VC::GIT && $diff_line =~ /^rename (from|to) (\S+)$/)
-	{
-	  $1 eq 'from'
-	    and $is_removed_file{$2} = 1;
-	  $seen{$2} = 1;
-	  next;
-	}
-
-      # For git and hg, look for lines like /^--- a/dir/file.c\s/,
-      # or /^\+\+\+ b/dir/file.c\s/, for an hg-added file.
-      # For cvs and svn, there won't be an "a/" or "b/" prefix.
-      $diff_line =~ /^[-+]{3} (\S+)(?:[ \t]|$)/
-	or next;
-      my $file_name = $1;
-      if ($vc_name eq VC::GIT || $vc_name eq VC::HG)
-	{
-	  # Remove the fake leading "a/" component that git and hg add.
-	  $file_name =~ s,^[ab]/,,;
-	}
-
-      $diff_line =~ /^\+/ && $file_name eq '/dev/null'
-	and $is_removed_file{$prev_file} = 1;
-      $prev_file = $file_name;
-
-      $seen{$file_name} = 1;
-    }
-  foreach my $f (@affected_files)
-    {
-      my $full_name = ($vc->diff_outputs_full_file_names()
-		       ? $vc->full_file_name($f) : $f);
-      if ( ! $seen{$full_name})
-	{
-	  warn "$ME: $f is listed in the ChangeLog entry, but not in diffs.\n"
-	    . "Did you forget to add it?\n";
-	  $fail = 1;
-	}
-    }
-  $fail
-    and exit 1;
-
-  foreach my $f (@affected_files)
-    {
-      if (exists $is_removed_file{$f})
-	{
-	  -f $f
-	    and (warn "$ME: $f: to-be-removed file is still here?!?\n"),
-	      $fail = 1, next;
-	}
-      else
-	{
-	  -f $f
-	    or (warn "$ME: $f: no such file\n"), $fail = 1, next;
-	}
-    }
-  $fail
-    and exit 1;
+  cross_check $vc, \@affected_files, $diff_lines;
 
   print join ("\n", @non_ref_log_msg_lines), "\n";
   print join ("\n", @$diff_lines), "\n";

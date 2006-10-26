@@ -1,3 +1,8 @@
+2006-10-26  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim.pl (cross_check): New function, factored out of...
+	(main): ...here.
+
 2006-10-25  Jim Meyering  <jim@meyering.net>
 
 	* VC.pm ($vc_cmd): Add an option to quiet each commit command.
