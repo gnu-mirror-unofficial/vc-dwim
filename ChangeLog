@@ -1,5 +1,10 @@
 2006-10-26  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* vc-chlog.in (func_extract_changed_lines): Fix the diff lines
+	computation.  Now they should be the exact boundaries of the per
+	file patch in any case (no trailing lines any more).  This
+	change requires that the awk variable NR be writable.
+
 	* tests/t-vc-chlog: Remove debugging leftover `--debug'.
 
 	* vc-chlog.in [debug] (func_tempdir, func_extract_changed_lines):
