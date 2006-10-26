@@ -40,6 +40,18 @@ rename from x
 rename to y
 EOF
 
+# You get different output for a renaming, with older versions.
+cat <<\EOF > exp-old || framework_failure=1
+* x: Rename to...
+* y: ...this.
+diff --git a/x b/y
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/y b/y
+new file mode 100644
+index 0000000..e69de29
+EOF
+
 if test $framework_failure = 1; then
   echo "$0: failure in testing framework" 1>&2
   (exit 1); exit 1
@@ -49,7 +61,13 @@ set -e
 
 vc-dwim ChangeLog > out
 
-cmp out exp \
-  || { diff out exp 2> /dev/null; false; }
+if cmp out exp 2> /dev/null; then \
+  :
+elif cmp out exp-old; then \
+  :
+else
+  diff out exp 2> /dev/null
+  false
+fi
 
 exit 0

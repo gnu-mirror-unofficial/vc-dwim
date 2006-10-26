@@ -4,6 +4,8 @@
 	header output.
 	* tests/add-empty: New test for the above fix.
 	* tests/git-mv: Remove nonessential version-sensitive check.
+	Accept diff output from older versions of git.
+
 	* tests/Makefile.am (TESTS): Add add-empty.
 
 	* vc-dwim.pl (cross_check): New function, factored out of...
