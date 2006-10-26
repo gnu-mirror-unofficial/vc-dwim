@@ -1,5 +1,10 @@
 2006-10-26  Jim Meyering  <jim@meyering.net>
 
+	* vc-dwim.pl (cross_check): Handle another style of git-diff
+	header output.
+	* tests/add-empty: New test for the above fix.
+	* tests/git-mv: Remove nonessential version-sensitive check.
+
 	* vc-dwim.pl (cross_check): New function, factored out of...
 	(main): ...here.
 

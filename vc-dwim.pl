@@ -496,19 +496,46 @@ sub cross_check ($$$)
   my $prev_file;
   foreach my $diff_line (@$diff_lines)
     {
-      # Handle lines like this from git:
-      #
-      # diff --git a/tests/mv/setup b/tests/other-fs-tmpdir
-      # similarity index 100%
-      # rename from tests/mv/setup
-      # rename to tests/other-fs-tmpdir
       if ($vc_name eq VC::GIT)
 	{
+	  # Handle diff-header lines like this from git:
+	  #
+	  # diff --git a/tests/mv/setup b/tests/other-fs-tmpdir
+	  # similarity index 100%
+	  # rename from tests/mv/setup
+	  # rename to tests/other-fs-tmpdir
 	  if ($diff_line =~ /^rename (from|to) (\S+)$/)
 	    {
 	      $1 eq 'from'
 		and $is_removed_file{$2} = 1;
 	      $seen{$2} = 1;
+	      next;
+	    }
+
+	  # Handle diff-header lines like this from git:
+	  # deleted file mode 100644
+	  # index 8f468ef..0000000
+	  # --- a/x
+	  # +++ /dev/null
+	  # @@ -1,3 +0,0 @@
+	  # -a
+	  # diff --git a/z b/z
+	  # new file mode 100644
+	  # index 0000000..e69de29
+	  $diff_line =~ /^diff /
+	    and undef $prev_file;
+
+	  if ($diff_line =~ m!^diff --git a/(\S+) b/\S+$!)
+	    {
+	      $prev_file = $1;
+	      next;
+	    }
+
+	  if ($diff_line =~ /^(deleted|new) file mode [0-7]{6}$/)
+	    {
+	      $1 eq 'deleted'
+		and $is_removed_file{$prev_file} = 1;
+	      $seen{$prev_file} = 1;
 	      next;
 	    }
 	}

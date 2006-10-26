@@ -1,7 +1,5 @@
 #!/bin/sh
-# Exercise git-mv's renaming.  Results in different diff syntax.
-# This also exercises the other fix: handle a diff header line
-# with only one comma, e.g., "@@ -1 +1,4 @@".
+# Handle git-diff headers upon adding an empty file.
 
 if test "$VERBOSE" = yes; then
   set -x
@@ -19,10 +17,11 @@ cat <<EOF > ChangeLog || framework_failure=1
 2006-09-04  Jim Meyering  <jim@meyering.net>
 EOF
 git init-db 2> /dev/null		\
-  && touch x				\
+  && echo foo > x			\
   && git add .				\
   && git commit -m m . 2> /dev/null	\
   && git mv x y				\
+  && : > y				\
     || framework_failure=1
 
 cat <<EOF >> ChangeLog || framework_failure=1
@@ -34,10 +33,16 @@ EOF
 cat <<\EOF > exp || framework_failure=1
 * x: Rename to...
 * y: ...this.
-diff --git a/x b/y
-similarity index 100%
-rename from x
-rename to y
+diff --git a/x b/x
+deleted file mode 100644
+index 257cc56..0000000
+--- a/x
++++ /dev/null
+@@ -1 +0,0 @@
+-foo
+diff --git a/y b/y
+new file mode 100644
+index 0000000..e69de29
 EOF
 
 if test $framework_failure = 1; then
