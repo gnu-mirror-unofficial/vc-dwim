@@ -1,5 +1,12 @@
 2006-10-26  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* Makefile.am: Use `cmd` instead of $(cmd).
+	(vc-dwim): Change to srcdir before determining $dirty.
+	For this target only, wrap calls to hg in subshell, append
+	'|| :', to avoid output and make failure when hg is not found.
+	* tests/require-git: Use `cmd` instead of $(cmd).
+	* tests/require-hg: Likewise.
+
 	* configure.ac: No need for a config header in this game.
 
 2006-10-26  Jim Meyering  <jim@meyering.net>
