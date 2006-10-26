@@ -1,5 +1,9 @@
 2006-10-26  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* tests/require-cvs: New test, for systems without CVS.
+	* tests/subdir-cvs: Use it.
+	* tests/Makefile.am: Distribute it.
+
 	* Makefile.am: Use `cmd` instead of $(cmd).
 	(vc-dwim): Change to srcdir before determining $dirty.
 	For this target only, wrap calls to hg in subshell, append
