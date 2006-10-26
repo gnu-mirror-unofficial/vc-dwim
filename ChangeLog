@@ -1,5 +1,10 @@
 2006-10-26  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* vc-chlog.in [debug] (func_tempdir, func_extract_changed_lines):
+	Add 'set -e'; ksh resets it at function entry.
+	(func_taglist, func_extract_identifiers): Likewise.
+	(func_pretty_changelog_entry): Likewise.
+
 	* tests/require-cvs: New test, for systems without CVS.
 	* tests/subdir-cvs: Use it.
 	* tests/Makefile.am: Distribute it.
