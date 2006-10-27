@@ -412,7 +412,7 @@ func_pretty_changelog_entry ()
 sed_remove_comments='/^[	 ]*#/d'
 initfiles=/dev/null
 for file in $HOME/.${progname}rc .${progname}rc; do
-  test -r "$file" && initfiles="$initfiles $file"
+  test ! -r "$file" || initfiles="$initfiles $file"
 done
 init_options=`sed "$sed_remove_comments" $initfiles | tr '\n' ' '`
 eval set x "$init_options" '${1+"$@"}'
