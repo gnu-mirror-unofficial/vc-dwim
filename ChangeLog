@@ -27,6 +27,9 @@
 
 2006-10-26  Jim Meyering  <jim@meyering.net>
 
+	* tests/git-mv: Use the correct expected output for older git.
+	Reported by Ralf Wildenhues.
+
 	* vc-dwim.pl (cross_check): Handle another style of git-diff
 	header output.
 	* tests/add-empty: New test for the above fix.
