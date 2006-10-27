@@ -53,6 +53,7 @@ progname=vc-chlog
 AWK="@AWK@"
 CTAGS="@CTAGS@"
 ctags_strip_type_column="@ctags_strip_type_column@"
+PATCH="@PATCH@"
 : ${textwidth=72}
 : ${tabstop=8}
 : ${TMPDIR=/tmp}
@@ -91,18 +92,11 @@ func_error ()
 
 
 # func_tempdir
-# Create a temporary directory, take care of cleanup etc.
+# Create a temporary directory.
 func_tempdir ()
 {
   test -z "$debug" || set -x
   tmp=
-  trap 'exit_status=$?
-	test -z "$debug" && test -n "$tmp" && rm -rf "$tmp"
-	exit $exit_status' 0
-  for sig in 1 2 13 15; do
-    trap 'func_exit 1' $sig
-  done
-
   {
     tmp=`(umask 077 && mktemp -d "$TMPDIR/vccXXXXXX") 2>/dev/null` &&
     test -n "$tmp" && test -d "$tmp"
@@ -157,7 +151,11 @@ func_extract_changed_lines ()
       if (2 in range || 4 in range) {
 	lines[file] = lines[file] " " \
 	              range[1]+0 "-" range[2]+0 "-" range[3]+0 "-" range[4]+0;
-	delete range;
+        # Solaris nawk cannot delete a whole array at once
+	delete range[1];
+	delete range[2];
+	delete range[3];
+	delete range[4];
       }
     }
     function record_file () {
@@ -225,9 +223,11 @@ func_extract_changed_lines ()
     {
       # test for end of hunk (avoid parse errors in next line)
       if (1 in newhunk && oldline == oldhunk[2] && newline == newhunk[2]) {
+	delete oldhunk[1];
+	delete oldhunk[2];
+	delete newhunk[1];
+	delete newhunk[2];
 	output();
-	delete oldhunk;
-	delete newhunk;
       }
     }
     END {
@@ -281,7 +281,7 @@ func_extract_identifiers ()
     nidents=$tmp/nidents-$nfile
     oidents=$tmp/oidents-$nfile
     sed "${diffstart},${diffend}p;d" "$patchfile" |
-      patch -o "$oldfile" -p$strip -R "$file"
+      $PATCH -o "$oldfile" -p$strip -R "$file"
     func_taglist "$file" >"$tagfile"
     func_taglist "$oldfile" >"$tagfile-old"
     exec 5<"$tagfile" 6<"$tagfile-old" 7>"$nidents" 8>"$oidents"
@@ -412,7 +412,7 @@ func_pretty_changelog_entry ()
 sed_remove_comments='/^[	 ]*#/d'
 initfiles=/dev/null
 for file in $HOME/.${progname}rc .${progname}rc; do
-  test -r "$file" && initfiles="$initfiles $file"
+  test ! -r "$file" || initfiles="$initfiles $file"
 done
 init_options=`sed "$sed_remove_comments" $initfiles | tr '\n' ' '`
 eval set x "$init_options" '${1+"$@"}'
@@ -436,6 +436,15 @@ while test $# -gt 0; do
 done
 
 func_tempdir
+# We cannot put the trap 0 cleanup code in a shell function,
+# otherwise AIX /bin/sh will invoke it upon function exit.
+trap 'exit_status=$?
+      test -z "$debug" && test -n "$tmp" && rm -rf "$tmp"
+      exit $exit_status' 0
+for sig in 1 2 13 15; do
+  trap 'func_exit 1' $sig
+done
+
 patchfile=$tmp/diff
 
 if $stdin; then

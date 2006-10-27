@@ -42,6 +42,9 @@ rm -f conftest.c
 ])
 AC_SUBST([ctags_strip_type_column], [$rw_cv_ctags_type_column])
 
+AC_CHECK_PROGS([PATCH], [gpatch patch])
+AC_ARG_VAR([PATCH], [patch program to use])
+
 AC_CONFIG_FILES([Makefile tests/Makefile])
 AC_CONFIG_FILES([vc-chlog], [chmod +x vc-chlog])
 AC_OUTPUT

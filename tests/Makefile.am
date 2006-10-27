@@ -7,6 +7,7 @@ EXTRA_DIST = $(TESTS) \
 TESTS_ENVIRONMENT = \
   top_srcdir=$(top_srcdir) \
   srcdir=$(srcdir) \
+  PATCH="$(PATCH)" \
   PERL="$(PERL)" \
   perllibdir="`$(am__cd) $(top_srcdir) && pwd`" \
   PATH="$(VG_PATH_PREFIX)`pwd`/..$(PATH_SEPARATOR)$$PATH"

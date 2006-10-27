@@ -1,3 +1,39 @@
+2006-10-27  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* tests/t-vc-chlog: Reversing a unidiff that removes the only
+	line of a file seems not to be portable to non-GNU patch, so
+	ignore failure for those.
+
+	* tests/t-vc-chlog: Using a checked eval does not work with BSD
+	'sh -e'; drop this idea.  Instead, redirect most output and print
+	it if $VERBOSE.  Use...
+	(run_vc_chlog): New function, to help.  Use everywhere.
+	(diff_u): New variable.  Test for `diff -u', and for now, just
+	SKIP the whole test if it does not know it.  Use everywhere.
+	FreeBSD patch is quite verbose on stderr at times, relax a
+	couple of tests for this.
+
+	* tests/t-vc-chlog: Do the plus_at_beginning test at the end,
+	separately from tests that have less chance of failing a dumb
+	'patch' program.
+
+	* configure.ac (PATCH): New precious variable; prefer gpatch
+	over patch.
+	* vc-chlog.in (func_extract_identifiers): substitute and use it.
+	* tests/Makefile.am (TESTS_ENVIRONMENT): Set it.
+	* tests/t-vc-chlog: Use it.
+
+	* vc-chlog.in (func_tempdir): Move the trap initialization
+	outside of the shell function into the main code flow.
+	Otherwise AIX 5.3 sh will invoke the 0 trap at the end of
+	func_tempdir.
+
+	* vc-chlog.in (func_extract_changed_lines): Solaris awk and nawk
+	does not delete a whole array.  Delete individual items instead.
+
+	* vc-chlog.in: Invert logic for initfile existence test to avoid
+	`set -e' from halting the script.
+
 2006-10-27  Jim Meyering  <jim@meyering.net>
 
 	Don't emit distracting output during "make check".

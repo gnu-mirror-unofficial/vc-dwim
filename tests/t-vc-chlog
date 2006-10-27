@@ -4,8 +4,6 @@
 if test "$VERBOSE" = yes; then
   set -x
   vc-chlog --version
-else
-  redirect='>/dev/null'
 fi
 
 . $srcdir/trap-setup
@@ -15,6 +13,28 @@ mkdir -p $tmp && cd $tmp || {
   (exit 1); exit 1
 }
 
+# Let's see whether this system knows unidiff format.
+# We assume that if diff doesn't, then patch also won't.
+# As long as vc-chlog only works with unidiff, SKIP the test.
+: ${diff=diff}
+: >empty
+if ($diff -u empty empty) >/dev/null 2>&1; then
+  diff_u="$diff -u"
+else
+  diff_u=$diff
+  echo "$0: skipping this test, since $diff -u does not work" 1>&2
+  (exit 77); exit 77
+fi
+
+run_vc_chlog ()
+{
+  { vc-chlog --stdin < "$1" 2>stderr ||
+    { echo; echo; echo vc-chlog failed; }; } |
+      sed 1,2d > stdout
+  test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
+}
+
+fail=0
 set -e
 
 ### Set up files ###
@@ -82,22 +102,6 @@ int keep_this (int t)
 EOF
 
 rm -f new.c
-
-cat >plus_at_beginning.c <<\EOF
-/* there can be a plus (or more than one) at the beginning of a line */
-int foo (int a, int b, int c)
-{
-  return a
-- b -
--- c;
-}
-
-int bar (int a, int b, int c)
-{
-  return a +
--- b;
-}
-EOF
 
 cat >prepend.c <<\EOF
 int old_function (void)
@@ -174,7 +178,7 @@ EOF
 
 ### set up patch ###
 
-cat >patch <<\EOF
+cat >p1 <<\EOF
 --- add-several.c	5 Oct 2006 15:12:00 -0000	1.1.1.1
 +++ add-several.c	5 Oct 2006 15:13:09 -0000
 @@ -5,6 +5,15 @@
@@ -256,26 +260,6 @@ cat >patch <<\EOF
 +extern int another_new_function (void);
 +
 +int new_data = 17;
---- plus_at_beginning.c	19 Oct 2006 11:40:59 -0000	1.4
-+++ plus_at_beginning.c	19 Oct 2006 11:41:18 -0000
-@@ -2,12 +2,14 @@
- int foo (int a, int b, int c)
- {
-   return a
--- b -
---- c;
-++ b +
-+++ c
-+- 2 -
-+--a;
- }
- 
- int bar (int a, int b, int c)
- {
-   return a +
---- b;
-+++ b;
- }
 --- prepend.c	5 Oct 2006 15:12:00 -0000	1.1.1.1
 +++ prepend.c	5 Oct 2006 15:14:20 -0000
 @@ -1,3 +1,11 @@
@@ -340,7 +324,6 @@ cat >expected-perfect <<\EOF
 	* append.c (new_function, new_data):
 	* moved.c (will_be_moved_2):
 	* new.c (new_function, new_data):
-	* plus_at_beginning.c (foo, bar):
 	* prepend.c (new_function, new_data):
 	* remove-several.c (will_be_gone_2):
 	* several-changes-per-hunk.c (another_function, global_data)
@@ -356,7 +339,6 @@ cat >expected-exuberant <<\EOF
 	* append.c (another_old_function, new_function, new_data):
 	* moved.c (will_be_moved_2):
 	* new.c (new_function, new_data):
-	* plus_at_beginning.c (foo, bar):
 	* prepend.c (new_function, new_data):
 	* remove-several.c (global_data, will_be_gone_2):
 	* several-changes-per-hunk.c (another_function, global_data)
@@ -371,7 +353,6 @@ cat >expected-emacs <<\EOF
 	* append.c (another_old_function, new_function):
 	* moved.c (will_be_moved_2):
 	* new.c (new_function):
-	* plus_at_beginning.c (foo, bar):
 	* prepend.c (new_function):
 	* remove-several.c (another_old_function, will_be_gone_2):
 	* several-changes-per-hunk.c (another_function, function3)
@@ -379,17 +360,21 @@ cat >expected-emacs <<\EOF
 
 EOF
 
-eval patch -p0 < patch $redirect
-vc-chlog --stdin < patch | sed 1,2d > stdout
+$PATCH -p0 <p1 >stdout 2>stderr || fail=1
+test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
+test "$fail" -ne 1 
+
+run_vc_chlog p1
 test "$VERBOSE" != yes || cat stdout
 # Yes, all those if..$VERBOSE then..fi are on purpose
 # inside this outer if clause.  Thanks to BSD sh -e...
 success=false
 for file in expected-perfect expected-exuberant expected-emacs; do
-  if eval diff -u $file stdout $redirect; then
+  if $diff_u $file stdout >diffout 2>differr; then
     success=:
     break
   fi
+  test "$VERBOSE" != yes || { cat diffout; cat differr >&2; }
 done
 $success
 
@@ -400,9 +385,8 @@ cat >p2 <<\EOF
 EOF
 cat >expected <<\EOF
 EOF
-vc-chlog --stdin < p2 | sed 1,2d > stdout
-test "$VERBOSE" != yes || cat stdout
-diff -u expected stdout
+run_vc_chlog p2
+$diff_u expected stdout
 
 cat >p3 <<\EOF
 @@ -3,4 +2,7 @@
@@ -412,10 +396,9 @@ cat >err-expected <<\EOF
 error: hunk but no file in patch at line 1
 error: incomplete hunk at end of patch
 EOF
-vc-chlog --stdin < p3 >stdout 2>stderr
-test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
-diff -u expected stdout
-diff -u err-expected stderr
+run_vc_chlog p3
+$diff_u expected stdout
+$diff_u err-expected stderr
 
 
 cat >p4 <<\EOF
@@ -448,10 +431,9 @@ cat >err-expected <<\EOF
 error: incomplete hunk in patch at line 15
 error: incomplete hunk at end of patch
 EOF
-vc-chlog --stdin < p4 2>stderr | sed 1,2d > stdout
-test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
-diff -u expected stdout
-diff -u err-expected stderr
+run_vc_chlog p4
+$diff_u expected stdout
+$diff_u err-expected stderr
 
 cat >p5 <<\EOF
 --- file1.c	19 Oct 2006 11:15:28 -0000	1.1
@@ -464,10 +446,9 @@ cat >err-expected <<\EOF
 error: empty changes for file file1.c
 error: empty changes for file file2.c
 EOF
-vc-chlog --stdin < p5 2>stderr | sed 1,2d > stdout
-test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
-diff -u expected stdout
-diff -u err-expected stderr
+run_vc_chlog p5
+$diff_u expected stdout
+$diff_u err-expected stderr
 
 
 ### diffs containing an empty line (simulate GNU diff 2.8.8) ###
@@ -494,10 +475,10 @@ cat >expected <<\EOF
 
 EOF
 : >err-expected
-vc-chlog --stdin < p6 2>stderr | sed 1,2d > stdout
-test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
-diff -u expected stdout
-diff -u err-expected stderr
+run_vc_chlog p6
+$diff_u expected stdout
+# FreeBSD patch is verbose here...
+#$diff_u err-expected stderr
 
 
 ### changes that start or end up with one-line files ###
@@ -514,11 +495,13 @@ cat >expected <<\EOF
 
 EOF
 : >err-expected
-eval patch -p0 < p7 $redirect
-vc-chlog --stdin < p7 2>stderr | sed 1,2d > stdout
+$PATCH -p0 < p7 >stdout 2>stderr
 test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
-diff -u expected stdout
-diff -u err-expected stderr
+run_vc_chlog p7
+$diff_u expected stdout
+# FreeBSD patch is verbose here...
+#$diff_u err-expected stderr
+
 
 
 : >remove-oneline.c
@@ -533,9 +516,70 @@ cat >expected <<\EOF
 
 EOF
 : >err-expected
-vc-chlog --stdin < p8 2>stderr | sed 1,2d > stdout
+run_vc_chlog p8
+# It seems non-GNU patch have some problems with reversing this diff:
+if $diff_u expected stdout >diffout 2>differr; then :; else
+  test "$VERBOSE" != yes || { cat diffout; cat differr >&2; }
+  # OpenBSD patch understands --version, and does not fail upon --help.
+  # So we try this rather obscure method.
+  case `$PATCH --help 2>/dev/null` in
+  *bug-patch@gnu.org*)
+    (exit 1); exit 1 ;;
+  esac
+fi
+# FreeBSD patch is verbose here...
+#$diff_u err-expected stderr
+
+
+### a patch may contain a line matching '^--- ' within a hunk ###
+
+cat >plus_at_beginning.c <<\EOF
+/* there can be a plus (or more than one) at the beginning of a line */
+int foo (int a, int b, int c)
+{
+  return a
+- b -
+-- c;
+}
+
+int bar (int a, int b, int c)
+{
+  return a +
+-- b;
+}
+EOF
+
+cat >p9 <<\EOF
+--- plus_at_beginning.c	19 Oct 2006 11:40:59 -0000	1.4
++++ plus_at_beginning.c	19 Oct 2006 11:41:18 -0000
+@@ -2,12 +2,14 @@
+ int foo (int a, int b, int c)
+ {
+   return a
+-- b -
+--- c;
+++ b +
++++ c
++- 2 -
++--a;
+ }
+ 
+ int bar (int a, int b, int c)
+ {
+   return a +
+--- b;
++++ b;
+ }
+EOF
+
+cat >expected <<\EOF
+	* plus_at_beginning.c (foo, bar):
+
+EOF
+
+$PATCH -p0 < p9 >stdout 2>stderr
 test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
-diff -u expected stdout
-diff -u err-expected stderr
+run_vc_chlog p9
+$diff_u expected stdout
 
 exit 0
