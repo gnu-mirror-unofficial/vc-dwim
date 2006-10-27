@@ -1,5 +1,14 @@
 2006-10-27  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* tests/t-vc-chlog: Using a checked eval does not work with BSD
+	'sh -e'; drop this idea.  Instead, redirect most output and print
+	it if $VERBOSE.  Use...
+	(run_vc_chlog): New function, to help.  Use everywhere.
+	(diff_u): New variable.  Test for `diff -u', and for now, just
+	SKIP the whole test if it does not know it.  Use everywhere.
+	FreeBSD patch is quite verbose on stderr at times, relax a
+	couple of tests for this.
+
 	* tests/t-vc-chlog: Do the plus_at_beginning test at the end,
 	separately from tests that have less chance of failing a dumb
 	'patch' program.
