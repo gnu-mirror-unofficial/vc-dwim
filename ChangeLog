@@ -1,3 +1,7 @@
+2006-10-27  Jim Meyering  <jim@meyering.net>
+
+	* tests/git-mv: Remove useless trailing backslashes.
+
 2006-10-26  Jim Meyering  <jim@meyering.net>
 
 	* tests/git-mv: Use the correct expected output for older git.
