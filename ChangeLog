@@ -1,5 +1,8 @@
 2006-10-27  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* vc-chlog.in (func_extract_changed_lines): Solaris awk and nawk
+	does not delete a whole array.  Delete individual items instead.
+
 	* vc-chlog.in: Invert logic for initfile existence test to avoid
 	`set -e' from halting the script.
 

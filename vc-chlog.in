@@ -157,7 +157,11 @@ func_extract_changed_lines ()
       if (2 in range || 4 in range) {
 	lines[file] = lines[file] " " \
 	              range[1]+0 "-" range[2]+0 "-" range[3]+0 "-" range[4]+0;
-	delete range;
+        # Solaris nawk cannot delete a whole array at once
+	delete range[1];
+	delete range[2];
+	delete range[3];
+	delete range[4];
       }
     }
     function record_file () {
@@ -225,9 +229,11 @@ func_extract_changed_lines ()
     {
       # test for end of hunk (avoid parse errors in next line)
       if (1 in newhunk && oldline == oldhunk[2] && newline == newhunk[2]) {
+	delete oldhunk[1];
+	delete oldhunk[2];
+	delete newhunk[1];
+	delete newhunk[2];
 	output();
-	delete oldhunk;
-	delete newhunk;
       }
     }
     END {
