@@ -1,5 +1,9 @@
 2006-10-27  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* tests/t-vc-chlog: Do the plus_at_beginning test at the end,
+	separately from tests that have less chance of failing a dumb
+	'patch' program.
+
 	* configure.ac (PATCH): New precious variable; prefer gpatch
 	over patch.
 	* vc-chlog.in (func_extract_identifiers): substitute and use it.

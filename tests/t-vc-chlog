@@ -83,22 +83,6 @@ EOF
 
 rm -f new.c
 
-cat >plus_at_beginning.c <<\EOF
-/* there can be a plus (or more than one) at the beginning of a line */
-int foo (int a, int b, int c)
-{
-  return a
-- b -
--- c;
-}
-
-int bar (int a, int b, int c)
-{
-  return a +
--- b;
-}
-EOF
-
 cat >prepend.c <<\EOF
 int old_function (void)
 {
@@ -256,26 +240,6 @@ cat >patch <<\EOF
 +extern int another_new_function (void);
 +
 +int new_data = 17;
---- plus_at_beginning.c	19 Oct 2006 11:40:59 -0000	1.4
-+++ plus_at_beginning.c	19 Oct 2006 11:41:18 -0000
-@@ -2,12 +2,14 @@
- int foo (int a, int b, int c)
- {
-   return a
--- b -
---- c;
-++ b +
-+++ c
-+- 2 -
-+--a;
- }
- 
- int bar (int a, int b, int c)
- {
-   return a +
---- b;
-+++ b;
- }
 --- prepend.c	5 Oct 2006 15:12:00 -0000	1.1.1.1
 +++ prepend.c	5 Oct 2006 15:14:20 -0000
 @@ -1,3 +1,11 @@
@@ -340,7 +304,6 @@ cat >expected-perfect <<\EOF
 	* append.c (new_function, new_data):
 	* moved.c (will_be_moved_2):
 	* new.c (new_function, new_data):
-	* plus_at_beginning.c (foo, bar):
 	* prepend.c (new_function, new_data):
 	* remove-several.c (will_be_gone_2):
 	* several-changes-per-hunk.c (another_function, global_data)
@@ -356,7 +319,6 @@ cat >expected-exuberant <<\EOF
 	* append.c (another_old_function, new_function, new_data):
 	* moved.c (will_be_moved_2):
 	* new.c (new_function, new_data):
-	* plus_at_beginning.c (foo, bar):
 	* prepend.c (new_function, new_data):
 	* remove-several.c (global_data, will_be_gone_2):
 	* several-changes-per-hunk.c (another_function, global_data)
@@ -371,7 +333,6 @@ cat >expected-emacs <<\EOF
 	* append.c (another_old_function, new_function):
 	* moved.c (will_be_moved_2):
 	* new.c (new_function):
-	* plus_at_beginning.c (foo, bar):
 	* prepend.c (new_function):
 	* remove-several.c (another_old_function, will_be_gone_2):
 	* several-changes-per-hunk.c (another_function, function3)
@@ -537,5 +498,57 @@ vc-chlog --stdin < p8 2>stderr | sed 1,2d > stdout
 test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
 diff -u expected stdout
 diff -u err-expected stderr
+
+### a patch may contain a line matching '^--- ' within a hunk ###
+
+cat >plus_at_beginning.c <<\EOF
+/* there can be a plus (or more than one) at the beginning of a line */
+int foo (int a, int b, int c)
+{
+  return a
+- b -
+-- c;
+}
+
+int bar (int a, int b, int c)
+{
+  return a +
+-- b;
+}
+EOF
+
+cat >p9 <<\EOF
+--- plus_at_beginning.c	19 Oct 2006 11:40:59 -0000	1.4
++++ plus_at_beginning.c	19 Oct 2006 11:41:18 -0000
+@@ -2,12 +2,14 @@
+ int foo (int a, int b, int c)
+ {
+   return a
+-- b -
+--- c;
+++ b +
++++ c
++- 2 -
++--a;
+ }
+ 
+ int bar (int a, int b, int c)
+ {
+   return a +
+--- b;
++++ b;
+ }
+EOF
+
+cat >expected <<\EOF
+	* plus_at_beginning.c (foo, bar):
+
+EOF
+
+$PATCH -p0 < p9 >stdout 2>stderr
+test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
+vc-chlog --stdin < p9 | sed 1,2d > stdout
+test "$VERBOSE" != yes || cat stdout
+diff -u expected stdout
 
 exit 0
