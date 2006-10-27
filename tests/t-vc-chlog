@@ -379,7 +379,7 @@ cat >expected-emacs <<\EOF
 
 EOF
 
-eval patch -p0 < patch $redirect
+eval $PATCH -p0 < patch $redirect
 vc-chlog --stdin < patch | sed 1,2d > stdout
 test "$VERBOSE" != yes || cat stdout
 # Yes, all those if..$VERBOSE then..fi are on purpose
@@ -514,7 +514,7 @@ cat >expected <<\EOF
 
 EOF
 : >err-expected
-eval patch -p0 < p7 $redirect
+eval $PATCH -p0 < p7 $redirect
 vc-chlog --stdin < p7 2>stderr | sed 1,2d > stdout
 test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
 diff -u expected stdout

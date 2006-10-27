@@ -53,6 +53,7 @@ progname=vc-chlog
 AWK="@AWK@"
 CTAGS="@CTAGS@"
 ctags_strip_type_column="@ctags_strip_type_column@"
+PATCH="@PATCH@"
 : ${textwidth=72}
 : ${tabstop=8}
 : ${TMPDIR=/tmp}
@@ -280,7 +281,7 @@ func_extract_identifiers ()
     nidents=$tmp/nidents-$nfile
     oidents=$tmp/oidents-$nfile
     sed "${diffstart},${diffend}p;d" "$patchfile" |
-      patch -o "$oldfile" -p$strip -R "$file"
+      $PATCH -o "$oldfile" -p$strip -R "$file"
     func_taglist "$file" >"$tagfile"
     func_taglist "$oldfile" >"$tagfile-old"
     exec 5<"$tagfile" 6<"$tagfile-old" 7>"$nidents" 8>"$oidents"

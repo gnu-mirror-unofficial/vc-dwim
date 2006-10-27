@@ -1,5 +1,11 @@
 2006-10-27  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* configure.ac (PATCH): New precious variable; prefer gpatch
+	over patch.
+	* vc-chlog.in (func_extract_identifiers): substitute and use it.
+	* tests/Makefile.am (TESTS_ENVIRONMENT): Set it.
+	* tests/t-vc-chlog: Use it.
+
 	* vc-chlog.in (func_tempdir): Move the trap initialization
 	outside of the shell function into the main code flow.
 	Otherwise AIX 5.3 sh will invoke the 0 trap at the end of
