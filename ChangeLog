@@ -1,5 +1,9 @@
 2006-10-27  Jim Meyering  <jim@meyering.net>
 
+	* vc-dwim.pl (main): When accepting a second ChangeLog attribution
+	line, don't require an "and " before the name and email address.
+	Suggestion from Ralf Wildenhues.
+
 	* tests/git-mv: Remove useless trailing backslashes.
 
 2006-10-26  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>

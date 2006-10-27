@@ -764,7 +764,8 @@ sub main
 	  # Accept and ignore a second ChangeLog attribution line.  E.g.,
 	  # 2006-09-29  user one  <u1@example.org>
 	  #         and user two  <u2@example.org>
-	  $log_lines[0] =~ /^\+\tand [^<]+<.*>$/
+	  # The "and " on the second line is optional.
+	  $log_lines[0] =~ /^\+\t(?:and )?[^<]+<.*>$/
 	    and shift @log_lines;
 
 	  if ($log_lines[0] ne '+')
