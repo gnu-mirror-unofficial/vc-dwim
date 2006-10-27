@@ -91,18 +91,11 @@ func_error ()
 
 
 # func_tempdir
-# Create a temporary directory, take care of cleanup etc.
+# Create a temporary directory.
 func_tempdir ()
 {
   test -z "$debug" || set -x
   tmp=
-  trap 'exit_status=$?
-	test -z "$debug" && test -n "$tmp" && rm -rf "$tmp"
-	exit $exit_status' 0
-  for sig in 1 2 13 15; do
-    trap 'func_exit 1' $sig
-  done
-
   {
     tmp=`(umask 077 && mktemp -d "$TMPDIR/vccXXXXXX") 2>/dev/null` &&
     test -n "$tmp" && test -d "$tmp"
@@ -442,6 +435,15 @@ while test $# -gt 0; do
 done
 
 func_tempdir
+# We cannot put the trap 0 cleanup code in a shell function,
+# otherwise AIX /bin/sh will invoke it upon function exit.
+trap 'exit_status=$?
+      test -z "$debug" && test -n "$tmp" && rm -rf "$tmp"
+      exit $exit_status' 0
+for sig in 1 2 13 15; do
+  trap 'func_exit 1' $sig
+done
+
 patchfile=$tmp/diff
 
 if $stdin; then
