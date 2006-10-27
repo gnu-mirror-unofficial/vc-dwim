@@ -61,7 +61,7 @@ set -e
 
 vc-dwim ChangeLog > out
 
-if cmp out exp 2> /dev/null; then
+if cmp out exp > /dev/null 2>&1 ; then
   :
 elif cmp out exp-old; then
   :

@@ -1,5 +1,9 @@
 2006-10-27  Jim Meyering  <jim@meyering.net>
 
+	Don't emit distracting output during "make check".
+	* tests/git-mv: Redirect both stdout and stderr to /dev/null
+	for the first comparison.
+
 	* vc-dwim.pl (main): When accepting a second ChangeLog attribution
 	line, don't require an "and " before the name and email address.
 	Suggestion from Ralf Wildenhues.
