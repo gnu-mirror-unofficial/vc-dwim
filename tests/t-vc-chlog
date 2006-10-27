@@ -517,8 +517,19 @@ cat >expected <<\EOF
 EOF
 : >err-expected
 run_vc_chlog p8
-$diff_u expected stdout
-$diff_u err-expected stderr
+# It seems non-GNU patch have some problems with reversing this diff:
+if $diff_u expected stdout >diffout 2>differr; then :; else
+  test "$VERBOSE" != yes || { cat diffout; cat differr >&2; }
+  # OpenBSD patch understands --version, and does not fail upon --help.
+  # So we try this rather obscure method.
+  case `$PATCH --help 2>/dev/null` in
+  *bug-patch@gnu.org*)
+    (exit 1); exit 1 ;;
+  esac
+fi
+# FreeBSD patch is verbose here...
+#$diff_u err-expected stderr
+
 
 ### a patch may contain a line matching '^--- ' within a hunk ###
 

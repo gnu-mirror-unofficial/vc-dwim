@@ -1,5 +1,9 @@
 2006-10-27  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* tests/t-vc-chlog: Reversing a unidiff that removes the only
+	line of a file seems not to be portable to non-GNU patch, so
+	ignore failure for those.
+
 	* tests/t-vc-chlog: Using a checked eval does not work with BSD
 	'sh -e'; drop this idea.  Instead, redirect most output and print
 	it if $VERBOSE.  Use...
