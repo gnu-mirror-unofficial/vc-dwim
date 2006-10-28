@@ -1,5 +1,10 @@
 2006-10-28  Jim Meyering  <jim@meyering.net>
 
+	Adapt test to new restrictions.
+	* tests/two-vc (vc-dwim): Rewrite to test the same thing, without
+	hitting new restriction that the working directory be "in" the
+	git- or hg-managed tree.
+
 	Work when ChangeLog is in a subdirectory and when run from some
 	other directory.
 	* VC.pm (new): Rewrite to record better-named $self->{cwd_depth}.
