@@ -1,5 +1,12 @@
 2006-10-28  Jim Meyering  <jim@meyering.net>
 
+	Work when ChangeLog is in a subdirectory and when run from some
+	other directory.
+	* VC.pm (new): Rewrite to record better-named $self->{cwd_depth}.
+	Add comments.
+	(full_file_name): Use it.  Add comments.
+	* tests/subdir-middle: New test for the above fix.
+
 	* tests/trap-setup: Don't clean up if $DEBUG is set.
 
 2006-10-27  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>

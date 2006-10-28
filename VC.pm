@@ -68,10 +68,12 @@ my $vc_cmd =
 
 #########
 # constructor: determine what version control system manages the specified file
+# Most of the contortions here are to determine the value for $cwd_depth, to
+# be used in full_file_name.
 #########
 sub new($%)
 {
-  # Requires one argument, a file name.
+  # Requires one argument, a ChangeLog file name.
   my $proto = shift;
   my $class = ref($proto) || $proto;
   my $self = {};
@@ -81,42 +83,63 @@ sub new($%)
 
   my $d = dirname $file;
 
-  # These are quick and easy:
-  if (-d "$d/CVS") {
-    $self->{name} = CVS;
-  } elsif (-d "$d/.svn") {
-    $self->{name} = SVN;
-  } elsif (-d "$d/.git/objects") {
-    $self->{name} = GIT;
-  } elsif (-d "$d/.hg") {
-    $self->{name} = HG;
-  }
+  # Depth of $file, relative to the nearest VC admin directory,
+  # e.g., CVS, .svn, .hg, .git.  For CVS and SVN, $cl_depth is always 0.
+  my $cl_depth = 0;
 
-  exists $self->{name}
-    and return bless $self, $class;
+  my $cwd_depth;
+  my ($cwd_dev, $cwd_ino, undef) = stat '.';
 
-  my $depth = 0;;
   my ($root_dev, $root_ino, undef) = stat '/';
   # For any other, check parents, potentially all the way up to /.
   while (1)
     {
-      ++$depth;
-      $d .= '/..';
+      if ($cl_depth == 0)
+	{
+	  if (-d "$d/CVS") {
+	    $self->{name} = CVS;
+	  } elsif (-d "$d/.svn") {
+	    $self->{name} = SVN;
+	  }
+	}
+
       if (-d "$d/.git/objects") {
 	$self->{name} = GIT;
       } elsif (-d "$d/.hg") {
 	$self->{name} = HG;
       }
 
+      my ($dev, $ino, undef) = stat $d;
+      $ino == $cwd_ino && $dev == $cwd_dev
+	and $cwd_depth = $cl_depth;
+
       if (exists $self->{name})
 	{
-	  $self->{depth} = $depth;
+	  if ($self->{name} eq CVS || $self->{name} eq SVN)
+	    {
+	      $cl_depth == 0
+		or croak "$ME: internal error: depth=$cl_depth (expected 0)";
+	    }
+	  else
+	    {
+	      if (defined $cwd_depth)
+		{
+		  $cwd_depth <= $cl_depth
+		    or croak "$ME: internal error: $cwd_depth < $cl_depth";
+		  $cwd_depth = $cl_depth - $cwd_depth;
+		}
+	      $self->{cwd_depth} = $cwd_depth;
+	    }
+
+	  my $vc_name = $self->{name};
 	  return bless $self, $class;
 	}
 
-      my ($dev, $ino, undef) = stat $d;
       $ino == $root_ino && $dev == $root_dev
 	and last;
+
+      $d .= '/..';
+      ++$cl_depth;
     }
   return undef;
 }
@@ -164,20 +187,25 @@ sub diff_outputs_full_file_names()
 }
 
 # Given a "."-relative file name, return an equivalent full one.
+# This is needed to derive a "full" (top-relative) name for each file
+# listed with a "."-relative name in a ChangeLog file.  The ChangeLog
+# file may be in a directory five levels below the "top", and the current
+# working directory (when vc-dwim is run) may be 3 levels down.
+# In that case, $self->{cwd_depth} would be 3.
 sub full_file_name
 {
   my $self = shift;
   my $file = shift;
-  my $depth = $self->{depth} || 0;
-  $depth
+  my $cwd_depth = $self->{cwd_depth};
+  $cwd_depth
     or return $file;
 
   eval 'use Cwd';
   die $@ if $@;
   my @dirs = File::Spec->splitdir( cwd() );
 
-  # Take the last $depth components of $PWD, and prepend them to $file:
-  return File::Spec->catfile(@dirs[-$depth..-1], $file);
+  # Take the last $cwd_depth components of $PWD, and prepend them to $file:
+  return File::Spec->catfile(@dirs[-$cwd_depth..-1], $file);
 }
 
 sub supported_vc_names()
