@@ -1,5 +1,8 @@
 2006-10-28  Jim Meyering  <jim@meyering.net>
 
+	* README-devel: Don't say to run "autoheader" anymore.
+	It's no longer needed, and now it would fail.
+
 	Adapt test to new restrictions.
 	* tests/two-vc (vc-dwim): Rewrite to test the same thing, without
 	hitting new restriction that the working directory be "in" the
