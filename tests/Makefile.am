@@ -13,6 +13,7 @@ TESTS_ENVIRONMENT = \
   PATH="$(VG_PATH_PREFIX)`pwd`/..$(PATH_SEPARATOR)$$PATH"
 
 TESTS = \
+  subdir-middle \
   add-empty \
   git-mv \
   two-line-attr \

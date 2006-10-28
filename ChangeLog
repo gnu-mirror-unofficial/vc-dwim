@@ -6,6 +6,7 @@
 	Add comments.
 	(full_file_name): Use it.  Add comments.
 	* tests/subdir-middle: New test for the above fix.
+	* tests/Makefile.am: Add subdir-middle.
 
 	* tests/trap-setup: Don't clean up if $DEBUG is set.
 
