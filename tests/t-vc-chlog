@@ -365,7 +365,6 @@ test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
 test "$fail" -ne 1 
 
 run_vc_chlog p1
-test "$VERBOSE" != yes || cat stdout
 # Yes, all those if..$VERBOSE then..fi are on purpose
 # inside this outer if clause.  Thanks to BSD sh -e...
 success=false

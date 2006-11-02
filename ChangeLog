@@ -1,3 +1,7 @@
+2006-11-02  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* tests/t-vc-chlog: Kill one superfluous verbose output.
+
 2006-10-28  Jim Meyering  <jim@meyering.net>
 
 	* README-devel: Don't say to run "autoheader" anymore.
