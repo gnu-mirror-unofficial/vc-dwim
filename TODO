@@ -67,6 +67,3 @@ allow a language-dependent setting of which kinds of identifiers to use
 
 changing a comment before a function causes the previous function to be
 added to the list, erroneously.  Apply some heuristic for this?
-
-work with trees that have multiple ChangeLog files.
-Could probably easier be achieved by whoever calls this program.

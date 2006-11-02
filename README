@@ -79,11 +79,12 @@ For example:
 
 What can vc-chlog do?
 =====================
-vc-chlog is about writing a GNU Coding Standards-compliant ChangeLog
-entry easily.
+vc-chlog is about writing GNU Coding Standards-compliant ChangeLog
+entries easily.
 
 Say you have made some changes to your code, ready to be committed.
-The only remaining part is to write a ChangeLog entry: collect the list
+The only remaining part is to write one or more ChangeLog entries:
+for each ChangeLog governing a part of the package, collect the list
 of changed files, in each file list the changed functions, and mention
 all of those, in order to afterwards describe the changes:
 	* file1.c (foo, bar, ...): ...

@@ -20,10 +20,13 @@ func_help ()
 {
   echo "\
 Usage: $progname [OPTION]... [FILE]...
-Create a proto ChangeLog entry for FILEs (the whole tree by default).
+Create a proto ChangeLog entry for changes in FILEs (the whole tree by default).
 
 Options:
       --address ADDRESS  use ADDRESS as email address
+      --changelog CFILE  for all changes to files below the dirname of CFILE,
+                         generate an entry for CFILE with stripped names.
+                         This option can be passed multiple times.
       --stdin            read unified diff from stdin instead of with vc-dwim
       --tabsize COLS     assume tab stops at each COLS instead of 8
       --user-name NAME   use NAME as user name
@@ -123,6 +126,13 @@ func_debug_pipe ()
 func_basename ()
 {
   (basename "$1") 2>/dev/null || echo "$1" | sed 's,.*/,,'
+}
+
+
+# func_dirname FILENAME
+func_dirname ()
+{
+  dirname "$1"
 }
 
 
@@ -281,7 +291,11 @@ func_extract_identifiers ()
     nidents=$tmp/nidents-$nfile
     oidents=$tmp/oidents-$nfile
     sed "${diffstart},${diffend}p;d" "$patchfile" |
-      $PATCH -o "$oldfile" -p$strip -R "$file"
+      if test -n "$debug"; then
+	$PATCH -o "$oldfile" -p$strip -R "$file" >&2
+      else
+	$PATCH -o "$oldfile" -p$strip -R "$file" >/dev/null
+      fi
     func_taglist "$file" >"$tagfile"
     func_taglist "$oldfile" >"$tagfile-old"
     exec 5<"$tagfile" 6<"$tagfile-old" 7>"$nidents" 8>"$oidents"
@@ -363,6 +377,59 @@ func_extract_identifiers ()
 }
 
 
+# func_sortby_chlog CFILE[...]
+# Reorder the files by ChangeLogs.
+func_sortby_chlog ()
+{
+  test -z "$debug" || set -x
+  if test $# -eq 0; then
+    cat
+  else
+    logdirs=
+    for chlog
+    do
+      test -z "$logdirs" || logdirs=$logdirs' '
+      logdirs=$logdirs`func_dirname "$chlog"`
+    done
+    $AWK '
+      BEGIN {
+	split("'"$logdirs"'", logdirs, "[ \t]+");
+	split("'"$*"'", logfiles, "[ \t]+");
+	for (i in logdirs) {
+	  loglen[i] = length(logdirs[i]);
+	}
+	nlog = -1;
+      }
+      /^file: / {
+	nlog = -1;
+	jmatch = 1;
+	lmatch = 0;
+	for (i in logdirs) {
+	  if (loglen[i] > lmatch) {
+	    j = index("./" $2, logdirs[i] "/");
+	    if (j == 1 || j == 3) {
+	      nlog = i;
+	      jmatch = j;
+	      lmatch = loglen[i];
+	    }
+	  }
+	}
+	output[nlog] = output[nlog] "file: " substr($2, lmatch + jmatch - 1) "\n";
+	next;
+      }
+      { output[nlog] = output[nlog] $0 "\n"; }
+      END {
+	for (i = 1; i in logdirs; i++) {
+	  if (i in output) {
+	    print "logfile: " logfiles[i];
+	    print output[i];
+	  }
+	}
+      }
+    '
+  fi
+}
+
 # func_pretty_changelog_entry
 # Generate a proto ChangeLog entry from a file and identifier list.
 func_pretty_changelog_entry ()
@@ -375,6 +442,12 @@ func_pretty_changelog_entry ()
     BEGIN {
       textwidth = "'"$textwidth"'" + 0;
       tabstop = "'"$tabstop"'" + 0;
+    }
+    /^logfile: / {
+      if (state == 1) printf (":\n\n");
+      if (state == 2) printf ("):\n\n");
+      printf ($2 ":\n");
+      state = 0;
     }
     /^file: / {
       if (state == 0)
@@ -417,10 +490,12 @@ done
 init_options=`sed "$sed_remove_comments" $initfiles | tr '\n' ' '`
 eval set x "$init_options" '${1+"$@"}'
 shift
+chlogs=
 
 while test $# -gt 0; do
   case $1 in
     --address)   email_address=$2; shift ;;
+    --changelog) chlogs="$chlogs $2"; shift ;;
     --stdin)     stdin=: ;;
     --tabsize)   tabstop=$2; shift ;;
     --width)     textwidth=$2; shift ;;
@@ -455,7 +530,8 @@ fi |
   tee "$patchfile" |
   func_extract_changed_lines |
   func_debug_pipe processed-diff |
-  func_extract_identifiers  |
+  func_extract_identifiers |
+  func_sortby_chlog $chlogs |
   func_debug_pipe sorted |
   func_pretty_changelog_entry
 

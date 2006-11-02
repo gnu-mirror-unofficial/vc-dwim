@@ -1,0 +1,192 @@
+#! /bin/sh
+# Test vc-chlog with multiple changelogs.
+
+if test "$VERBOSE" = yes; then
+  set -x
+  vc-chlog --version
+fi
+
+. $srcdir/trap-setup
+
+mkdir -p $tmp && cd $tmp || {
+  echo "$0: failure in testing framework" 1>&2
+  (exit 1); exit 1
+}
+
+# Let's see whether this system knows unidiff format.
+# We assume that if diff doesn't, then patch also won't.
+# As long as vc-chlog only works with unidiff, SKIP the test.
+: ${diff=diff}
+: >empty
+if ($diff -u empty empty) >/dev/null 2>&1; then
+  diff_u="$diff -u"
+else
+  diff_u=$diff
+  echo "$0: skipping this test, since $diff -u does not work" 1>&2
+  (exit 77); exit 77
+fi
+
+run_vc_chlog ()
+{
+  p=$1
+  shift
+  { vc-chlog --stdin "$@" < "$p" 2>stderr ||
+    { echo vc-chlog failed; }; } |
+      sed 's/^20[0-9][0-9].*/DATE  NAME  EMAIL/' > stdout
+  test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
+}
+
+fail=0
+set -e
+
+### Set up files ###
+
+mkdir sub sub/subb
+echo bla > file1
+echo blubb > sub/file2
+echo baz > sub/subb/file3
+cat >p1 <<\EOF
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ file1	5 Oct 2006 15:13:30 -0000
+@@ -0,0 +1 @@
++bla
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ sub/file2	5 Oct 2006 15:13:30 -0000
+@@ -0,0 +1 @@
++blubb
+EOF
+cat >expected <<\EOF
+DATE  NAME  EMAIL
+
+	* file1:
+	* sub/file2:
+
+EOF
+
+run_vc_chlog p1
+$diff_u expected stdout
+
+cat >expected <<\EOF
+ChangeLog:
+DATE  NAME  EMAIL
+
+	* file1:
+	* sub/file2:
+
+EOF
+
+run_vc_chlog p1 --changelog ChangeLog
+$diff_u expected stdout
+
+run_vc_chlog p1 --changelog ChangeLog --changelog some/other/ChangeLog
+$diff_u expected stdout
+
+run_vc_chlog p1 --changelog ChangeLog --changelog su/ChangeLog
+$diff_u expected stdout
+
+run_vc_chlog p1 --changelog ChangeLog --changelog subb/ChangeLog
+$diff_u expected stdout
+
+cat >expected <<\EOF
+ChangeLog:
+DATE  NAME  EMAIL
+
+	* file1:
+
+sub/ChangeLog:
+DATE  NAME  EMAIL
+
+	* file2:
+
+EOF
+run_vc_chlog p1 --changelog ChangeLog --changelog sub/ChangeLog 
+$diff_u expected stdout
+
+cat >expected <<\EOF
+sub/ChangeLog:
+DATE  NAME  EMAIL
+
+	* file2:
+
+ChangeLog:
+DATE  NAME  EMAIL
+
+	* file1:
+
+EOF
+run_vc_chlog p1 --changelog sub/ChangeLog --changelog ChangeLog 
+$diff_u expected stdout
+
+cat >expected <<\EOF
+./ChangeLog:
+DATE  NAME  EMAIL
+
+	* file1:
+
+./sub/ChangeLog:
+DATE  NAME  EMAIL
+
+	* file2:
+
+EOF
+run_vc_chlog p1 --changelog ./ChangeLog --changelog ./sub/ChangeLog 
+$diff_u expected stdout
+
+: >expected
+run_vc_chlog p1 --changelog foo/ChangeLog
+$diff_u expected stdout
+
+
+cat >p2 <<\EOF
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ file1	5 Oct 2006 15:13:30 -0000
+@@ -0,0 +1 @@
++bla
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ sub/file2	5 Oct 2006 15:13:30 -0000
+@@ -0,0 +1 @@
++blubb
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ sub/subb/file3	5 Oct 2006 15:13:30 -0000
+@@ -0,0 +1 @@
++baz
+EOF
+
+cat >expected <<\EOF
+ChangeLog:
+DATE  NAME  EMAIL
+
+	* file1:
+
+sub/ChangeLog:
+DATE  NAME  EMAIL
+
+	* file2:
+	* subb/file3:
+
+EOF
+run_vc_chlog p2 --changelog ChangeLog --changelog sub/ChangeLog
+$diff_u expected stdout
+
+run_vc_chlog p2 --changelog ChangeLog --changelog sub/ChangeLog --changelog sub/file3/ChangeLog
+$diff_u expected stdout
+
+cat >expected <<\EOF
+ChangeLog:
+DATE  NAME  EMAIL
+
+	* file1:
+
+sub/ChangeLog:
+DATE  NAME  EMAIL
+
+	* file2:
+
+sub/subb/ChangeLog:
+DATE  NAME  EMAIL
+
+	* file3:
+
+EOF
+run_vc_chlog p2 --changelog ChangeLog --changelog sub/ChangeLog --changelog sub/subb/ChangeLog
+$diff_u expected stdout

@@ -1,5 +1,21 @@
 2006-11-02  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	Implement handling of multiple ChangeLog files.
+	* vc-chlog.in (func_dirname): New function; just calls `dirname'
+	for now.
+	(func_sortby_chlog): New function to sort files by Changelog
+	files.  Longest matching prefix of the dirname of the ChangeLog
+	path wins.
+	(func_pretty_changelog_entry): Adjust.
+	(func_help): New option `--changelog'.
+	* tests/multiple-chlogs: New tests.
+	* tests/Makefile.am: Update.
+	* README, TODO: Update.
+
+	* vc-chlog.in (func_extract_identifiers): Ignore stdout output
+	of `patch' if not --debug, otherwise send to stderr, to avoid
+	it in the normal data flow.
+
 	* tests/t-vc-chlog: Kill one superfluous verbose output.
 
 2006-10-28  Jim Meyering  <jim@meyering.net>

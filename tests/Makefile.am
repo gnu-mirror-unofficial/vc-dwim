@@ -26,4 +26,5 @@ TESTS = \
   no-star \
   subdir \
   subdir-cvs \
-  t-vc-chlog
+  t-vc-chlog \
+  multiple-chlogs
