@@ -112,9 +112,11 @@ this package:
 it detects the shell script vc-chlog.in as such.  With a ~/.ctags containing
   --langdef=Texinfo
   --langmap=Texinfo:.texi.txi.texinfo
-  --regex-texinfo=/^@node[ ]+([^ ]*)/\1/d,definition/
+  --regex-texinfo=/^@node[	 ]+([^,]+)/\1/d,definition/
 
-it detects (currently only the first word of) Texinfo node names.
+it detects Texinfo node names (vc-chlog uses some heuristic to deal with
+spaces in the identifier names when Exuberant Ctags is used).
+
 Autoconf macros may be tagged by options such as
   --langdef=m4
   --langmap=m4:.m4.at.ac.as.m4sh

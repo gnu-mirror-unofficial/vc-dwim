@@ -58,12 +58,9 @@ work with non-unidiff diff formats.
 
 check whether `ctags -x' output format is portable enough now.
 
-cope with spaces in identifiers (e.g., texinfo node names).
-For that it will be necessary to move away from `ctags -x' (or employ
-horrible kludges).
-
 allow a language-dependent setting of which kinds of identifiers to use
-(for exuberant ctags).
+(for exuberant ctags).  Can be worked around by putting ctags options
+in .ctags.
 
 changing a comment before a function causes the previous function to be
 added to the list, erroneously.  Apply some heuristic for this?

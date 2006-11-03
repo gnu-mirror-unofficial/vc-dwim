@@ -26,7 +26,7 @@ Options:
       --address ADDRESS  use ADDRESS as email address
       --changelog CFILE  for all changes to files below the dirname of CFILE,
                          generate an entry for CFILE with stripped names.
-                         This option can be passed multiple times.
+                         This option may be passed multiple times.
       --stdin            read unified diff from stdin instead of with vc-dwim
       --tabsize COLS     assume tab stops at each COLS instead of 8
       --user-name NAME   use NAME as user name
@@ -37,7 +37,7 @@ Options:
       --version          output version information and exit
 
 Environment:
-TMPDIR, and USER are honored.
+TMPDIR and USER are honored.
 
 Files:
 \`~/.${progname}rc' and \`.${progname}rc' may contain default options,
@@ -262,7 +262,26 @@ func_taglist ()
   test -z "$debug" || set -x
   $CTAGS -x "$1" |
   if test $ctags_strip_type_column = yes; then
-    $AWK '{ print $3, $1; }'
+    # With Exuberant Ctags, we would like to allow spaces in identifiers
+    # as well, for Texinfo @node names.  This is why we choose this rather
+    # obscure heuristic of extracting the name.  The hope is that the combination
+    #   LINENO FILENAME
+    # does not by accident occur in either the identifier nor the corresponding
+    # source line.
+    $AWK '
+      BEGIN { filename = "'"$1"'"; }
+      {
+        for (i = 3; i < NF - 1; i++) {
+	  if ($i ~ /^[1-9][0-9]*$/ && $(i+1) == filename) {
+	    lineno = $i;
+	    NF = i - 2;
+	    print lineno, $0;
+	    next;
+	  }
+	}
+	# we did not find any better, so just skip the type field.
+	print $3, $1;
+      }'
   else
     $AWK '{ print $2, $1; }'
   fi |
@@ -459,16 +478,18 @@ func_pretty_changelog_entry ()
       state = 1;
       col = tabstop + 2 + length ($2);
     }
-    /^ident/ {
-      add = 2 + length ($2);
+    /^ident: / {
+      # idents can have spaces:
+      ident = substr($0, 8);
+      add = 2 + length (ident);
       if (col + add > textwidth) {
 	if (state == 2) printf (")");
-	printf ("\n\t(%s", $2);
+	printf ("\n\t(%s", ident);
 	col = tabstop + add - 1;
       } else {
         col += add;
-	if (state == 1) printf (" (%s", $2);
-	else            printf (", %s", $2);
+	if (state == 1) printf (" (%s", ident);
+	else            printf (", %s", ident);
       }
       state = 2;
     }
