@@ -289,6 +289,41 @@ func_taglist ()
 }
 
 
+# func_recreate_oldfile
+#
+# Some 'patch' implementations (*cough* Solaris *cough*) tend to output reject
+# files (or original files) under the names found in the patch, even with -o
+# passed (for the diff formats specified by POSIX this is not conforming).
+# So we play safe and copy the file over first.
+# Also, we have to munge the diff header to use our new names: Solaris patch
+# is very picky about inconsistencies here and loves to ask the user questions.
+# :-/
+func_recreate_oldfile ()
+{
+  test -z "$debug" || set -x
+  if test -f "$file"; then
+    cp "$file" "$oldfile"
+  else
+    : >"$oldfile"
+  fi
+  diffhead=`expr $diffstart + 2`
+  sed -n "$diffstart,$diffhead{
+	    s|^--- [^	 ]\\{1,\\}|--- $oldbase~|
+	    s|^+++ [^	 ]\\{1,\\}|+++ $oldbase|
+	  }
+	  $diffstart,$diffend""p" "$patchfile" | {
+    wd=`pwd`
+    cd "$tmp"
+    if test -n "$debug"; then
+      $PATCH -p0 -R "$oldbase" >&2
+    else
+      $PATCH -p0 -R "$oldbase" >/dev/null
+    fi
+    cd "$wd"
+  }
+}
+
+
 # func_extract_identifiers
 # Generate a list of files and identifiers from file name and line number ranges
 # by way of tag lists.
@@ -306,17 +341,17 @@ func_extract_identifiers ()
   while read file strip diffstart diffend ranges; do
     echo "file: $file"
     tagfile=$tmp/taglist-$nfile
-    oldfile=$tmp/oldfile-$nfile-`func_basename "$file"`
+    oldbase=oldfile-$nfile-`func_basename "$file"`
+    oldfile=$tmp/$oldbase
     nidents=$tmp/nidents-$nfile
     oidents=$tmp/oidents-$nfile
-    sed "${diffstart},${diffend}p;d" "$patchfile" |
-      if test -n "$debug"; then
-	$PATCH -o "$oldfile" -p$strip -R "$file" >&2
-      else
-	$PATCH -o "$oldfile" -p$strip -R "$file" >/dev/null
-      fi
-    func_taglist "$file" >"$tagfile"
-    func_taglist "$oldfile" >"$tagfile-old"
+    func_recreate_oldfile
+    if test -f "$file"; then
+      func_taglist "$file"
+    fi >"$tagfile"
+    if test -f "$oldfile"; then
+      func_taglist "$oldfile"
+    fi >"$tagfile-old"
     exec 5<"$tagfile" 6<"$tagfile-old" 7>"$nidents" 8>"$oidents"
     nfile=`expr $nfile + 1`
 
