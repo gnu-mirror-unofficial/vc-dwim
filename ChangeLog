@@ -1,5 +1,10 @@
 2006-11-07  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* tests/t-vc-chlog: Solaris patch asks questions about a diff
+	that changes multiple files, unless the names may be inferred
+	e.g. from an `Index:' line.  So add some here.  The test will
+	still fail, but now for other reasons.
+
 	* vc-chlog.in (func_recreate_oldfile): New function.  Do the
 	patch reversing in $tmp, to avoid flaky 'patch' implementations
 	to leave .orig files in the source tree.
