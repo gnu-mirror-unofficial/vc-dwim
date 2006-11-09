@@ -8,6 +8,10 @@
 ^config\.log$
 ^config\.status$
 ^configure$
+^man/Makefile\.in$
+^man/Makefile$
+^man/vc-chlog.1$
+^man/vc-dwim.1$
 ^stamp-h1$
 ^tags$
 ^tests/Makefile$

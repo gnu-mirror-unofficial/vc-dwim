@@ -1,4 +1,4 @@
-SUBDIRS = . tests
+SUBDIRS = . man tests
 
 bin_SCRIPTS = vc-dwim vc-chlog
 EXTRA_DIST = vc-dwim.pl vc-chlog.in
