@@ -133,3 +133,13 @@ negatives in the list of identifiers stem from a "ctags" that failed
 to enumerate all identifiers properly, false positives typically stem from
 constructs like nested functions, or changes outside of them, like comments
 before a function.
+
+Use vc-chlog with multiple ChangeLog files in a project
+-------------------------------------------------------
+If a project uses multiple ChangeLog files, vc-chlog assumes that changes
+are to be recorded in the log file that is nearest up the directory tree.
+One possibility is to invoke vc-chlog always from the project root and put
+the output of
+  find . -name ChangeLog | sed 's,^\./,--changelog ,'
+
+into the .vc-chlogrc file at the root.
