@@ -559,8 +559,8 @@ while test $# -gt 0; do
     --help)      func_help ;;
     --version)   func_version ;;
     --debug)     debug=: ;;
-    -*)          func_error "unknown argument $1" ;;
     --)          shift; break ;;
+    -*)          func_error "unknown argument $1" ;;
     *)           break ;;
   esac
   shift

@@ -1,5 +1,7 @@
 2006-11-10  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	* vc-chlog.in: Fix handling of '--' command line argument.
+
 	* README: Add paragraph about multiple ChangeLogs.
 
 2006-11-09  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
