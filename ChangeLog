@@ -24,7 +24,7 @@
 	as we may not use build tree files as prerequisites.  Distribute
 	the man pages.
 	* Makefile.am: Adjust.
-	* configure.ac: Adjust.  Check for help2man.  
+	* configure.ac: Adjust.  Check for help2man.
 
 2006-11-07  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
