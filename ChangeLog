@@ -1,3 +1,10 @@
+2006-11-10  Jim Meyering  <jim@meyering.net>
+
+	If there appear to be unsaved changes, report the temp. file name.
+	* vc-dwim.pl (exists_editor_backup): Rather than returning 0/1,
+	return undef/name-of-temporary.  Update each caller to report the
+	name of any offending temporary file.
+
 2006-11-10  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	* tests/t-vc-chlog: Separate out add-to-empty.c and new.c

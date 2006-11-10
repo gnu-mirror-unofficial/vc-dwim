@@ -197,14 +197,17 @@ sub exists_editor_backup ($)
   my ($f) = @_;
   my $d = dirname $f;
   $f = basename $f;
-  -f "$d/#$f#" || -l "$d/.#$f"
-    and return 1; # Emacs
-  foreach my $c (qw(p o n m l k))
+  my @candidate_tmp =
+    (
+     "$d/#$f#", "$d/.#$f",			# Emacs
+     map { "$d/.$f.sw$_" } qw (p o n m l k),	# Vim
+    );
+  foreach my $c (@candidate_tmp)
     {
-      -f "$d/.$f.sw$c"
-	and return 1; # Vim
+      -f $c
+	and return $c; # Vim
     }
-  return 0;
+  return undef;
 }
 
 sub is_changelog ($)
@@ -658,8 +661,9 @@ sub main
     {
       -f $f
 	or (warn "$ME: $f: no such file\n"), $fail = 1, next;
-      exists_editor_backup $f
-	and (warn "$ME: $f has unsaved changes\n"), $fail = 1, next;
+      my $edit_tmp = exists_editor_backup $f;
+      defined $edit_tmp
+	and (warn "$ME: $f has unsaved changes: $edit_tmp\n"), $fail = 1, next;
     }
   $fail
     and exit 1;
@@ -894,8 +898,9 @@ sub main
   # check for existence, since a file may be "$vc_name-removed".
   foreach my $f (@affected_files)
     {
-      exists_editor_backup $f
-	and (warn "$ME: $f has unsaved changes\n"), $fail = 1, next;
+      my $edit_tmp = exists_editor_backup $f;
+      defined $edit_tmp
+	and (warn "$ME: $f has unsaved changes: $edit_tmp\n"), $fail = 1, next;
     }
   $fail
     and exit 1;
