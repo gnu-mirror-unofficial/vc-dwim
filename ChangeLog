@@ -1,5 +1,9 @@
 2006-11-10  Jim Meyering  <jim@meyering.net>
 
+	Version 0.2.2.
+	* configure.ac: Version 0.2.2.
+	* NEWS: Update the release date.
+
 	If there appear to be unsaved changes, report the temp. file name.
 	* vc-dwim.pl (exists_editor_backup): Rather than returning 0/1,
 	return undef/name-of-temporary.  Update each caller to report the

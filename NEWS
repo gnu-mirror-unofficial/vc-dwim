@@ -1,6 +1,6 @@
 vc-dwim NEWS                                          -*- outline -*-
 
-* Major changes in release 0.2.2-devel (2006-??-??)
+* Major changes in release 0.2.2-devel (2006-11-10)
 
   new tool vc-chlog for generating proto ChangeLog entries.
 
