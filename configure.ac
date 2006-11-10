@@ -1,4 +1,4 @@
-AC_INIT([vc-dwim], [0.2.2], [jim@meyering.net])
+AC_INIT([vc-dwim], [0.2.3-devel], [jim@meyering.net])
 
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.9.6 foreign dist-bzip2 check-news])

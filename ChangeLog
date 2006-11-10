@@ -1,5 +1,9 @@
 2006-11-10  Jim Meyering  <jim@meyering.net>
 
+	* README: Change narrating style not to speak of "I".
+	* configure.ac: Version 0.2.3-devel.
+	* NEWS: Update.
+
 	Version 0.2.2.
 	* configure.ac: Version 0.2.2.
 	* NEWS: Update the release date.
