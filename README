@@ -128,11 +128,13 @@ by examining both the new and the old version of a file.  Here, it works
 hard not to change any file in your working directory, by using "ctags -x"
 and keeping all intermediate files in a temporary directory.
 
+For some languages, vc-chlog attempts to guess where functions end,
+and thus not attribute changes past that end to the previous identifier.
+
 Typically, vc-chlog is exact in the list of files that changed, false
 negatives in the list of identifiers stem from a "ctags" that failed
-to enumerate all identifiers properly, false positives typically stem from
-constructs like nested functions, or changes outside of them, like comments
-before a function.
+to enumerate all identifiers properly, or changes before a function,
+false positives typically stem from constructs like nested functions.
 
 Use vc-chlog with multiple ChangeLog files in a project
 -------------------------------------------------------

@@ -61,6 +61,3 @@ check whether `ctags -x' output format is portable enough now.
 allow a language-dependent setting of which kinds of identifiers to use
 (for exuberant ctags).  Can be worked around by putting ctags options
 in .ctags.
-
-changing a comment before a function causes the previous function to be
-added to the list, erroneously.  Apply some heuristic for this?

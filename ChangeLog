@@ -1,5 +1,16 @@
 2006-11-14  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	Implement heuristic for end-of-function tags.
+	* vc-chlog.in (func_taglist): For C/C++, Shell, and Perl code,
+	tag an empty line, preceded by a line containing a closing
+	brace in column one and optionally a comment, as end-of-function
+	marker, with an empty identifier.
+	* tests/t-vc-chlog (expected-exuberant, expected-emacs): Improve
+	expected output accordingly.
+	* TODO: One more down, in the hope that this is an overall
+	improvement.
+	* README, NEWS: Update.
+
 	* vc-chlog.in (func_extract_changed_lines): Factor array deletion
 	in awk script into a function delete_array.
 

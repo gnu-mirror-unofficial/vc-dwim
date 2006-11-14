@@ -260,31 +260,58 @@ func_extract_changed_lines ()
 func_taglist ()
 {
   test -z "$debug" || set -x
-  $CTAGS -x "$1" |
-  if test $ctags_strip_type_column = yes; then
-    # With Exuberant Ctags, we would like to allow spaces in identifiers
-    # as well, for Texinfo @node names.  This is why we choose this rather
-    # obscure heuristic of extracting the name.  The hope is that the combination
-    #   LINENO FILENAME
-    # does not by accident occur in either the identifier nor the corresponding
-    # source line.
-    $AWK '
-      BEGIN { filename = "'"$1"'"; }
-      {
-        for (i = 3; i < NF - 1; i++) {
-	  if ($i ~ /^[1-9][0-9]*$/ && $(i+1) == filename) {
-	    lineno = $i;
-	    NF = i - 2;
-	    print lineno, $0;
-	    next;
+  {
+    $CTAGS -x "$1" |
+    if test $ctags_strip_type_column = yes; then
+      # With Exuberant Ctags, we would like to allow spaces in identifiers
+      # as well, for Texinfo @node names.  This is why we choose this rather
+      # obscure heuristic of extracting the name.  The hope is that the combination
+      #   LINENO FILENAME
+      # does not by accident occur in either the identifier nor the corresponding
+      # source line.
+      $AWK '
+	BEGIN { filename = "'"$1"'"; }
+	{
+	  for (i = 3; i < NF - 1; i++) {
+	    if ($i ~ /^[1-9][0-9]*$/ && $(i+1) == filename) {
+	      lineno = $i;
+	      NF = i - 2;
+	      print lineno, $0;
+	      next;
+	    }
 	  }
-	}
-	# we did not find any better, so just skip the type field.
-	print $3, $1;
-      }'
-  else
-    $AWK '{ print $2, $1; }'
-  fi |
+	  # we did not find any better, so just skip the type field.
+	  print $3, $1;
+	}'
+    else
+      $AWK '{ print $2, $1; }'
+    fi
+    # Heuristic: to avoid identifying changes outside of functions
+    # with the previous function, we add end-of-function markers
+    # with empty tags.
+    case $1 in #(
+      *.[ch]|*.cc|*.cpp|*.cxx|*.hh|*.hpp|*.C|*.H) #{{
+        sed -n '/^}[	 ]*$/{
+	          N
+		  /\n$/=
+		}
+		/^}[	 ]*\/[\/*]/{
+		  N
+		  /\n$/=
+		}' "$1"
+      ;; #(
+      *.sh|*.in|*.pl|*.pm) #{{
+        sed -n '/^}[	 ]*$/{
+	          N
+		  /\n$/=
+		}
+		/^}[	 ]*#/{
+		  N
+		  /\n$/=
+		}' "$1"
+      ;;
+    esac
+  } |
   sort -k1n
 }
 
