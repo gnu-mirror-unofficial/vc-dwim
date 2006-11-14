@@ -1,3 +1,8 @@
+2006-11-14  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* vc-chlog.in (func_extract_changed_lines): Factor array deletion
+	in awk script into a function delete_array.
+
 2006-11-10  Jim Meyering  <jim@meyering.net>
 
 	* README: Change narrating style not to speak of "I".
