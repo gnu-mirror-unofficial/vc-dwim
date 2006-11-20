@@ -38,7 +38,7 @@ my $vc_cmd =
   {
    CVS() =>
    {
-    DIFF_COMMAND => [qw(cvs -f -Q -n diff -Nu --)],
+    DIFF_COMMAND => [qw(cvs -f -Q -n diff -Nup --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1, 1 => 1},
     COMMIT_COMMAND => [qw(cvs -Q ci -F)],
     # is-version-controlled-file: search for m!^/REGEX_ESCAPED_FILE/! in CVS/Entries

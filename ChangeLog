@@ -1,3 +1,7 @@
+2006-11-20  Jim Meyering  <jim@meyering.net>
+
+	* VC.pm ($vc_cmd) [DIFF_COMMAND]: Add cvs diff's -p option.
+
 2006-11-10  Jim Meyering  <jim@meyering.net>
 
 	* README: Change narrating style not to speak of "I".
