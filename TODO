@@ -48,14 +48,7 @@ Record any module dependencies.
   use Getopt::Long;
   use File::Basename; # for basename and dirname
 
-Consider using File::chdir, even though it introduces a new dependency.
-That will make at least the do_at function cleaner.
-
 Record some Perl version number requirement.
-
-When looking at 'svn diff' output, vc-dwim doesn't recognize
-when a file is removed, so you can't use vc-dwim to check in
-a change that 'svn rm's a file.  Fix this.
 
 
 TODO for vc-chlog
@@ -68,6 +61,3 @@ check whether `ctags -x' output format is portable enough now.
 allow a language-dependent setting of which kinds of identifiers to use
 (for exuberant ctags).  Can be worked around by putting ctags options
 in .ctags.
-
-changing a comment before a function causes the previous function to be
-added to the list, erroneously.  Apply some heuristic for this?

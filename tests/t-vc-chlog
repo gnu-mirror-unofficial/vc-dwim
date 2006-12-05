@@ -322,24 +322,23 @@ EOF
 # limitations:
 cat >expected-exuberant <<\EOF
 	* add-several.c (new_function, new_data):
-	* append.c (another_old_function, new_function, new_data):
+	* append.c (new_function, new_data):
 	* moved.c (will_be_moved_2):
 	* prepend.c (new_function, new_data):
 	* remove-several.c (global_data, will_be_gone_2):
 	* several-changes-per-hunk.c (another_function, global_data)
-	(function3, keep_this):
+	(keep_this):
 
 EOF
 
 # This is with ctags.emacs21:
 cat >expected-emacs <<\EOF
 	* add-several.c (new_function):
-	* append.c (another_old_function, new_function):
+	* append.c (new_function):
 	* moved.c (will_be_moved_2):
 	* prepend.c (new_function):
-	* remove-several.c (another_old_function, will_be_gone_2):
-	* several-changes-per-hunk.c (another_function, function3)
-	(keep_this):
+	* remove-several.c (will_be_gone_2):
+	* several-changes-per-hunk.c (another_function, keep_this):
 
 EOF
 

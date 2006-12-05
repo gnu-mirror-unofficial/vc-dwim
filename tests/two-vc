@@ -23,9 +23,9 @@ cat <<EOF > g/ChangeLog || framework_failure=1
 EOF
 cp g/ChangeLog c/sub || framework_failure=1
 
-(cd g && git init-db > /dev/null)        || framework_failure=1
-(cd g && git add . > /dev/null)          || framework_failure=1
-(cd g && git commit -m m . ) > /dev/null || framework_failure=1
+(cd g && git init-db 2> /dev/null)        || framework_failure=1
+(cd g && git add . 2> /dev/null)          || framework_failure=1
+(cd g && git commit -m m . ) 2> /dev/null || framework_failure=1
 mv c/sub g || framework_failure=1
 
 if test $framework_failure = 1; then

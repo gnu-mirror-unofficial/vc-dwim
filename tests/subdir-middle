@@ -15,11 +15,11 @@ mkdir -p $tmp || framework_failure=1
 cd $tmp || framework_failure=1
 
 ChangeLog=2/3/ChangeLog
-mkdir -p 2/3		|| framework_failure=1
-touch 2/3/f $ChangeLog	|| framework_failure=1
-git-init-db > /dev/null	|| framework_failure=1
-git-add .		|| framework_failure=1
-git-commit -m m . > /dev/null || framework_failure=1
+mkdir -p 2/3 || framework_failure=1
+touch 2/3/f $ChangeLog || framework_failure=1
+git init-db 2> /dev/null || framework_failure=1
+git add . || framework_failure=1
+git commit -m m . 2> /dev/null || framework_failure=1
 
 cat <<EOF > $ChangeLog || framework_failure=1
 2006-09-04  Jim Meyering  <jim@meyering.net>

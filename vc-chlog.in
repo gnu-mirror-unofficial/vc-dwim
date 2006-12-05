@@ -157,15 +157,17 @@ func_extract_changed_lines ()
   #                file is nonempty if reading a patch for this file
   $AWK '
     BEGIN { nfile = 0; }
+    # Solaris nawk cannot delete a whole array at once
+    function delete_array (array, elem) {
+      for (elem in array)
+	delete array[elem];
+    }
     function output () {
       if (2 in range || 4 in range) {
 	lines[file] = lines[file] " " \
 	              range[1]+0 "-" range[2]+0 "-" range[3]+0 "-" range[4]+0;
         # Solaris nawk cannot delete a whole array at once
-	delete range[1];
-	delete range[2];
-	delete range[3];
-	delete range[4];
+	delete_array(range);
       }
     }
     function record_file () {
@@ -233,10 +235,8 @@ func_extract_changed_lines ()
     {
       # test for end of hunk (avoid parse errors in next line)
       if (1 in newhunk && oldline == oldhunk[2] && newline == newhunk[2]) {
-	delete oldhunk[1];
-	delete oldhunk[2];
-	delete newhunk[1];
-	delete newhunk[2];
+	delete_array(oldhunk);
+	delete_array(newhunk);
 	output();
       }
     }
@@ -260,31 +260,58 @@ func_extract_changed_lines ()
 func_taglist ()
 {
   test -z "$debug" || set -x
-  $CTAGS -x "$1" |
-  if test $ctags_strip_type_column = yes; then
-    # With Exuberant Ctags, we would like to allow spaces in identifiers
-    # as well, for Texinfo @node names.  This is why we choose this rather
-    # obscure heuristic of extracting the name.  The hope is that the combination
-    #   LINENO FILENAME
-    # does not by accident occur in either the identifier nor the corresponding
-    # source line.
-    $AWK '
-      BEGIN { filename = "'"$1"'"; }
-      {
-        for (i = 3; i < NF - 1; i++) {
-	  if ($i ~ /^[1-9][0-9]*$/ && $(i+1) == filename) {
-	    lineno = $i;
-	    NF = i - 2;
-	    print lineno, $0;
-	    next;
+  {
+    $CTAGS -x "$1" |
+    if test $ctags_strip_type_column = yes; then
+      # With Exuberant Ctags, we would like to allow spaces in identifiers
+      # as well, for Texinfo @node names.  This is why we choose this rather
+      # obscure heuristic of extracting the name.  The hope is that the combination
+      #   LINENO FILENAME
+      # does not by accident occur in either the identifier nor the corresponding
+      # source line.
+      $AWK '
+	BEGIN { filename = "'"$1"'"; }
+	{
+	  for (i = 3; i < NF - 1; i++) {
+	    if ($i ~ /^[1-9][0-9]*$/ && $(i+1) == filename) {
+	      lineno = $i;
+	      NF = i - 2;
+	      print lineno, $0;
+	      next;
+	    }
 	  }
-	}
-	# we did not find any better, so just skip the type field.
-	print $3, $1;
-      }'
-  else
-    $AWK '{ print $2, $1; }'
-  fi |
+	  # we did not find any better, so just skip the type field.
+	  print $3, $1;
+	}'
+    else
+      $AWK '{ print $2, $1; }'
+    fi
+    # Heuristic: to avoid identifying changes outside of functions
+    # with the previous function, we add end-of-function markers
+    # with empty tags.
+    case $1 in #(
+      *.[ch]|*.cc|*.cpp|*.cxx|*.hh|*.hpp|*.C|*.H) #{{
+        sed -n '/^}[	 ]*$/{
+	          N
+		  /\n$/=
+		}
+		/^}[	 ]*\/[\/*]/{
+		  N
+		  /\n$/=
+		}' "$1"
+      ;; #(
+      *.sh|*.in|*.pl|*.pm) #{{
+        sed -n '/^}[	 ]*$/{
+	          N
+		  /\n$/=
+		}
+		/^}[	 ]*#/{
+		  N
+		  /\n$/=
+		}' "$1"
+      ;;
+    esac
+  } |
   sort -k1n
 }
 
