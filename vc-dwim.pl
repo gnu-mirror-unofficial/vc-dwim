@@ -195,6 +195,11 @@ sub get_new_changelog_lines ($$)
 sub exists_editor_backup ($)
 {
   my ($f) = @_;
+
+  # If $f is a symlink, use its referent.
+  -l $f
+    and $f = readlink $f;
+
   my $d = dirname $f;
   $f = basename $f;
   my @candidate_tmp =
