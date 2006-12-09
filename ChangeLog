@@ -1,5 +1,11 @@
 2006-12-09  Jim Meyering  <jim@meyering.net>
 
+	These test changes are required to accommodate changes in the
+	underlying tools.  Both started failing recently, and this changes
+	makes the tests pass.  We may have to revisit, to make them pass
+	on systems with older tools.
+	* tests/symlinked-changelog: Don't expect a trailing file name ("f"),
+	since hg no longer generates that output.
 	* tests/subdir-cvs: Include "-p" in expected diff output,
 	since VC.pm invokes cvs with -Nup.
 

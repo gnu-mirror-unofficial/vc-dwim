@@ -67,7 +67,6 @@ diff -r
 +a
 M Chang
 Committ
-f
 EOF
 
 cmp out exp || fail=1
