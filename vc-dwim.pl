@@ -204,12 +204,12 @@ sub exists_editor_backup ($)
   $f = basename $f;
   my @candidate_tmp =
     (
-     "$d/#$f#", "$d/.#$f",			# Emacs
+     "$d/.#$f", "$d/#$f#",			# Emacs
      map { "$d/.$f.sw$_" } qw (p o n m l k),	# Vim
     );
   foreach my $c (@candidate_tmp)
     {
-      -f $c
+      -l $c or -f _
 	and return $c; # Vim
     }
   return undef;
