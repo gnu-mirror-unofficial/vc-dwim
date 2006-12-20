@@ -26,9 +26,9 @@ EOF
 ln -s ../d/ChangeLog m
 echo a >> m/f
 
-(cd d && git init-db 2> /dev/null)        || framework_failure=1
-(cd d && git add . 2> /dev/null)          || framework_failure=1
-(cd d && git commit -m m . ) 2> /dev/null || framework_failure=1
+(cd d && git init-db > /dev/null)        || framework_failure=1
+(cd d && git add . > /dev/null)          || framework_failure=1
+(cd d && git commit -m m . ) > /dev/null || framework_failure=1
 cat <<EOF >> d/ChangeLog || framework_failure=1
 	* f: X.
 EOF
