@@ -48,6 +48,9 @@ Record any module dependencies.
   use Getopt::Long;
   use File::Basename; # for basename and dirname
 
+Consider using File::chdir, even though it introduces a new dependency.
+That will make at least the do_at function cleaner.
+
 Record some Perl version number requirement.
 
 When looking at 'svn diff' output, vc-dwim doesn't recognize
