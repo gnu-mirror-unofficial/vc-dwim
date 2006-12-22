@@ -50,6 +50,10 @@ Record any module dependencies.
 
 Record some Perl version number requirement.
 
+When looking at 'svn diff' output, vc-dwim doesn't recognize
+when a file is removed, so you can't use vc-dwim to check in
+a change that 'svn rm's a file.  Fix this.
+
 
 TODO for vc-chlog
 =================
