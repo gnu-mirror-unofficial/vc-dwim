@@ -3,7 +3,7 @@
 # vc-dwim - a version-control-agnostic ChangeLog diff and commit tool
 # @configure_input@
 #
-# Copyright 2006, Red Hat, Inc
+# Copyright 2006, 2007, Red Hat, Inc
 # Jim Meyering <meyering@redhat.com>
 #
 # This software may be freely redistributed under the terms of the
@@ -441,10 +441,11 @@ sub find_relevant_file_name($$)
 # If there's only one file, say F, and its name starts with "/", then
 # do "chdir(dirname(F))" before performing the commit (committing
 # "basename(F)" in that case), and restore the initial working directory
-# afterwards.
-sub do_commit ($$$)
+# afterwards.  If $AUTHOR is defined, and the vc back-end is GIT, then
+# use cg-commit's --author option.
+sub do_commit ($$$$)
 {
-  my ($vc, $log_msg_lines, $file_list_arg) = @_;
+  my ($vc, $author, $log_msg_lines, $file_list_arg) = @_;
 
   my @file_list = @$file_list_arg;
 
@@ -456,7 +457,10 @@ sub do_commit ($$$)
     or die "$ME: failed to write $commit_log_filename: $!\n";
 
   my @vc_commit = $vc->commit_cmd();
-  my @cmd = (@vc_commit, $commit_log_filename, '--', @file_list);
+  push @vc_commit, $commit_log_filename;
+  defined $author && $vc->name() eq VC::GIT
+    and push @vc_commit, '--author', $author;
+  my @cmd = (@vc_commit, '--', @file_list);
 
   my $options =
     {
@@ -603,10 +607,12 @@ sub main
   my $commit;
   my $simple_diff;
   my $print_vc_list;
+  my $author;
   GetOptions
     (
      diff => \$simple_diff,
      commit => \$commit,
+     'author=s' => \$author,   # makes sense only with --commit
      'print-vc-list' =>
        sub { print join (' ', VC::supported_vc_names()), "\n"; exit },
      debug => \$debug,
@@ -934,13 +940,13 @@ sub main
       if ($symlinked_changelog)
 	{
 	  do_at (dirname ($symlinked_changelog),
-		 sub { do_commit ($vc_changelog, [''],
+		 sub { do_commit ($vc_changelog, $author, [''],
 				  [basename ($symlinked_changelog)])});
-	  do_commit $vc, \@log_msg_lines, [@affected_files];
+	  do_commit $vc, $author, \@log_msg_lines, [@affected_files];
 	}
       else
 	{
-	  do_commit $vc, \@log_msg_lines,
+	  do_commit $vc, $author, \@log_msg_lines,
 	    [@changelog_file_name, @affected_files];
 	}
     }
@@ -1009,6 +1015,11 @@ system as the rest of the project hierarchy.
 =item B<--commit>
 
 perform the commit, too
+
+=item B<--author="User Name <user@example.orgE<gt>">
+
+Specify the user name and email address of the author
+of this change set.
 
 =item B<--diff>
 

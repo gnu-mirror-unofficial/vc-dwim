@@ -1,3 +1,12 @@
+2007-01-04  Jim Meyering  <jim@meyering.net>
+
+	Accept new option: --author='User Name <user@example.org>' option.
+	* vc-dwim.pl (main): Accept new option.
+	(do_commit): Take an $AUTHOR parameter.  Update callers.
+	Document new option.
+	* tests/author: New file, to test the above.
+	* tests/Makefile.am (TESTS): Add author.
+
 2007-01-03  Jim Meyering  <jim@meyering.net>
 
 	* tests/symlinked-changelog: Append "f" to expected output,
