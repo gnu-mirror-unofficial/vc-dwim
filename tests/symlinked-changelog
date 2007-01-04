@@ -59,7 +59,7 @@ test $fail = 1 && diff out exp 2> /dev/null
 
 # Remove everything beyond column 7 to avoid spurious differences.
 # Also remove the file name, "f", since not all versions of cogito print that.
-cut -b1-7 out |sed 's/^f$/d' > k; mv k out
+cut -b1-7 out |sed '/^f$/d' > k; mv k out
 cat <<\EOF > exp || fail=1
 * f: X.
 diff -r
