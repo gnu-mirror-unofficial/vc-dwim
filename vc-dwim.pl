@@ -218,7 +218,7 @@ sub exists_editor_backup ($)
 sub is_changelog ($)
 {
   my ($f) = @_;
-  return $f =~ m!(?:^|/)ChangeLog$!;
+  return $f =~ m!(?:^|/)ChangeLog!;
 }
 
 # This is an interface to perl's system command with a global hook for

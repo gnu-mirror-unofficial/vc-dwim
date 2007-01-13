@@ -1,3 +1,8 @@
+2007-01-13  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim.pl (is_changelog): Relax naming requirements for ChangeLog
+	files.  Accept a file if its name _starts_ with "ChangeLog".
+
 2007-01-04  Jim Meyering  <jim@meyering.net>
 
 	* tests/symlinked-changelog: Avoid spurious failure with different
