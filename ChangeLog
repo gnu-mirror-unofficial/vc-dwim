@@ -1,3 +1,48 @@
+2007-01-13  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim.pl (is_changelog): Relax naming requirements for ChangeLog
+	files.  Accept a file if its name _starts_ with "ChangeLog".
+
+2007-01-04  Jim Meyering  <jim@meyering.net>
+
+	* tests/symlinked-changelog: Avoid spurious failure with different
+	versions of cogito.
+
+	Accept new option: --author='User Name <user@example.org>' option.
+	* vc-dwim.pl (main): Accept new option.
+	(do_commit): Take an $AUTHOR parameter.  Update callers.
+	Document new option.
+	* tests/author: New file, to test the above.
+	* tests/Makefile.am (TESTS): Add author.
+
+2007-01-03  Jim Meyering  <jim@meyering.net>
+
+	* tests/symlinked-changelog: Append "f" to expected output,
+	to match what git/cg-commit now does.
+
+2006-12-20  Jim Meyering  <jim@meyering.net>
+
+	Redirect stdout, not stderr, to align with newer (1.4.4.2) git.
+	* tests/add-empty, tests/cl-but-no-diff, tests/cl-other-user:
+	* tests/git-mv, tests/leading-comment, tests/no-star, tests/subdir:
+	* tests/subdir-middle, tests/symlinked-changelog:
+	* tests/two-line-attr, tests/two-vc:
+
+	* vc-dwim.pl (exists_editor_backup): Check for "-l" (is-symlink),
+	and for "-f" (is-regular-file).
+	Check for ".#$f" (created by latest emacs) before "#$f#".
+
+2006-12-09  Jim Meyering  <jim@meyering.net>
+
+	These test changes are required to accommodate changes in the
+	underlying tools.  Both started failing recently, and this changes
+	makes the tests pass.  We may have to revisit, to make them pass
+	on systems with older tools.
+	* tests/symlinked-changelog: Don't expect a trailing file name ("f"),
+	since hg no longer generates that output.
+	* tests/subdir-cvs: Include "-p" in expected diff output,
+	since VC.pm invokes cvs with -Nup.
+
 2006-12-05  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim.pl (exists_editor_backup): If ChangeLog is a symlink,

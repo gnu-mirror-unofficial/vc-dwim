@@ -16,10 +16,10 @@ mkdir -p $tmp && cd $tmp \
 cat <<EOF > ChangeLog || framework_failure=1
 2006-09-04  Jim Meyering  <jim@meyering.net>
 EOF
-git init-db 2> /dev/null		\
+git init-db > /dev/null		\
   && echo foo > x			\
   && git add .				\
-  && git commit -m m . 2> /dev/null	\
+  && git commit -m m . > /dev/null	\
   && git mv x y				\
   && : > y				\
     || framework_failure=1

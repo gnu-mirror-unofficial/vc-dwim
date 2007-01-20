@@ -26,9 +26,9 @@ EOF
 ln -s ../d/ChangeLog m
 echo a >> m/f
 
-(cd d && git init-db 2> /dev/null)        || framework_failure=1
-(cd d && git add . 2> /dev/null)          || framework_failure=1
-(cd d && git commit -m m . ) 2> /dev/null || framework_failure=1
+(cd d && git init-db > /dev/null)        || framework_failure=1
+(cd d && git add . > /dev/null)          || framework_failure=1
+(cd d && git commit -m m . ) > /dev/null || framework_failure=1
 cat <<EOF >> d/ChangeLog || framework_failure=1
 	* f: X.
 EOF
@@ -57,7 +57,9 @@ test $fail = 1 && diff out exp 2> /dev/null
 
 (cd m && vc-dwim --commit ChangeLog) > out || fail=1
 
-cut -b1-7 out > k; mv k out
+# Remove everything beyond column 7 to avoid spurious differences.
+# Also remove the file name, "f", since not all versions of cogito print that.
+cut -b1-7 out |sed '/^f$/d' > k; mv k out
 cat <<\EOF > exp || fail=1
 * f: X.
 diff -r
@@ -67,7 +69,6 @@ diff -r
 +a
 M Chang
 Committ
-f
 EOF
 
 cmp out exp || fail=1
