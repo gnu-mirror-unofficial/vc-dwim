@@ -1,3 +1,9 @@
+2007-01-20  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* man/Makefile.am: Create vc-dwim.1 with pod2man instead of
+	help2man.
+	* configure.ac: Test for pod2man.
+
 2007-01-13  Jim Meyering  <jim@meyering.net>
 
 	* vc-dwim.pl (is_changelog): Relax naming requirements for ChangeLog
