@@ -1,3 +1,10 @@
+2007-03-09  Jim Meyering  <jim@meyering.net>
+
+	Allow template values to be substituted into --help output.
+	* vc-dwim.pl (PodTemplate): New package.
+	(usage): Put $ME in PodTemplate's dictionary.
+	(__END__): Replace each literal "vc-dwim" with "@@ME@@".
+
 2007-01-20  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	* man/Makefile.am: Create vc-dwim.1 with pod2man instead of

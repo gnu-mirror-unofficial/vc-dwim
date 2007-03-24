@@ -25,6 +25,38 @@
 
 use strict;
 use warnings;
+
+package PodTemplate;
+use Pod::PlainText;
+our @ISA = qw(Pod::PlainText);
+
+sub new
+{
+  my $this = shift;
+  my $class = ref($this) || $this;
+  my %params = @_;
+  my $self = { %params };
+  bless $self, $class;
+  $self->initialize();
+  return $self;
+}
+
+sub _lookup($$)
+{
+  my ($dict, $word) = @_;
+  return exists $dict->{$word} ? $dict->{$word} : $word;
+}
+
+sub preprocess_paragraph
+{
+  my ($self, $text) = @_;
+  $text =~ s/\@\@(.*?)\@\@/_lookup($self->{dict},$1)/eg;
+  return $text;
+}
+
+
+package main;
+
 use Getopt::Long;
 use File::Basename; # for basename and dirname
 
@@ -63,9 +95,8 @@ sub usage ($)
     }
   else
     {
-      eval 'use Pod::PlainText';
-      die $@ if $@;
-      my $parser = Pod::PlainText->new (sentence => 1, width => 78);
+      my $parser = PodTemplate->new (sentence => 1, width => 78,
+				     dict => {ME => $ME});
       # Read POD from __END__ (below) and write to STDOUT.
       *STDIN = *DATA;
       $parser->parse_from_filehandle;
@@ -963,25 +994,25 @@ __END__
 
 =head1	NAME
 
-vc-dwim - use new ChangeLog entries to direct and cross-check a
+@@ME@@ - use new ChangeLog entries to direct and cross-check a
 version-control "diff" or "commit" command
 
 =head1	SYNOPSIS
 
-B<vc-dwim> [OPTIONS] [CHANGELOG_FILE...]
+B<@@ME@@> [OPTIONS] [CHANGELOG_FILE...]
 
-B<vc-dwim> [OPTIONS] --commit CHANGELOG_FILE...
+B<@@ME@@> [OPTIONS] --commit CHANGELOG_FILE...
 
-B<vc-dwim> [OPTIONS] --diff [FILE...]
+B<@@ME@@> [OPTIONS] --diff [FILE...]
 
-B<vc-dwim> [OPTIONS] --print-vc-list
+B<@@ME@@> [OPTIONS] --print-vc-list
 
 =head1	DESCRIPTION
 
 By default, each command line argument should be a locally modified,
 version-controlled ChangeLog file.  If there is no command line argument,
-B<vc-dwim> tries to use the ChangeLog file in the current directory.
-In this default mode, B<vc-dwim> works by first computing diffs of those
+B<@@ME@@> tries to use the ChangeLog file in the current directory.
+In this default mode, B<@@ME@@> works by first computing diffs of those
 files and parsing the
 diff output to determine which named files are being changed.
 Then, it diffs the affected files and prints the resulting output.  One
@@ -991,7 +1022,7 @@ It detects that by searching for an editor temporary file corresponding
 to each affected file.  Another common error you can avoid with this
 tool is the one where you create a new file, add its name to Makefiles,
 etc., mention the addition in ChangeLog, but forget to e.g., "git add"
-(or "hg add", etc.) the file to the version control system.  B<vc-dwim>
+(or "hg add", etc.) the file to the version control system.  B<@@ME@@>
 detects this discrepancy and fails with a diagnostic explaining the
 probable situation.  You might also have simply mistyped the file name
 in the ChangeLog.
@@ -1000,7 +1031,7 @@ Once you are happy with your ChangeLog-derived diffs, you can commit
 those changes and the ChangeLog simply by rerunning the command with
 the --commit option.
 
-But what if you'd like to use B<vc-dwim> on a project that doesn't have
+But what if you'd like to use B<@@ME@@> on a project that doesn't have
 or want a ChangeLog file?  In that case, you can maintain your own,
 private, version-controlled ChangeLog file in a different hierarchy.
 Then just make a symlink to it from the top level directory of the
