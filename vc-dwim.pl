@@ -633,6 +633,23 @@ sub cross_check ($$$)
     and exit 1;
 }
 
+# If $$AUTHOR is not yet specified, set it from $NAME_AND_EMAIL.
+# If it is specified, then it must match (modulo 1 vs 2 spaces)
+# the $NAME_AND_EMAIL from the ChangeLog.
+sub check_attribution($$)
+{
+  my ($name_and_email, $author) = @_;
+  $name_and_email =~ s/  +</ </;
+  if ( ! defined $$author)
+    {
+      $$author = $name_and_email;
+      return;
+    }
+
+  $$author eq $name_and_email
+    or die "$ME: --author/ChangeLog mismatch:\n  $$author\n  $name_and_email\n";
+}
+
 sub main
 {
   my $commit;
@@ -803,8 +820,10 @@ sub main
       # Ignore the following one, too, which should be blank.
       my $n_log_lines = @log_lines;
       if (3 <= $n_log_lines
-	  && $log_lines[0] =~ /^\+\d{4}-\d\d-\d\d  /)
+	  && $log_lines[0] =~ /^\+\d{4}-\d\d-\d\d  (.*)/)
 	{
+	  my $name_and_email = $1;
+	  check_attribution $name_and_email, \$author;
 	  shift @log_lines;
 
 	  # Accept and ignore a second ChangeLog attribution line.  E.g.,

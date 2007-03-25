@@ -34,10 +34,60 @@ if test $framework_failure = 1; then
 fi
 
 set -e
+fail=0
 
 name_and_addr='joe blow <j@blow.org>'
 vc-dwim --commit --author="$name_and_addr" > /dev/null
 git-log --max-count=1 > out
 grep "^Author: $name_and_addr" out > /dev/null
+
+##################################################
+# Now ensure that with no --author=... option, the
+# name in ChangeLog entry is used as the author.
+cat <<EOF > t || framework_failure=1
+2006-09-05  X Y  <z@example.org>
+
+	* x: Done.
+
+EOF
+cat t ChangeLog > k
+mv k ChangeLog
+echo foo >> x
+
+vc-dwim --commit > /dev/null
+git-log --max-count=1 > out
+grep '^Author: X Y <z@example\.org>' out > /dev/null
+
+##################################################
+# Now ensure that when --author=... and ChangeLog
+# disagree, vc-dwim objects.
+cat <<EOF > t || framework_failure=1
+2006-09-06  X Y  <z@example.org>
+
+	* x: Done, again.
+
+EOF
+cat t ChangeLog > k
+mv k ChangeLog
+echo foo >> x
+
+# Expect this to fail
+vc-dwim --author='wrong.person@example.org' --commit 2> /dev/null || :
+
+##################################################
+# Finally, ensure that when --author=S matches the name/email
+# in ChangeLog it works.
+cat <<EOF > t || framework_failure=1
+2006-09-07  X Y  <z@example.org>
+
+	* x: Last.
+
+EOF
+cat t ChangeLog > k
+mv k ChangeLog
+echo foo >> x
+
+# Expect this to succeed
+vc-dwim --author='X Y <z@example.org>' --commit > /dev/null
 
 exit 0

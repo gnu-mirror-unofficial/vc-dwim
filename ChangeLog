@@ -1,3 +1,11 @@
+2007-03-25  Jim Meyering  <jim@meyering.net>
+
+	Determine the --author='...' string automatically from ChangeLog
+	when the first line of the delta is a "DATE  NAME  EMAIL" line.
+	* vc-dwim.pl (check_attribution): New function.
+	(main): Use it.
+	* tests/author: Add tests for this.
+
 2007-03-09  Jim Meyering  <jim@meyering.net>
 
 	Allow template values to be substituted into --help output.
