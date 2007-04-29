@@ -43,11 +43,11 @@ my $vc_cmd =
     COMMIT_COMMAND => [qw(cvs -Q ci -F)],
     # is-version-controlled-file: search for m!^/REGEX_ESCAPED_FILE/! in CVS/Entries
    },
-   GIT() => # aka cogito/git
+   GIT() =>
    {
     DIFF_COMMAND => [qw(cg-diff --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
-    COMMIT_COMMAND => [qw(cg-commit -q -M)],
+    COMMIT_COMMAND => [qw(git commit -q -F)],
     # is-version-controlled-file: true, if "git-rm -n 'FILE'" exits successfully
    },
    HG() => # aka mercurial

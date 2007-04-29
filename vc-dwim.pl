@@ -329,14 +329,15 @@ sub run_command
     }
   else
     {
-      my $cmd = join (' ', @cmd) . "\n";
+      my $cmd = join (' ', @cmd);
       $? = $rc;
       warn "$ME: Error running '$cmd': $PROCESS_STATUS\n";
     }
 
   if ($fail && !$options{IGNORE_FAILURE})
     {
-      my $msg = "$ME: the following command failed:\n"
+      my $cwd = Cwd::getcwd();
+      my $msg = "$ME: the following command failed (cwd=$cwd):\n"
 	. join (' ', @cmd) . "\n";
       die $msg if $options{DIE_UPON_FAILURE};
       warn $msg;
@@ -988,7 +989,8 @@ sub main
       if ($symlinked_changelog)
 	{
 	  do_at (dirname ($symlinked_changelog),
-		 sub { do_commit ($vc_changelog, $author, [''],
+		 sub { do_commit ($vc_changelog, $author,
+				  ['non-empty-commit-msg'],
 				  [basename ($symlinked_changelog)])});
 	  do_commit $vc, $author, \@log_msg_lines, [@affected_files];
 	}

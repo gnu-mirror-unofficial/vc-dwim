@@ -1,5 +1,12 @@
 2007-04-29  Jim Meyering  <jim@meyering.net>
 
+	Use git (not cg) for commits.
+	* VC.pm (COMMIT_COMMAND): Use git, not cg.
+	* vc-dwim.pl (run_command): Remove useless trailing "\n".
+	(run_command): When failing, report CWD, too.
+	(main): When committing symlinked-ChangeLog, use a non-zero-length
+	commit message (git would object about the old, empty one).
+
 	* vc-dwim.pl (main): Don't set GIT_PAGER.
 
 2007-03-25  Jim Meyering  <jim@meyering.net>
