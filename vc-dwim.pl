@@ -669,8 +669,6 @@ sub main
      version => sub { print "$ME version $VERSION\n"; exit },
     ) or usage 1;
 
-  $ENV{GIT_PAGER} = '';
-
   my $fail;
 
   if ($simple_diff)

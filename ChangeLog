@@ -1,3 +1,7 @@
+2007-04-29  Jim Meyering  <jim@meyering.net>
+
+	* vc-dwim.pl (main): Don't set GIT_PAGER.
+
 2007-03-25  Jim Meyering  <jim@meyering.net>
 
 	Determine the --author='...' string automatically from ChangeLog
