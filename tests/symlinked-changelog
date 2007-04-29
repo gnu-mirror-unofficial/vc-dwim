@@ -67,8 +67,6 @@ diff -r
 +++ b/f
 @@ -0,0
 +a
-M Chang
-Committ
 EOF
 
 cmp out exp || fail=1

@@ -45,7 +45,7 @@ my $vc_cmd =
    },
    GIT() =>
    {
-    DIFF_COMMAND => [qw(cg-diff --)],
+    DIFF_COMMAND => [qw(git-diff -B -C HEAD --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
     COMMIT_COMMAND => [qw(git commit -q -F)],
     # is-version-controlled-file: true, if "git-rm -n 'FILE'" exits successfully

@@ -1,7 +1,13 @@
 2007-04-29  Jim Meyering  <jim@meyering.net>
 
-	Use git (not cg) for commits.
+	Use git (not cg) for commits
+	* VC.pm (DIFF_COMMAND): Likewise, use "git-diff -B -C HEAD --",
+	rather than "cg-diff --".
+	* tests/symlinked-changelog: Update expected output accordingly.
+
+	Use git (not cg) for commits
 	* VC.pm (COMMIT_COMMAND): Use git, not cg.
+
 	* vc-dwim.pl (run_command): Remove useless trailing "\n".
 	(run_command): When failing, report CWD, too.
 	(main): When committing symlinked-ChangeLog, use a non-zero-length
