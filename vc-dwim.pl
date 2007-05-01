@@ -77,7 +77,7 @@ BEGIN
 
 use Coda;
 use VC;
-use ProcessStatus qw($PROCESS_STATUS);
+use ProcessStatus qw($PROCESS_STATUS process_status);
 
 our $VERSION = '@VERSION@';
 (my $ME = $0) =~ s|.*/||;
@@ -330,8 +330,7 @@ sub run_command
   else
     {
       my $cmd = join (' ', @cmd);
-      $? = $rc;
-      warn "$ME: Error running '$cmd': $PROCESS_STATUS\n";
+      warn "$ME: Error running '$cmd': ", process_status($rc), "\n";
     }
 
   if ($fail && !$options{IGNORE_FAILURE})

@@ -1,5 +1,9 @@
 2007-05-01  Jim Meyering  <jim@meyering.net>
 
+	Give a better diagnostic for a failed sub-process.
+	* vc-dwim.pl (run_command): Don't try to set $?;
+	use process_status($rc) instead of $PROCESS_STATUS.
+
 	"use Cwd" before calling Cwd::getcwd()
 	* vc-dwim.pl (run_command): When diagnosing a failed command,
 	"use Cwd", but don't fail early if Cwd::getcwd() fails.
