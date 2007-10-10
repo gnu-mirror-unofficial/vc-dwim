@@ -335,9 +335,8 @@ sub run_command
 
   if ($fail && !$options{IGNORE_FAILURE})
     {
-      my $cwd = '';
-      eval 'use Cwd'
-	and $cwd = ' (cwd= ' . Cwd::getcwd() . ')';
+      eval 'use Cwd';
+      my $cwd = $@ ? '' : ' (cwd= ' . Cwd::getcwd() . ')';
       my $msg = "$ME: the following command failed$cwd:\n"
 	. join (' ', @cmd) . "\n";
       die $msg if $options{DIE_UPON_FAILURE};
