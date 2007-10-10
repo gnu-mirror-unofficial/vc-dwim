@@ -1,5 +1,12 @@
 2007-10-10  Jim Meyering  <meyering@redhat.com>
 
+	Insert a blank line in log after the first (and not just for git).
+	* vc-dwim.pl (do_commit): If the commit log has two or more lines,
+	and the second one is not already empty, then insert a blank line
+	after the first.
+	* tests/git-log-summary: New test for the above.
+	* tests/Makefile.am (TESTS): Add git-log-summary.
+
 	Include cwd in diagnostic, if possible.
 	* vc-dwim.pl (run_command): Fix a typo: use cwd if eval succeeds.
 

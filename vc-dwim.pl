@@ -481,6 +481,28 @@ sub do_commit ($$$$)
 
   my @file_list = @$file_list_arg;
 
+  # Now that there is a strong incentive to separate each Git summary
+  # line from any remaining portion of the commit log, insert an empty
+  # line automatically.  E.g., given a ChangeLog entry like this:
+  #
+  #         Insert blank line in log after first, for git.
+  #         * vc-dwim.pl (do_commit): ...
+  #
+  # use this 3-line log message:
+  #
+  # Insert blank line in log after first, for git.
+  #
+  # * vc-dwim.pl (do_commit): ...
+
+  # If the commit log has two or more lines, and the second one is
+  # not already empty, then insert a blank line after the first.
+  # Do this for all version control types, not just git, so that
+  # things will look better in the long run, once they've all been
+  # converted to git :-)
+  2 <= @$log_msg_lines
+    && length $log_msg_lines->[1]
+      and splice @$log_msg_lines, 1, 0, "";
+
   # Write commit log to a file.
   my ($fh, $commit_log_filename)
     = File::Temp::tempfile ('vc-dwim-log-XXXXXX', DIR => '.', UNLINK => 0);
