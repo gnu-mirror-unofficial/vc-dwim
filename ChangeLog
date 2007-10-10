@@ -1,5 +1,7 @@
 2007-10-10  Jim Meyering  <meyering@redhat.com>
 
+	* NEWS: Describe some of the vc-dwim changes.
+
 	Insert a blank line in log after the first (and not just for git).
 	* vc-dwim.pl (do_commit): If the commit log has two or more lines,
 	and the second one is not already empty, then insert a blank line
