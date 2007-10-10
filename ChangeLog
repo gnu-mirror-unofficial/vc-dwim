@@ -8,6 +8,7 @@
 	after the first.
 	* tests/git-log-summary: New test for the above.
 	* tests/Makefile.am (TESTS): Add git-log-summary.
+	Suggestion from Eric Blake.
 
 	Include cwd in diagnostic, if possible.
 	* vc-dwim.pl (run_command): Fix a typo: use cwd if eval succeeds.
