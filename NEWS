@@ -1,6 +1,6 @@
 vc-dwim NEWS                                          -*- outline -*-
 
-* Major changes in release 0.2.3 (2006-??-??)
+* Major changes in release 1.0 (2007-10-11)
 
   vc-dwim no longer relies on cg (cogito)
 
