@@ -1,3 +1,9 @@
+2007-11-30  Jim Meyering  <meyering@redhat.com>
+
+	Derive the author name+email string in more cases.
+	* vc-dwim.pl (find_author): New function.
+	(main): Use it.
+
 2007-10-11  Jim Meyering  <meyering@redhat.com>
 
 	Version 1.0.

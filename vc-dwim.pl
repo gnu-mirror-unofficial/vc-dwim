@@ -468,6 +468,39 @@ sub find_relevant_file_name($$)
   return ($file_name, $is_summary_line);
 }
 
+# Like find_relevant_file_name, but find the preceding date/name/email
+# line in $log_file.  Return "User Name user@example.com", undef, or die.
+# Thus, when adding a new entry by someone else *without* also adding
+# the date+name+email in the ChangeLog.  This also works around the
+# situation where diff output happens to show the date+name+email line
+# being inserted only *after* the new entry.
+sub find_author($$)
+{
+  my ($log_file, $line_no) = @_;
+
+  1 <= $line_no
+    or die "$ME: invalid line number, $line_no, derived "
+      . "from $log_file diff output\n";
+
+  # Pull in this module only if we'll use it.
+  eval 'use IO::File';
+  die $@ if $@;
+  my $fh = new IO::File $log_file, 'r'
+    or die "$ME: can't open `$log_file' for reading: $!\n";
+
+  my $name_and_email;
+  while (defined (my $line = <$fh>))
+    {
+      $fh->input_line_number == $line_no
+	and last;
+
+      $line =~ /^\d{4}-\d\d-\d\d  (.*)/
+	and $name_and_email = $1;
+    }
+
+  return $name_and_email;
+}
+
 # Check in the files in @$file_list_arg, using the lines in @$log_msg_lines
 # as the log message.  $vc tells which version control system to use.
 # If there's only one file, say F, and its name starts with "/", then
@@ -863,6 +896,10 @@ sub main
 	  shift @log_lines;
 	  $offset += ($n_log_lines - @log_lines);
 	}
+
+      # FIXME: now that we have this find_author function,
+      # consider removing the kludge above.
+      $author ||= find_author $log, $offset;
 
       # Ignore any leading "+"-only (i.e., added, blank) lines.
       while (@log_lines && $log_lines[0] eq '+')
