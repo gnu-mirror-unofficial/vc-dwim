@@ -1,3 +1,10 @@
+2008-01-03  Jim Meyering  <meyering@redhat.com>
+
+	Avoid test failure due to cvs's diff heuristic vs coarse FS time stamps
+	* tests/subdir-cvs: Manually change mtimes of ChangeLog and "f" to be
+	at least two seconds later.
+	Based on a patch by by Ralf Wildenhues.
+
 2007-11-30  Jim Meyering  <meyering@redhat.com>
 
 	Derive the author name+email string in more cases.
