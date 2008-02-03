@@ -96,7 +96,7 @@ sub usage ($)
   else
     {
       my $parser = PodTemplate->new (sentence => 1, width => 78,
-				     dict => {ME => $ME});
+                                     dict => {ME => $ME});
       # Read POD from __END__ (below) and write to STDOUT.
       *STDIN = *DATA;
       $parser->parse_from_filehandle;
@@ -149,8 +149,8 @@ sub get_diffs ($$)
     {
       # Die if VC diff exits with unexpected status.
       $vc->valid_diff_exit_status($? >> 8)
-	or die "$ME: error closing pipe from `"
-	  . join (' ', @cmd) . "': $PROCESS_STATUS\n";
+        or die "$ME: error closing pipe from `"
+          . join (' ', @cmd) . "': $PROCESS_STATUS\n";
     }
 
   # Remove the single space from what would otherwise be empty
@@ -158,7 +158,7 @@ sub get_diffs ($$)
   foreach my $line (@added_lines)
     {
       $line eq ' '
-	and $line = '';
+        and $line = '';
     }
 
   return \@added_lines;
@@ -186,24 +186,24 @@ sub get_new_changelog_lines ($$)
   foreach my $line (@$diff_lines)
     {
       if ($line =~ /^\@\@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? \@\@/)
-	{
-	  $push_offset = 1;
-	  $unidiff_at_offset = $1;
-	  $offset_in_hunk = 0;
-	  $found_first_unidiff_marker_line = 1;
-	  next;
-	}
+        {
+          $push_offset = 1;
+          $unidiff_at_offset = $1;
+          $offset_in_hunk = 0;
+          $found_first_unidiff_marker_line = 1;
+          next;
+        }
       ++$offset_in_hunk;
       $found_first_unidiff_marker_line
-	or next;
+        or next;
       $line eq '' || $line =~ /^[- ]/
-	and next;
+        and next;
       $line =~ /^\+/
-	or die "$ME: unexpected diff output on line $.:\n$line";
+        or die "$ME: unexpected diff output on line $.:\n$line";
       chomp $line;
       my $offset = $unidiff_at_offset + $offset_in_hunk - 1;
       $push_offset
-	and push @added_lines, \$offset;
+        and push @added_lines, \$offset;
       $push_offset = 0;
       push @added_lines, $line;
     }
@@ -235,13 +235,13 @@ sub exists_editor_backup ($)
   $f = basename $f;
   my @candidate_tmp =
     (
-     "$d/.#$f", "$d/#$f#",			# Emacs
-     map { "$d/.$f.sw$_" } qw (p o n m l k),	# Vim
+     "$d/.#$f", "$d/#$f#",                      # Emacs
+     map { "$d/.$f.sw$_" } qw (p o n m l k),    # Vim
     );
   foreach my $c (@candidate_tmp)
     {
       -l $c or -f _
-	and return $c; # Vim
+        and return $c; # Vim
     }
   return undef;
 }
@@ -280,12 +280,12 @@ sub run_command
 
       my ($key, $val);
       while (($key, $val) = each %$h)
-	{
-	  exists $all_options{$key}
-	    or die "$ME: internal error: invalid option: $key";
+        {
+          exists $all_options{$key}
+            or die "$ME: internal error: invalid option: $key";
 
-	  $options{$key} = $val;
-	}
+          $options{$key} = $val;
+        }
     }
 
   $verbose
@@ -300,7 +300,7 @@ sub run_command
 
       # Redirect stdout.
       open STDOUT, ">/dev/null"
-	or die "$ME: cannot redirect stdout to /dev/null: $!\n";
+        or die "$ME: cannot redirect stdout to /dev/null: $!\n";
       select STDOUT; $| = 1; # make unbuffered
     }
 
@@ -308,7 +308,7 @@ sub run_command
     {
       open SAVE_ERR, ">&STDERR";
       open STDERR, ">/dev/null"
-	or die "$ME: cannot redirect stderr to /dev/null: $!\n";
+        or die "$ME: cannot redirect stderr to /dev/null: $!\n";
       select STDERR; $| = 1;
     }
 
@@ -338,7 +338,7 @@ sub run_command
       eval 'use Cwd';
       my $cwd = $@ ? '' : ' (cwd= ' . Cwd::getcwd() . ')';
       my $msg = "$ME: the following command failed$cwd:\n"
-	. join (' ', @cmd) . "\n";
+        . join (' ', @cmd) . "\n";
       die $msg if $options{DIE_UPON_FAILURE};
       warn $msg;
     }
@@ -383,8 +383,8 @@ sub change_log_line_extract_file_list ($)
 # -------
 # 2006-08-24  Jim Meyering  <jim@meyering.net>
 #
-#	* cvci (get_new_changelog_lines): Allow removed ChangeLog lines.
-#	(main): Prepare to use offsets.
+#       * cvci (get_new_changelog_lines): Allow removed ChangeLog lines.
+#       (main): Prepare to use offsets.
 # -------
 #
 # If the line in question (at $LINENO) is a summary line, then there
@@ -411,13 +411,13 @@ sub find_relevant_file_name($$)
   while (defined (my $line = <$fh>))
     {
       $fh->input_line_number == $line_no
-	and last;
+        and last;
 
       if ($line eq "\n")
-	{
-	  @searchable_lines = ();
-	  next;
-	}
+        {
+          @searchable_lines = ();
+          next;
+        }
       chomp $line;
       push @searchable_lines, $line;
     }
@@ -436,24 +436,24 @@ sub find_relevant_file_name($$)
   if (@searchable_lines == 0)
     {
       while (defined (my $line = <$fh>))
-	{
-	  $line =~ /^\t/
-	    or last;
-	  if ($line =~ /^\t\*(.*)/)
-	    {
-	      $file_name_line = $1;
-	      $is_summary_line = 1;
-	      last;
-	    }
-	}
+        {
+          $line =~ /^\t/
+            or last;
+          if ($line =~ /^\t\*(.*)/)
+            {
+              $file_name_line = $1;
+              $is_summary_line = 1;
+              last;
+            }
+        }
     }
   else
     {
       while (defined (my $line = pop @searchable_lines))
-	{
-	  $line =~ /^\t\*(.*)/
-	    and ($file_name_line = $1), last;
-	}
+        {
+          $line =~ /^\t\*(.*)/
+            and ($file_name_line = $1), last;
+        }
     }
   if ( ! defined $file_name_line)
     {
@@ -492,10 +492,10 @@ sub find_author($$)
   while (defined (my $line = <$fh>))
     {
       $fh->input_line_number == $line_no
-	and last;
+        and last;
 
       $line =~ /^\d{4}-\d\d-\d\d  (.*)/
-	and $name_and_email = $1;
+        and $name_and_email = $1;
     }
 
   return $name_and_email;
@@ -596,63 +596,63 @@ sub cross_check ($$$)
   foreach my $diff_line (@$diff_lines)
     {
       if ($vc_name eq VC::GIT)
-	{
-	  # Handle diff-header lines like this from git:
-	  #
-	  # diff --git a/tests/mv/setup b/tests/other-fs-tmpdir
-	  # similarity index 100%
-	  # rename from tests/mv/setup
-	  # rename to tests/other-fs-tmpdir
-	  if ($diff_line =~ /^rename (from|to) (\S+)$/)
-	    {
-	      $1 eq 'from'
-		and $is_removed_file{$2} = 1;
-	      $seen{$2} = 1;
-	      next;
-	    }
+        {
+          # Handle diff-header lines like this from git:
+          #
+          # diff --git a/tests/mv/setup b/tests/other-fs-tmpdir
+          # similarity index 100%
+          # rename from tests/mv/setup
+          # rename to tests/other-fs-tmpdir
+          if ($diff_line =~ /^rename (from|to) (\S+)$/)
+            {
+              $1 eq 'from'
+                and $is_removed_file{$2} = 1;
+              $seen{$2} = 1;
+              next;
+            }
 
-	  # Handle diff-header lines like this from git:
-	  # deleted file mode 100644
-	  # index 8f468ef..0000000
-	  # --- a/x
-	  # +++ /dev/null
-	  # @@ -1,3 +0,0 @@
-	  # -a
-	  # diff --git a/z b/z
-	  # new file mode 100644
-	  # index 0000000..e69de29
-	  $diff_line =~ /^diff /
-	    and undef $prev_file;
+          # Handle diff-header lines like this from git:
+          # deleted file mode 100644
+          # index 8f468ef..0000000
+          # --- a/x
+          # +++ /dev/null
+          # @@ -1,3 +0,0 @@
+          # -a
+          # diff --git a/z b/z
+          # new file mode 100644
+          # index 0000000..e69de29
+          $diff_line =~ /^diff /
+            and undef $prev_file;
 
-	  if ($diff_line =~ m!^diff --git a/(\S+) b/\S+$!)
-	    {
-	      $prev_file = $1;
-	      next;
-	    }
+          if ($diff_line =~ m!^diff --git a/(\S+) b/\S+$!)
+            {
+              $prev_file = $1;
+              next;
+            }
 
-	  if ($diff_line =~ /^(deleted|new) file mode [0-7]{6}$/)
-	    {
-	      $1 eq 'deleted'
-		and $is_removed_file{$prev_file} = 1;
-	      $seen{$prev_file} = 1;
-	      next;
-	    }
-	}
+          if ($diff_line =~ /^(deleted|new) file mode [0-7]{6}$/)
+            {
+              $1 eq 'deleted'
+                and $is_removed_file{$prev_file} = 1;
+              $seen{$prev_file} = 1;
+              next;
+            }
+        }
 
       # For git and hg, look for lines like /^--- a/dir/file.c\s/,
       # or /^\+\+\+ b/dir/file.c\s/, for an hg-added file.
       # For cvs and svn, there won't be an "a/" or "b/" prefix.
       $diff_line =~ /^[-+]{3} (\S+)(?:[ \t]|$)/
-	or next;
+        or next;
       my $file_name = $1;
       if ($vc_name eq VC::GIT || $vc_name eq VC::HG)
-	{
-	  # Remove the fake leading "a/" component that git and hg add.
-	  $file_name =~ s,^[ab]/,,;
-	}
+        {
+          # Remove the fake leading "a/" component that git and hg add.
+          $file_name =~ s,^[ab]/,,;
+        }
 
       $diff_line =~ /^\+/ && $file_name eq '/dev/null'
-	and $is_removed_file{$prev_file} = 1;
+        and $is_removed_file{$prev_file} = 1;
       $prev_file = $file_name;
 
       $seen{$file_name} = 1;
@@ -660,13 +660,13 @@ sub cross_check ($$$)
   foreach my $f (@$affected_files)
     {
       my $full_name = ($vc->diff_outputs_full_file_names()
-		       ? $vc->full_file_name($f) : $f);
+                       ? $vc->full_file_name($f) : $f);
       if ( ! $seen{$full_name})
-	{
-	  warn "$ME: $f is listed in the ChangeLog entry, but not in diffs.\n"
-	    . "Did you forget to add it?\n";
-	  $fail = 1;
-	}
+        {
+          warn "$ME: $f is listed in the ChangeLog entry, but not in diffs.\n"
+            . "Did you forget to add it?\n";
+          $fail = 1;
+        }
     }
   $fail
     and exit 1;
@@ -674,16 +674,16 @@ sub cross_check ($$$)
   foreach my $f (@$affected_files)
     {
       if (exists $is_removed_file{$f})
-	{
-	  -f $f
-	    and (warn "$ME: $f: to-be-removed file is still here?!?\n"),
-	      $fail = 1, next;
-	}
+        {
+          -f $f
+            and (warn "$ME: $f: to-be-removed file is still here?!?\n"),
+              $fail = 1, next;
+        }
       else
-	{
-	  -f $f
-	    or (warn "$ME: $f: no such file\n"), $fail = 1, next;
-	}
+        {
+          -f $f
+            or (warn "$ME: $f: no such file\n"), $fail = 1, next;
+        }
     }
   $fail
     and exit 1;
@@ -730,15 +730,15 @@ sub main
   if ($simple_diff)
     {
       $commit
-	and (warn "$ME: you can't use --diff with --commit\n"), usage 1;
+        and (warn "$ME: you can't use --diff with --commit\n"), usage 1;
       my $f = defined $ARGV[0] ? $ARGV[0] : '.';
       my $vc = VC->new ($f)
-	or die "$ME: can't determine version control system for $f\n";
+        or die "$ME: can't determine version control system for $f\n";
       my @vc_diff = $vc->diff_cmd();
       my @cmd = (@vc_diff, @ARGV);
 
       $verbose
-	and verbose_cmd \@cmd;
+        and verbose_cmd \@cmd;
 
       exec @cmd;
       exit 1;
@@ -753,17 +753,17 @@ sub main
   foreach my $f (@changelog_file_name)
     {
       if ( ! valid_file_name $f)
-	{
-	  warn "$ME: $f: invalid file name\n";
-	  $fail = 1;
-	}
+        {
+          warn "$ME: $f: invalid file name\n";
+          $fail = 1;
+        }
 
       # Fail if a command line arg is not a ChangeLog file.
       if ( ! is_changelog($f))
-	{
-	  warn "$ME: $f: doesn't look like a ChangeLog file\n";
-	  $fail = 1;
-	}
+        {
+          warn "$ME: $f: doesn't look like a ChangeLog file\n";
+          $fail = 1;
+        }
     }
   $fail
     and exit 1;
@@ -773,10 +773,10 @@ sub main
   foreach my $f (@changelog_file_name)
     {
       -f $f
-	or (warn "$ME: $f: no such file\n"), $fail = 1, next;
+        or (warn "$ME: $f: no such file\n"), $fail = 1, next;
       my $edit_tmp = exists_editor_backup $f;
       defined $edit_tmp
-	and (warn "$ME: $f has unsaved changes: $edit_tmp\n"), $fail = 1, next;
+        and (warn "$ME: $f has unsaved changes: $edit_tmp\n"), $fail = 1, next;
     }
   $fail
     and exit 1;
@@ -789,7 +789,7 @@ sub main
   foreach my $f (@changelog_file_name)
     {
       my $vc = VC->new($f)
-	or next;
+        or next;
       $any_vc_name = $vc->name();
       $seen_vc{$any_vc_name} = 1;
       $vc_per_arg{$f} = $any_vc_name;
@@ -797,7 +797,7 @@ sub main
   1 < keys %seen_vc
     and die "$ME: ChangeLog files are managed by more than one version-"
       . "control system:\n",
-	map {"  $_: $vc_per_arg{$_}\n"} (sort keys %vc_per_arg);
+        map {"  $_: $vc_per_arg{$_}\n"} (sort keys %vc_per_arg);
 
   ! defined $any_vc_name
     and die "$ME: no FILE is managed by a supported"
@@ -822,31 +822,31 @@ sub main
       eval 'use Cwd';
       die $@ if $@;
       $symlinked_changelog = Cwd::abs_path($log)
-	or die "$ME: $log: abs_path failed: $!\n";
+        or die "$ME: $log: abs_path failed: $!\n";
       $vc_changelog = VC->new ($symlinked_changelog);
       # Save working directory, chdir to dirname, perform diff, then return.
       do_at (dirname ($symlinked_changelog),
-	     sub {
-	       $added_log_lines{$log}
-		 = get_new_changelog_lines ($vc_changelog,
-					    basename $symlinked_changelog)});
+             sub {
+               $added_log_lines{$log}
+                 = get_new_changelog_lines ($vc_changelog,
+                                            basename $symlinked_changelog)});
     }
   else
     {
       # Extract added lines from each ChangeLog.
       foreach my $log (@changelog_file_name)
-	{
-	  $added_log_lines{$log} = get_new_changelog_lines $vc, $log;
-	}
+        {
+          $added_log_lines{$log} = get_new_changelog_lines $vc, $log;
+        }
     }
   foreach my $log (@changelog_file_name)
     {
       my $line_list = $added_log_lines{$log};
       if (@$line_list == 0)
-	{
-	  warn "$ME: no $log diffs?\n";
-	  $fail = 1;
-	}
+        {
+          warn "$ME: no $log diffs?\n";
+          $fail = 1;
+        }
     }
   $fail
     and exit 1;
@@ -874,28 +874,28 @@ sub main
       # Ignore the following one, too, which should be blank.
       my $n_log_lines = @log_lines;
       if (3 <= $n_log_lines
-	  && $log_lines[0] =~ /^\+\d{4}-\d\d-\d\d  (.*)/)
-	{
-	  my $name_and_email = $1;
-	  check_attribution $name_and_email, \$author;
-	  shift @log_lines;
+          && $log_lines[0] =~ /^\+\d{4}-\d\d-\d\d  (.*)/)
+        {
+          my $name_and_email = $1;
+          check_attribution $name_and_email, \$author;
+          shift @log_lines;
 
-	  # Accept and ignore a second ChangeLog attribution line.  E.g.,
-	  # 2006-09-29  user one  <u1@example.org>
-	  #         and user two  <u2@example.org>
-	  # The "and " on the second line is optional.
-	  $log_lines[0] =~ /^\+\t(?:and )?[^<]+<.*>$/
-	    and shift @log_lines;
+          # Accept and ignore a second ChangeLog attribution line.  E.g.,
+          # 2006-09-29  user one  <u1@example.org>
+          #         and user two  <u2@example.org>
+          # The "and " on the second line is optional.
+          $log_lines[0] =~ /^\+\t(?:and )?[^<]+<.*>$/
+            and shift @log_lines;
 
-	  if ($log_lines[0] ne '+')
-	    {
-	      $log_lines[0] =~ s/^\+//;
-	      die "$ME:$log: unexpected, non-blank line after first:\n"
-		. $log_lines[0] . "\n";
-	    }
-	  shift @log_lines;
-	  $offset += ($n_log_lines - @log_lines);
-	}
+          if ($log_lines[0] ne '+')
+            {
+              $log_lines[0] =~ s/^\+//;
+              die "$ME:$log: unexpected, non-blank line after first:\n"
+                . $log_lines[0] . "\n";
+            }
+          shift @log_lines;
+          $offset += ($n_log_lines - @log_lines);
+        }
 
       # FIXME: now that we have this find_author function,
       # consider removing the kludge above.
@@ -903,109 +903,109 @@ sub main
 
       # Ignore any leading "+"-only (i.e., added, blank) lines.
       while (@log_lines && $log_lines[0] eq '+')
-	{
-	  shift @log_lines;
-	  ++$offset;
-	}
+        {
+          shift @log_lines;
+          ++$offset;
+        }
 
       # If the last line is empty, remove it.
       $log_lines[$#log_lines] eq '+'
-	and pop @log_lines;
+        and pop @log_lines;
 
       foreach my $line (@log_lines)
-	{
-	  # skip offsets
-	  ref $line
-	    and next;
-	  $line =~ s/^\+//;
-	  $line =~ s/^\t//;
-	}
+        {
+          # skip offsets
+          ref $line
+            and next;
+          $line =~ s/^\+//;
+          $line =~ s/^\t//;
+        }
 
       # Insert a preceding marker with the name of the ChangeLog file,
       # if there are two or more ChangeLog files.
       2 <= @changelog_file_name
-	and push @log_msg_lines, "[$log]";
+        and push @log_msg_lines, "[$log]";
 
       my $rel_dir = dirname $log;
 
       my $in_summary_lines = 1;
       # Extract file list from each group of log lines.
       foreach my $line (@log_lines)
-	{
-	  # If the line is a reference, then it's an offset.  Record it,
-	  # in case the first added line in that hunk lacks a file name.
-	  if (ref $line)
-	    {
-	      $offset = $$line;
-	      next;
-	    }
+        {
+          # If the line is a reference, then it's an offset.  Record it,
+          # in case the first added line in that hunk lacks a file name.
+          if (ref $line)
+            {
+              $offset = $$line;
+              next;
+            }
 
-	  # Skip lines like this:
-	  # * Version 6.1.
-	  $line =~ /^\* Version \d/
-	    and next;
+          # Skip lines like this:
+          # * Version 6.1.
+          $line =~ /^\* Version \d/
+            and next;
 
-	  $line eq ''
-	    and next;
+          $line eq ''
+            and next;
 
-	  # If the first added line doesn't start with "*", then
-	  # search back through the original ChangeLog file for the
-	  # line that does.  But stop at a blank line.  Barf if there
-	  # is no such "*"-prefixed line.
-	  if (defined $offset)
-	    {
-	      if ($line !~ /^\* (\S+) /)
-		{
-		  my ($file, $is_summary_line) =
-		    find_relevant_file_name ($log, $offset);
+          # If the first added line doesn't start with "*", then
+          # search back through the original ChangeLog file for the
+          # line that does.  But stop at a blank line.  Barf if there
+          # is no such "*"-prefixed line.
+          if (defined $offset)
+            {
+              if ($line !~ /^\* (\S+) /)
+                {
+                  my ($file, $is_summary_line) =
+                    find_relevant_file_name ($log, $offset);
 
-		  if (! defined $file)
-		    {
-		      # Don't complain if it looks like an indented
-		      # ChangeLog date line.
-		      if ($in_summary_lines || $line =~ /^\t\d{4}-\d\d-\d\d  /)
-			{
-			  # don't even warn
-			}
-		      else
-			{
-			  die "$ME: $log:$offset: cannot find name of "
-			    . "file in block containing this line:\n$line\n";
-			}
-		    }
+                  if (! defined $file)
+                    {
+                      # Don't complain if it looks like an indented
+                      # ChangeLog date line.
+                      if ($in_summary_lines || $line =~ /^\t\d{4}-\d\d-\d\d  /)
+                        {
+                          # don't even warn
+                        }
+                      else
+                        {
+                          die "$ME: $log:$offset: cannot find name of "
+                            . "file in block containing this line:\n$line\n";
+                        }
+                    }
 
-		  # If this is a summary line, don't modify it.
-		  # Otherwise, add the "* $file" prefix, using the name
-		  # we've just derived, for the log message.
-		  if (! $is_summary_line)
-		    {
-		      $in_summary_lines = 0;
-		      my $colon = ($line =~ /^\(.+?\)(?:\s*\[.+?\])?: /
-				   ? '' : ':');
-		      $line = "* $file$colon $line";
-		    }
-		}
-	    }
-	  undef $offset;
+                  # If this is a summary line, don't modify it.
+                  # Otherwise, add the "* $file" prefix, using the name
+                  # we've just derived, for the log message.
+                  if (! $is_summary_line)
+                    {
+                      $in_summary_lines = 0;
+                      my $colon = ($line =~ /^\(.+?\)(?:\s*\[.+?\])?: /
+                                   ? '' : ':');
+                      $line = "* $file$colon $line";
+                    }
+                }
+            }
+          undef $offset;
 
-	  if ($line =~ /^\*/)
-	    {
-	      $line =~ /^\* (\S.*?):/
-		or die "$ME:$log: line of unexpected form:\n$line";
-	      my $f_spec = $1;
-	      foreach my $file (change_log_line_extract_file_list ($f_spec))
-		{
-		  my $rel_file = ($rel_dir eq '.' ? $file : "$rel_dir/$file");
-		  exists $seen_affected_file{$rel_file}
-		    or push @affected_files, $rel_file;
-		  $seen_affected_file{$rel_file} = 1;
-		}
-	    }
-	}
+          if ($line =~ /^\*/)
+            {
+              $line =~ /^\* (\S.*?):/
+                or die "$ME:$log: line of unexpected form:\n$line";
+              my $f_spec = $1;
+              foreach my $file (change_log_line_extract_file_list ($f_spec))
+                {
+                  my $rel_file = ($rel_dir eq '.' ? $file : "$rel_dir/$file");
+                  exists $seen_affected_file{$rel_file}
+                    or push @affected_files, $rel_file;
+                  $seen_affected_file{$rel_file} = 1;
+                }
+            }
+        }
       continue
-	{
-	  push @log_msg_lines, $line;
-	}
+        {
+          push @log_msg_lines, $line;
+        }
     }
 
   # print "affected files:\n", join ("\n", @affected_files), "\n";
@@ -1019,7 +1019,7 @@ sub main
     {
       my $edit_tmp = exists_editor_backup $f;
       defined $edit_tmp
-	and (warn "$ME: $f has unsaved changes: $edit_tmp\n"), $fail = 1, next;
+        and (warn "$ME: $f has unsaved changes: $edit_tmp\n"), $fail = 1, next;
     }
   $fail
     and exit 1;
@@ -1046,18 +1046,18 @@ sub main
       die $@ if $@;
 
       if ($symlinked_changelog)
-	{
-	  do_at (dirname ($symlinked_changelog),
-		 sub { do_commit ($vc_changelog, $author,
-				  ['non-empty-commit-msg'],
-				  [basename ($symlinked_changelog)])});
-	  do_commit $vc, $author, \@log_msg_lines, [@affected_files];
-	}
+        {
+          do_at (dirname ($symlinked_changelog),
+                 sub { do_commit ($vc_changelog, $author,
+                                  ['non-empty-commit-msg'],
+                                  [basename ($symlinked_changelog)])});
+          do_commit $vc, $author, \@log_msg_lines, [@affected_files];
+        }
       else
-	{
-	  do_commit $vc, $author, \@log_msg_lines,
-	    [@changelog_file_name, @affected_files];
-	}
+        {
+          do_commit $vc, $author, \@log_msg_lines,
+            [@changelog_file_name, @affected_files];
+        }
     }
 }
 
@@ -1070,12 +1070,12 @@ __END__
 # Documentation
 #
 
-=head1	NAME
+=head1  NAME
 
 @@ME@@ - use new ChangeLog entries to direct and cross-check a
 version-control "diff" or "commit" command
 
-=head1	SYNOPSIS
+=head1  SYNOPSIS
 
 B<@@ME@@> [OPTIONS] [CHANGELOG_FILE...]
 
@@ -1085,7 +1085,7 @@ B<@@ME@@> [OPTIONS] --diff [FILE...]
 
 B<@@ME@@> [OPTIONS] --print-vc-list
 
-=head1	DESCRIPTION
+=head1  DESCRIPTION
 
 By default, each command line argument should be a locally modified,
 version-controlled ChangeLog file.  If there is no command line argument,
@@ -1117,7 +1117,7 @@ hierarchy in which you'd like to use it and everything should work.
 Your private ChangeLog file need not even use the same version control
 system as the rest of the project hierarchy.
 
-=head1	OPTIONS
+=head1  OPTIONS
 
 =over 4
 
@@ -1159,7 +1159,7 @@ Generate debug output.
 
 =back
 
-=head1	RESTRICTIONS
+=head1  RESTRICTIONS
 
 This tool can be useful to you only if you use a version control system.
 It's most useful if you maintain a ChangeLog file and create a log entry
@@ -1169,10 +1169,14 @@ Relies on fairly strict adherence to recommended ChangeLog syntax.
 Detects editor temporaries created by Emacs and Vim.
 Eventually, it will detect temporaries created by other editors.
 
-=head1	AUTHOR
+=head1  AUTHOR
 
 Jim Meyering <jim@meyering.net>
 
 Please report bugs or suggestions to the author.
 
 =cut
+
+## Local Variables:
+## indent-tabs-mode: nil
+## End:
