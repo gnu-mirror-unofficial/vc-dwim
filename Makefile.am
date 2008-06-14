@@ -21,12 +21,10 @@ do_subst = sed						\
   -e 's,[@]PATH_SEPARATOR[@],$(PATH_SEPARATOR),g'	\
   -e 's,[@]PERL[@],$(PERL),g'				\
   -e 's,[@]SHELL[@],$(SHELL),g'				\
-  -e 's,[@]VERSION[@],$(VERSION)'"$$ver_suffix",g	\
+  -e 's,[@]VERSION[@],$(VERSION)',g	\
   -e 's,[@]VC_LIST[@],'"`$(gen_vc_name_list)`",g	\
   -e 's,[@]configure_input[@],Generated from $@.pl; do not edit by hand.,g' \
   -e 's,[@]datadir[@],$(datadir),g'
-
-hg_version = hg log --limit=1 --template='{date|shortdate}.{node|short}\n'
 
 ## These files depend on Makefile so they are rebuilt if $(VERSION),
 ## $(datadir) or other do_subst'ituted variables change.
@@ -34,20 +32,11 @@ hg_version = hg log --limit=1 --template='{date|shortdate}.{node|short}\n'
 ## Write this so it works even when hg is not installed on this system.
 vc-dwim: vc-dwim.pl Makefile
 	rm -f $@ $@.tmp
-	dirty=`($(am__cd) $(srcdir) && hg stat -nm) 2>/dev/null || :`;	\
-	test -n "$$dirty" && dirty='-dirty';				\
-	rev=`($(am__cd) $(srcdir) && $(hg_version)) 2>/dev/null || :`;	\
-	ver_suffix="$$rev$$dirty";					\
-	test -n "$$ver_suffix" && ver_suffix=" ($$ver_suffix)";		\
 	$(do_subst) $(srcdir)/$@.pl >$@.tmp
 	chmod a-w+x $@.tmp
 	mv -f $@.tmp $@
 
-tag_name = v$(VERSION)
-release: distcheck
-	hg log -r $(tag_name) > /dev/null 2>&1 \
-	  && { echo 'tag, $(tag_name), is already used'; exit 1; } 1>&2 || :
-	dirty=`hg stat -nm 2>/dev/null`; test -z "$$dirty" \
-	  || { echo modified files remain:; \
-	       echo "$$dirty" | tr ' ' '\n'; exit 1; } 1>&2
-	hg tag $(tag_name)
+# Arrange so that .tarball-version appears only in the distribution
+# tarball, and never in a checked-out repository.
+dist-hook:
+	echo $(VERSION) > $(distdir)/.tarball-version
