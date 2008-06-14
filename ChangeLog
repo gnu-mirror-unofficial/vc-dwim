@@ -1,5 +1,7 @@
 2008-06-14  Jim Meyering  <meyering@redhat.com>
 
+	* tests/t-vc-chlog: Remove trailing blanks in emitted patches.
+
 	avoid test failure due to change in "git diff" output
 	* tests/symlinked-changelog: Adjust expected output and
 	arrange to accept both variants of "git diff" output.

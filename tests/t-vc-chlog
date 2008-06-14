@@ -190,7 +190,7 @@ Index: add-several.c
 @@ -5,6 +5,15 @@
      3;
  }
- 
+
 +int new_function (void)
 +{
 +  return old_function ();
@@ -225,7 +225,7 @@ Index: moved.c
 @@ -5,6 +5,11 @@
      3;
  }
- 
+
 +int will_be_moved_2 (int t)
 +{
 +  return will_be_moved_1 (t);
@@ -235,9 +235,9 @@ Index: moved.c
  another_old_function (void)
  {
 @@ -15,11 +20,6 @@
- 
+
  extern int will_be_moved_1 (int X);
- 
+
 -int will_be_moved_2 (int t)
 -{
 -  return will_be_moved_1 (t);
@@ -265,9 +265,9 @@ Index: remove-several.c
 --- remove-several.c	5 Oct 2006 15:12:00 -0000	1.1.1.1
 +++ remove-several.c	5 Oct 2006 15:14:25 -0000
 @@ -13,13 +13,6 @@
- 
+
  int global_data = 2;
- 
+
 -extern int will_be_gone_1 (int X);
 -
 -int will_be_gone_2 (int t)
@@ -288,16 +288,16 @@ Index: several-changes-per-hunk.c
 -  return function ();
 +  return 1 + function ();
  }
- 
+
 -int global_data = 2;
 +int global_data = 3;
- 
+
  extern int yet_another (int X);
- 
+
 @@ -20,7 +20,8 @@
    return yet_another (t);
  }
- 
+
 +/* comment */
  int keep_this (int t)
  {
@@ -344,7 +344,7 @@ EOF
 
 $PATCH -p0 <p1 >stdout 2>stderr || fail=1
 test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
-test "$fail" -ne 1 
+test "$fail" -ne 1
 
 run_vc_chlog p1
 # Yes, all those if..$VERBOSE then..fi are on purpose
@@ -392,15 +392,15 @@ cat >p4 <<\EOF
 -  return function ();
 +  return 1 + function ();
  }
- 
+
 -int global_data = 2;
 +int global_data = 3;
- 
+
  extern int yet_another (int X);
 @@ -20,7 +20,8 @@
    return yet_another (t);
  }
- 
+
 +/* comment */
  int keep_this (int t)
  {
@@ -618,7 +618,7 @@ cat >p11 <<\EOF
 +- 2 -
 +--a;
  }
- 
+
  int bar (int a, int b, int c)
  {
    return a +
