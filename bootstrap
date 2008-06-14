@@ -1,0 +1,2 @@
+modules='gnumakefile git-version-gen vc-list-files perl'
+/gnulib/gnulib-tool --more-symlinks --import $modules

@@ -1,5 +1,7 @@
 2008-06-14  Jim Meyering  <meyering@redhat.com>
 
+	* bootstrap, AUTHORS: New files.
+
 	* cfg.mk, maint.mk, .prev-version: New files
 
 	* Makefile.am: remove vestiges of hg support
