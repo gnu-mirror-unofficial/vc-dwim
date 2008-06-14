@@ -99,7 +99,7 @@ DATE  NAME  EMAIL
 	* file2:
 
 EOF
-run_vc_chlog p1 --changelog ChangeLog --changelog sub/ChangeLog 
+run_vc_chlog p1 --changelog ChangeLog --changelog sub/ChangeLog
 $diff_u expected stdout
 
 cat >expected <<\EOF
@@ -114,7 +114,7 @@ DATE  NAME  EMAIL
 	* file1:
 
 EOF
-run_vc_chlog p1 --changelog sub/ChangeLog --changelog ChangeLog 
+run_vc_chlog p1 --changelog sub/ChangeLog --changelog ChangeLog
 $diff_u expected stdout
 
 cat >expected <<\EOF
@@ -129,7 +129,7 @@ DATE  NAME  EMAIL
 	* file2:
 
 EOF
-run_vc_chlog p1 --changelog ./ChangeLog --changelog ./sub/ChangeLog 
+run_vc_chlog p1 --changelog ./ChangeLog --changelog ./sub/ChangeLog
 $diff_u expected stdout
 
 : >expected

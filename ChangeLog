@@ -1,5 +1,7 @@
 2008-06-14  Jim Meyering  <meyering@redhat.com>
 
+	* tests/multiple-chlogs: Remove trailing blanks.
+
 	* tests/t-vc-chlog: Remove trailing blanks in emitted patches.
 
 	avoid test failure due to change in "git diff" output
