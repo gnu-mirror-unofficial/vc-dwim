@@ -1,5 +1,7 @@
 2008-06-14  Jim Meyering  <meyering@redhat.com>
 
+	update to GPLv3
+
 	add copyright notices everywhere
 	* vc-chlog.in: update copyright, with permission from Ralf
 
