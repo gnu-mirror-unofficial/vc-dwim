@@ -1,16 +1,6 @@
-Update the bug-report-to address in the documentation.
+Update README-devel once I've sorted out gnulib/bootstrap issues
 
-Add a "make distcheck" rule that does something like this:
-# FIXME: rather than "hg clone . dst", use checkout-dot NEW_DEST_DIR
-tmp = $(TMPDIR)/vc-dwim-$$$$
-some_check_hook:
-	rm -rf $(tmp)
-	hg clone . $(tmp)
-	cd $(tmp)
-	aclocal && autoheader && automake && autoconf && ./configure
-	make distcheck
-and then compare with the result of "make distcheck" in
-the working directory.
+Update the bug-report-to address in the documentation.
 
 
 TODO for vc-dwim

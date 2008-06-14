@@ -1,5 +1,7 @@
 2008-06-14  Jim Meyering  <meyering@redhat.com>
 
+	* TODO: Remove distcheck-related item.  Add one for README-devel.
+
 	* bootstrap, AUTHORS: New files.
 
 	* cfg.mk, maint.mk, .prev-version: New files
