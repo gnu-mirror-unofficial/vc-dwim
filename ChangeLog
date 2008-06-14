@@ -1,3 +1,10 @@
+2008-06-14  Jim Meyering  <meyering@redhat.com>
+
+	avoid test failure due to change in "git diff" output
+	* tests/symlinked-changelog: Adjust expected output and
+	arrange to accept both variants of "git diff" output.
+	Don't emit expected output twice.
+
 2008-01-03  Jim Meyering  <meyering@redhat.com>
 
 	Avoid test failure due to cvs's diff heuristic vs coarse FS time stamps

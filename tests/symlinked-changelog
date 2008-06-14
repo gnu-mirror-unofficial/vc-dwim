@@ -43,9 +43,14 @@ fail=0
 (cd m && vc-dwim ChangeLog) > out || fail=1
 
 cut -b1-7 out > k; mv k out
+
+# Older versions of diff output "diff -r", newer print "diff --".
+# Map the former to the latter.
+sed 's/^diff -r/diff --/' out > k; mv k out
+
 cat <<\EOF > exp || fail=1
 * f: X.
-diff -r
+diff --
 --- a/f
 +++ b/f
 @@ -0,0
@@ -60,14 +65,7 @@ test $fail = 1 && diff out exp 2> /dev/null
 # Remove everything beyond column 7 to avoid spurious differences.
 # Also remove the file name, "f", since not all versions of cogito print that.
 cut -b1-7 out |sed '/^f$/d' > k; mv k out
-cat <<\EOF > exp || fail=1
-* f: X.
-diff -r
---- a/f
-+++ b/f
-@@ -0,0
-+a
-EOF
+sed 's/^diff -r/diff --/' out > k; mv k out
 
 cmp out exp || fail=1
 test $fail = 1 && diff out exp 2> /dev/null
