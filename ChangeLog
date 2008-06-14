@@ -1,5 +1,8 @@
 2008-06-14  Jim Meyering  <meyering@redhat.com>
 
+	add copyright notices everywhere
+	* vc-chlog.in: update copyright, with permission from Ralf
+
 	* tests/multiple-chlogs: Remove trailing blanks.
 
 	* tests/t-vc-chlog: Remove trailing blanks in emitted patches.

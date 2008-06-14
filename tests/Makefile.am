@@ -1,3 +1,6 @@
+# Copyright (C) 2006-2008 Free Software Foundation, Inc.
+# This file may be modified and/or distributed without restriction.
+
 EXTRA_DIST = $(TESTS) \
   require-cvs \
   require-git \

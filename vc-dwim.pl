@@ -3,8 +3,8 @@
 # vc-dwim - a version-control-agnostic ChangeLog diff and commit tool
 # @configure_input@
 #
-# Copyright 2006, 2007, Red Hat, Inc
-# Jim Meyering <meyering@redhat.com>
+# Copyright 2006-2008 Free Software Foundation, Inc.
+# Written by Jim Meyering <meyering@redhat.com>
 #
 # This software may be freely redistributed under the terms of the
 # GNU general public license.
