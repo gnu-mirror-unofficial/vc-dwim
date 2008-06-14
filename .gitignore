@@ -1,3 +1,4 @@
+*~
 Makefile
 Makefile.in
 TAGS
@@ -20,3 +21,4 @@ vc-chlog
 vc-dwim
 vc-dwim-[0-9.]+tar.bz2
 vc-dwim-[0-9.]+tar.gz
+GNUmakefile
