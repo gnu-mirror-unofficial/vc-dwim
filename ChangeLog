@@ -1,5 +1,9 @@
 2008-06-14  Jim Meyering  <meyering@redhat.com>
 
+	update configure.ac
+	* configure.ac: Add copyright, use git-version-gen,
+	require dist-lzma and new automake.
+
 	* NEWS: update template
 
 	update to GPLv3

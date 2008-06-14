@@ -1,7 +1,15 @@
-AC_INIT([vc-dwim], [1.0], [jim@meyering.net])
+# Copyright (C) 2008 Free Software Foundation, Inc.
+# This file may be modified and/or distributed without restriction.
+
+# Make inter-release version strings look like, e.g., v1.0-219-g58ddd, which
+# indicates that it is built from the 219th delta (in _some_ repository)
+# following the v1.0 tag, and that 58ddd is a prefix of the commit SHA1.
+AC_INIT([vc-dwim],
+	m4_esyscmd([build-aux/git-version-gen .tarball-version]),
+	[bug-vc-dwim@gnu.org])
 
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([1.9.6 foreign dist-bzip2 check-news])
+AM_INIT_AUTOMAKE([1.10.1 dist-lzma])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.59)
