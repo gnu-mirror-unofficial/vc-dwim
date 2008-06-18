@@ -5,18 +5,24 @@
 #
 # Copyright 2006-2008 Free Software Foundation, Inc.
 # Written by Jim Meyering <meyering@redhat.com>
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-# This software may be freely redistributed under the terms of the
-# GNU general public license.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software Foundation,
-# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-#
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 # Given a command like vc-dwim ChangeLog lib/ChangeLog..., check that each
 # ChangeLog has been modified, determine the list of affected files from
 # the added lines in the ChangeLog diffs.  Ensure that there is no editor
-# temporary file indicating an unsaved emacs buffer, then write all ChangeLog
+# temporary file indicating an unsaved editor buffer, then write all ChangeLog
 # entries to a temporary file and run a command like
 #   cvs ci -F .msg ChangeLog FILE...
 # If more than one ChangeLog file has been modified, do the same

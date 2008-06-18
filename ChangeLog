@@ -1,3 +1,7 @@
+2008-06-18  Jim Meyering  <meyering@redhat.com>
+
+	* vc-dwim.pl: Specify GPLv3+.  Pointed out by Karl Berry.
+
 2008-06-14  Jim Meyering  <meyering@redhat.com>
 
 	* TODO: Remove distcheck-related item.  Add one for README-devel.
