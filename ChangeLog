@@ -1,3 +1,7 @@
+2008-06-20  Jim Meyering  <meyering@redhat.com>
+
+	* Makefile.am: Add copyright.
+
 2008-06-18  Jim Meyering  <meyering@redhat.com>
 
 	* vc-dwim.pl: Specify GPLv3+.  Pointed out by Karl Berry.
