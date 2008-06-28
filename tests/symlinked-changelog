@@ -20,15 +20,11 @@ cat <<EOF > d/ChangeLog || framework_failure=1
 2006-09-04  Jim Meyering  <jim@meyering.net>
 
 EOF
-(cd m && hg init 2> /dev/null)            || framework_failure=1
-(cd m && hg add . ) > /dev/null 2>&1      || framework_failure=1
-(cd m && hg ci -m m . ) > /dev/null 2>&1  || framework_failure=1
+(cd m && hg init && hg add . && hg ci -m m . ) || framework_failure=1
 ln -s ../d/ChangeLog m
 echo a >> m/f
 
-(cd d && git init > /dev/null)           || framework_failure=1
-(cd d && git add . > /dev/null)          || framework_failure=1
-(cd d && git commit -m m . ) > /dev/null || framework_failure=1
+(cd d && git init && git add . && git commit -m m . ) || framework_failure=1
 cat <<EOF >> d/ChangeLog || framework_failure=1
 	* f: X.
 EOF

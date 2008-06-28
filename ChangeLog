@@ -1,5 +1,9 @@
 2008-06-28  Jim Meyering  <meyering@redhat.com>
 
+	tests: clean up
+	* tests/symlinked-changelog: Simplify.
+	Don't redirect so much to /dev/null; better, w/new test framework.
+
 	* Makefile.am (EXTRA_DIST): Add .prev-version
 
 	adjust spelling of git commands: s/git-/git /; s/init-db/init/
