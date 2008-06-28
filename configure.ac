@@ -17,6 +17,9 @@ AC_PREREQ(2.59)
 # Where to generate output; srcdir location.
 AC_CONFIG_SRCDIR([vc-dwim.pl])
 
+gl_EARLY
+gl_INIT
+
 AC_PATH_PROG(PERL, perl)
 if test -z "$PERL"; then
    AC_MSG_ERROR([perl not found])

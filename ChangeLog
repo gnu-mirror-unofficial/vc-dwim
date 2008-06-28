@@ -1,3 +1,13 @@
+2008-06-28  Jim Meyering  <meyering@redhat.com>
+
+	build-related revamp
+	* Makefile.am (ACLOCAL_AMFLAGS): Define to "-I m4".
+	* bootstrap (modules): Add gitlog-to-changelog, gnu-make, posix-shell.
+	* configure.ac: Use gnulib's gl_EARLY and gl_INIT.
+	* tests/Makefile.am (TESTS_ENVIRONMENT): Move definition...
+	* tests/check.mk: ...to here.  New file, based on coreutils'.
+	* build-aux/check.mk: New file, from coreutils.
+
 2008-06-20  Jim Meyering  <meyering@redhat.com>
 
 	* Makefile.am: Add copyright.

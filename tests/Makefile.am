@@ -7,14 +7,6 @@ EXTRA_DIST = $(TESTS) \
   require-hg \
   trap-setup
 
-TESTS_ENVIRONMENT = \
-  top_srcdir=$(top_srcdir) \
-  srcdir=$(srcdir) \
-  PATCH="$(PATCH)" \
-  PERL="$(PERL)" \
-  perllibdir="`$(am__cd) $(top_srcdir) && pwd`" \
-  PATH="$(VG_PATH_PREFIX)`pwd`/..$(PATH_SEPARATOR)$$PATH"
-
 TESTS = \
   git-log-summary \
   author \
@@ -33,3 +25,6 @@ TESTS = \
   subdir-cvs \
   t-vc-chlog \
   multiple-chlogs
+
+AUTOMAKE_OPTIONS =
+include $(srcdir)/check.mk

@@ -14,6 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 SUBDIRS = . man tests
+ACLOCAL_AMFLAGS = -I m4
 
 bin_SCRIPTS = vc-dwim vc-chlog
 EXTRA_DIST = vc-dwim.pl vc-chlog.in
