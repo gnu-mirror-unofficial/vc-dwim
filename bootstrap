@@ -7,4 +7,9 @@ perl
 posix-shell
 vc-list-files
 '
-/gnulib/gnulib-tool --more-symlinks --import $modules
+/gnulib/gnulib-tool		\
+  --avoid=dummy			\
+  --source-base=.		\
+  --makefile-name=gnulib.mk	\
+  --more-symlinks --import $modules &&
+autoreconf -v

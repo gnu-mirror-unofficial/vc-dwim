@@ -13,11 +13,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+EXTRA_DIST =
+MOSTLYCLEANFILES =
+noinst_LIBRARIES =
+include gnulib.mk
+
 SUBDIRS = . man tests
 ACLOCAL_AMFLAGS = -I m4
 
 bin_SCRIPTS = vc-dwim vc-chlog
-EXTRA_DIST = vc-dwim.pl vc-chlog.in
+EXTRA_DIST += vc-dwim.pl vc-chlog.in
+EXTRA_DIST += cfg.mk maint.mk
 CLEANFILES = $(bin_SCRIPTS)
 
 perllibdir = $(pkgdatadir)

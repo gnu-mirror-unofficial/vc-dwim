@@ -1,5 +1,12 @@
 2008-06-28  Jim Meyering  <meyering@redhat.com>
 
+	more build reworking
+	* Makefile.am (EXTRA_DIST): Add cfg.mk and maint.mk.
+	(MOSTLYCLEANFILES, noinst_LIBRARIES): Define.
+	Include gnulib.mk.
+	* bootstrap: Add gnulib-tool options.
+	Run autoreconf.
+
 	build-related revamp
 	* Makefile.am (ACLOCAL_AMFLAGS): Define to "-I m4".
 	* bootstrap (modules): Add gitlog-to-changelog, gnu-make, posix-shell.

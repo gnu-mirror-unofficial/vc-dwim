@@ -22,3 +22,6 @@ vc-dwim
 vc-dwim-[0-9.]+tar.bz2
 vc-dwim-[0-9.]+tar.gz
 GNUmakefile
+gnulib.mk
+m4
+build-aux/.gitignore
