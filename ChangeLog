@@ -1,5 +1,9 @@
 2008-06-28  Jim Meyering  <meyering@redhat.com>
 
+	avoid hg here -- 1.0.1 gets an internal error due to hierarchy depth
+	* tests/symlinked-changelog: Use bzr instead.
+	Mercurial bug report: <http://www.selenic.com/mercurial/bts/msg6450>.
+
 	add support for bzr
 	* tests/require-bzr (bzr_version): New file.
 	* tests/Makefile.am (EXTRA_DIST): Add require-bzr.

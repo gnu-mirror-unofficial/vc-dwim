@@ -6,7 +6,7 @@ if test "$VERBOSE" = yes; then
   vc-dwim --version
 fi
 
-. $srcdir/require-hg
+. $srcdir/require-bzr
 . $srcdir/require-git
 . $srcdir/trap-setup
 
@@ -20,7 +20,7 @@ cat <<EOF > d/ChangeLog || framework_failure=1
 2006-09-04  Jim Meyering  <jim@meyering.net>
 
 EOF
-(cd m && hg init && hg add . && hg ci -m m . ) || framework_failure=1
+(cd m && bzr init && bzr add . && bzr ci -m m . ) || framework_failure=1
 ln -s ../d/ChangeLog m
 echo a >> m/f
 
@@ -40,17 +40,14 @@ fail=0
 
 cut -b1-7 out > k; mv k out
 
-# Older versions of diff output "diff -r", newer print "diff --".
-# Map the former to the latter.
-sed 's/^diff -r/diff --/' out > k; mv k out
-
 cat <<\EOF > exp || fail=1
 * f: X.
-diff --
---- a/f
-+++ b/f
+=== mod
+--- f	2
++++ f	2
 @@ -0,0
 +a
+
 EOF
 
 cmp out exp || fail=1
