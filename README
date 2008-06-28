@@ -3,7 +3,7 @@ vc-chlog is a ChangeLog writing helper tool.
 
 It is useful if you like to maintain a ChangeLog file describing
 the changes you make to version-controlled files.  vc-dwim works with
-the following version control systems: git, mercurial, svn, and cvs.
+the following version control systems: git, mercurial, bzr, svn, and cvs.
 It should be easy to add support for more.
 
 What can vc-dwim do?
@@ -37,8 +37,8 @@ Use an alias like this to show all or specified diffs:
 
 Use that when you want to see diffs of a specified file, regardless
 of whether you have written new ChangeLog entries for it.
-It works the same for cvs, git, hg, svn repositories, as long as
-all you want are the difference between your local copy and the
+It works the same for bzr, cvs, git, hg, svn repositories, as long
+as all you want are the difference between your local copy and the
 checked out version.
 
 Print diffs of files with new ChangeLog entries:

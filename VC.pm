@@ -41,6 +41,7 @@ use constant
     CVS => 'cvs',
     HG  => 'hg',
     SVN => 'svn',
+    BZR => 'bzr',
   };
 
 my $vc_cmd =
@@ -73,6 +74,12 @@ my $vc_cmd =
     DIFF_COMMAND => [qw(svn diff --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
     COMMIT_COMMAND => [qw(svn ci -q -F)],
+   },
+   BZR() => # aka bazaar
+   {
+    DIFF_COMMAND => [qw(bzr diff --)],
+    VALID_DIFF_EXIT_STATUS => {0 => 1, 1 => 1},
+    COMMIT_COMMAND => [qw(bzr ci -q -F)],
    },
   };
 
@@ -115,6 +122,8 @@ sub new($%)
 
       if (-d "$d/.git/objects") {
 	$self->{name} = GIT;
+      } elsif (-d "$d/.bzr/repository") {
+	$self->{name} = BZR;
       } elsif (-d "$d/.hg") {
 	$self->{name} = HG;
       }

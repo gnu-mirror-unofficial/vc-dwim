@@ -1,5 +1,14 @@
 2008-06-28  Jim Meyering  <meyering@redhat.com>
 
+	add support for bzr
+	* tests/require-bzr (bzr_version): New file.
+	* tests/Makefile.am (EXTRA_DIST): Add require-bzr.
+	* VC.pm (BZR): Define.
+	($vc_cmd): Add a stanza for bzr.
+	(new): Handle ".bzr".
+	* README: Add bzr to the list.
+	* NEWS: Mention this.
+
 	tests: clean up
 	* tests/symlinked-changelog: Simplify.
 	Don't redirect so much to /dev/null; better, w/new test framework.
