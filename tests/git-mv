@@ -1,5 +1,5 @@
 #!/bin/sh
-# Exercise git-mv's renaming.  Results in different diff syntax.
+# Exercise 'git mv's renaming.  Results in different diff syntax.
 # This also exercises the other fix: handle a diff header line
 # with only one comma, e.g., "@@ -1 +1,4 @@".
 
@@ -18,7 +18,7 @@ mkdir -p $tmp && cd $tmp \
 cat <<EOF > ChangeLog || framework_failure=1
 2006-09-04  Jim Meyering  <jim@meyering.net>
 EOF
-git init-db > /dev/null			\
+git init > /dev/null			\
   && touch x				\
   && git add .				\
   && git commit -m m . > /dev/null	\

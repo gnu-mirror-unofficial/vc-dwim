@@ -16,7 +16,7 @@ mkdir -p $tmp && cd $tmp \
 cat <<EOF > ChangeLog || framework_failure=1
 2006-09-04  Jim Meyering  <jim@meyering.net>
 EOF
-git init-db > /dev/null		\
+git init > /dev/null			\
   && echo foo > x			\
   && git add .				\
   && git commit -m m . > /dev/null	\

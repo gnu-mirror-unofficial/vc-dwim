@@ -16,7 +16,7 @@ mkdir -p $tmp && cd $tmp \
 cat <<EOF > ChangeLog || framework_failure=1
 2006-09-04  Jim Meyering  <jim@meyering.net>
 EOF
-git init-db > /dev/null 2>&1		\
+git init > /dev/null 2>&1		\
   && git add .				\
   && git commit -m m . > /dev/null 2>&1	\
     || framework_failure=1
@@ -43,7 +43,7 @@ set -e
 fail=0
 
 vc-dwim --commit > /dev/null
-git-log -1 > out.t
+git log -1 > out.t
 tail -n3 out.t |sed 's/^    $//' > out
 diff -u out exp || fail=1
 exit 0

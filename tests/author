@@ -16,7 +16,7 @@ mkdir -p $tmp && cd $tmp \
 cat <<EOF > ChangeLog || framework_failure=1
 2006-09-04  Jim Meyering  <jim@meyering.net>
 EOF
-git init-db > /dev/null 2>&1		\
+git init > /dev/null 2>&1		\
   && git add .				\
   && git commit -m m . > /dev/null 2>&1	\
     || framework_failure=1
@@ -38,7 +38,7 @@ fail=0
 
 name_and_addr='joe blow <j@blow.org>'
 vc-dwim --commit --author="$name_and_addr" > /dev/null
-git-log --max-count=1 > out
+git log --max-count=1 > out
 grep "^Author: $name_and_addr" out > /dev/null
 
 ##################################################
@@ -55,7 +55,7 @@ mv k ChangeLog
 echo foo >> x
 
 vc-dwim --commit > /dev/null
-git-log --max-count=1 > out
+git log --max-count=1 > out
 grep '^Author: X Y <z@example\.org>' out > /dev/null
 
 ##################################################

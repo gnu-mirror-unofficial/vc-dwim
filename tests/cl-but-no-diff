@@ -20,7 +20,7 @@ cat <<EOF > ChangeLog || framework_failure=1
 	* foo: bar.
 
 EOF
-git init-db > /dev/null || framework_failure=1
+git init > /dev/null || framework_failure=1
 git add . || framework_failure=1
 git commit -m m . > /dev/null || framework_failure=1
 

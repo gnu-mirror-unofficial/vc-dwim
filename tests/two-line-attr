@@ -14,7 +14,7 @@ mkdir -p $tmp || framework_failure=1
 cd $tmp || framework_failure=1
 
 touch f ChangeLog || framework_failure=1
-git init-db > /dev/null || framework_failure=1
+git init > /dev/null || framework_failure=1
 git add . || framework_failure=1
 git commit -m m . > /dev/null || framework_failure=1
 

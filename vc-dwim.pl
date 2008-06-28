@@ -513,7 +513,7 @@ sub find_author($$)
 # do "chdir(dirname(F))" before performing the commit (committing
 # "basename(F)" in that case), and restore the initial working directory
 # afterwards.  If $AUTHOR is defined, and the vc back-end is GIT, then
-# use git-commit's --author option.
+# use 'git commit's --author option.
 sub do_commit ($$$$)
 {
   my ($vc, $author, $log_msg_lines, $file_list_arg) = @_;

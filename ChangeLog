@@ -1,5 +1,13 @@
 2008-06-28  Jim Meyering  <meyering@redhat.com>
 
+	adjust spelling of git commands: s/git-/git /; s/init-db/init/
+	* VC.pm (VC): Likewise.
+	* tests/author: Likewise.
+	* tests/git-log-summary: Likewise.
+	* tests/git-mv: Likewise.
+	* tests/subdir-middle: Likewise.
+	* vc-dwim.pl: Likewise.
+
 	more build reworking
 	* Makefile.am (EXTRA_DIST): Add cfg.mk and maint.mk.
 	(MOSTLYCLEANFILES, noinst_LIBRARIES): Define.
