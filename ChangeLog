@@ -1,5 +1,7 @@
 2008-06-28  Jim Meyering  <meyering@redhat.com>
 
+	* Makefile.am (EXTRA_DIST): Add .prev-version
+
 	adjust spelling of git commands: s/git-/git /; s/init-db/init/
 	* VC.pm (VC): Likewise.
 	* tests/author: Likewise.
