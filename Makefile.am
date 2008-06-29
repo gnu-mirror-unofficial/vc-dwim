@@ -46,7 +46,6 @@ gen_vc_name_list = \
 do_subst = sed						\
   -e 's,[@]PACKAGE[@],$(PACKAGE),g'			\
   -e 's,[@]PATH_SEPARATOR[@],$(PATH_SEPARATOR),g'	\
-  -e 's,[@]PERL[@],$(PERL),g'				\
   -e 's,[@]SHELL[@],$(SHELL),g'				\
   -e 's,[@]VERSION[@],$(VERSION)',g	\
   -e 's,[@]VC_LIST[@],'"`$(gen_vc_name_list)`",g	\

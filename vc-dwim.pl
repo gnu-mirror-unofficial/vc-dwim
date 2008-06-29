@@ -1,5 +1,4 @@
-#!@PERL@ -w
-# -*- perl -*-
+#!/usr/bin/env perl
 # vc-dwim - a version-control-agnostic ChangeLog diff and commit tool
 # @configure_input@
 #

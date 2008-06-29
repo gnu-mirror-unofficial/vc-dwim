@@ -1,5 +1,13 @@
 2008-06-28  Jim Meyering  <meyering@redhat.com>
 
+	use "#!/usr/bin/env perl"
+	* vc-dwim.pl: Use "#!/usr/bin/env perl" rather than a substituted
+	string, to make the resulting code more likely to be transportable.
+	* Makefile.am (do_subst): Remove PERL substitution.  No longer used.
+	Suggested by Karl Berry.
+
+2008-06-28  Jim Meyering  <meyering@redhat.com>
+
 	avoid hg here -- 1.0.1 gets an internal error due to hierarchy depth
 	* tests/symlinked-changelog: Use bzr instead.
 	Mercurial bug report: <http://www.selenic.com/mercurial/bts/msg6450>.
