@@ -1,5 +1,13 @@
 2008-07-01  Jim Meyering  <meyering@redhat.com>
 
+	build-related update
+	* Makefile.am (EXTRA_DIST): Add bootstrap and bootstrap.conf.
+	* bootstrap: New file, from coreutils with slight modifications.
+	* bootstrap.conf: New file, based on the one from coreutils.
+	* build-aux/install-sh: Remove now-generated file.
+	* build-aux/missing: Likewise.
+	* INSTALL: Likewise.
+
 	add README-hacking
 	* README-hacking: New file.  From coreutils, with adaptations.
 	* README-devel: Remove file.

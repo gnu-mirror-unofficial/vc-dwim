@@ -24,6 +24,8 @@ ACLOCAL_AMFLAGS = -I m4
 bin_SCRIPTS = vc-dwim vc-chlog
 EXTRA_DIST += \
   .prev-version \
+  bootstrap \
+  bootstrap.conf \
   vc-dwim.pl \
   vc-chlog.in \
   cfg.mk \
