@@ -1178,7 +1178,7 @@ Eventually, it will detect temporaries created by other editors.
 
 Jim Meyering <jim@meyering.net>
 
-Please report bugs or suggestions to the author.
+Report bugs to <@PACKAGE_BUGREPORT@>.
 
 =cut
 

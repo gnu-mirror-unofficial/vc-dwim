@@ -1,5 +1,9 @@
 2008-07-01  Jim Meyering  <meyering@redhat.com>
 
+	update bug-reporting address
+	* vc-dwim.pl (main): Point to the ...@gnu.org mailing list.
+	* Makefile.am (do_subst): Propagate $(PACKAGE_BUGREPORT).
+
 	build-related update
 	* Makefile.am (EXTRA_DIST): Add bootstrap and bootstrap.conf.
 	* bootstrap: New file, from coreutils with slight modifications.
