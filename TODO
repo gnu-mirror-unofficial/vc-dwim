@@ -1,6 +1,15 @@
 Update the bug-report-to address in the documentation.
 
 
+Build-related
+=============
+
+Adjust automake rules not to create libvc_dwim.a.
+
+Either generate ChangeLog or adjust recent change sets
+so that each adds a ChangeLog entry.
+
+
 TODO for vc-dwim
 ================
 

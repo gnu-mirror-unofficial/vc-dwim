@@ -1,5 +1,7 @@
 2008-07-01  Jim Meyering  <meyering@redhat.com>
 
+	* TODO: Add some build-related items.
+
 	update bug-reporting address
 	* vc-dwim.pl (main): Point to the ...@gnu.org mailing list.
 	* Makefile.am (do_subst): Propagate $(PACKAGE_BUGREPORT).
