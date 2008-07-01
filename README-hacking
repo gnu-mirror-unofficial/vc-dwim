@@ -1,0 +1,76 @@
+-*- outline -*-
+
+These notes intend to help people working on the checked-out sources.
+These requirements do not apply when building from a distribution tarball.
+
+* Requirements
+
+We've opted to keep only the highest-level sources in the GIT repository.
+This eases our maintenance burden, (fewer merges etc.), but imposes more
+requirements on anyone wishing to build from the just-checked-out sources.
+For example, you have to use the latest stable versions of the maintainer
+tools we depend upon, including:
+
+- Automake <http://www.gnu.org/software/automake/>
+- Autoconf <http://www.gnu.org/software/autoconf/>
+- Exuberant Ctags <http://ctags.sourceforge.net/>
+- Gawk <http://www.gnu.org/software/gawk/>
+- Git <http://git.or.cz/>
+- Gzip <http://www.gnu.org/software/gzip/>
+- Perl <http://www.cpan.org/>
+- Rsync <http://samba.anu.edu.au/rsync/>
+- Tar <http://www.gnu.org/software/tar/>
+
+Only building the initial full source tree will be a bit painful.
+Later, a plain `git pull && make' should be sufficient.
+
+* LZMA
+
+This package's build procedure uses LZMA to create a compressed
+distribution tarball.  Using this feature of Automake requires
+version 1.10.1 or newer, as well as the lzma program itself.
+Make sure you have the latest stable version of the LZMA Utils
+from <http://tukaani.org/lzma/>.
+
+* First GIT checkout
+
+You can get a copy of the source repository like this:
+
+	$ git clone git://git.sv.gnu.org/vc-dwim
+
+The next step is to get other files needed to build, which are
+extracted from other source packages:
+
+	$ ./bootstrap
+
+And there you are!  Just
+
+	$ ./configure
+	$ make
+	$ make check
+
+At this point, there should be no difference between your local copy,
+and the GIT master copy:
+
+	$ git diff
+
+should output no difference.
+
+Enjoy!
+
+-----
+
+Copyright (C) 2002-2008 Free Software Foundation, Inc.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
