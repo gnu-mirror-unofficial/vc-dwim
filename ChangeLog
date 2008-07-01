@@ -1,3 +1,11 @@
+2008-07-01  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	doc: add texinfo documentation
+	* doc/vc-dwim.texi: New file.
+	* Makefile.am (SUBDIRS): Add doc.
+	* doc/Makefile.am: New file.
+	* configure.ac, Makefile.am: Adjust.
+
 2008-06-28  Jim Meyering  <meyering@redhat.com>
 
 	use "#!/usr/bin/env perl"

@@ -18,7 +18,7 @@ MOSTLYCLEANFILES =
 noinst_LIBRARIES =
 include gnulib.mk
 
-SUBDIRS = . man tests
+SUBDIRS = . doc man tests
 ACLOCAL_AMFLAGS = -I m4
 
 bin_SCRIPTS = vc-dwim vc-chlog

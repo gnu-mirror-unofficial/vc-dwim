@@ -1,0 +1,506 @@
+\input texinfo @c -*-texinfo-*-
+@comment ========================================================
+@comment %**start of header
+@setfilename vc-dwim.info
+@include version.texi
+@settitle vc-dwim
+@setchapternewpage odd
+@ifnothtml
+@setcontentsaftertitlepage
+@end ifnothtml
+@finalout
+
+@c @ovar(ARG, DEFAULT)
+@c -------------------
+@c The ARG is an optional argument.  To be used for macro arguments in
+@c their documentation (@defmac).
+@macro ovar{varname}
+@r{[}@var{\varname\}@r{]}@c
+@end macro
+
+@comment %**end of header
+@comment ========================================================
+
+@copying
+
+This manual is for vc-dwim (version @value{VERSION}, @value{UPDATED}),
+a version-control-agnostic ChangeLog diff and commit tool, and vc-chlog,
+a ChangeLog writing helper tool.
+
+Copyright @copyright{} 2006, 2007, 2008 Free Software Foundation, Inc.
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the @acronym{GNU} Free Documentation License,
+Version 1.2 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover texts and
+no Back-Cover Texts.
+@end quotation
+@end copying
+
+
+@dircategory Software development
+@direntry
+* vc-dwim: (vc-dwim).           VCS-agnostic commit, diff, and change logs.
+@end direntry
+
+@dircategory Individual utilities
+@direntry
+* vc-dwim: (vc-dwim)vc-dwim Invocation.
+                                Version-control-agnostic diff and commit tool
+* vc-chlog: (vc-dwim)vc-chlog Invocation.
+                                Changelog writing helper tool.
+@end direntry
+
+@titlepage
+@title vc-dwim
+@subtitle Version-control-agnostic commit, diff, and change logs.
+@author Jim Meyering
+@author Ralf Wildenhues
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@contents
+
+
+@ifnottex
+@node Top
+@top vc-dwim
+@insertcopying
+@end ifnottex
+
+@menu
+* Introduction::                VCS-agnostic ChangeLog helper tools
+* vc-dwim::                     Version control wrapper functionality
+* vc-chlog::                    ChangeLog entry generation
+* GNU Free Documentation License::  License for copying this manual
+
+@detailmenu
+
+vc-dwim:
+
+* Using vc-dwim::               How can you use vc-dwim?
+* vc-dwim Invocation::          Invoking vc-dwim
+
+vc-chlog:
+
+* Using vc-chlog::              Getting up and going with vc-chlog
+* vc-chlog Invocation::         Invoking vc-dwim
+* vc-chlog Internals::          How vc-chlog works
+
+@end detailmenu
+@end menu
+
+
+@node Introduction
+@chapter Introduction
+@cindex Introduction
+
+vc-dwim is a version-control-agnostic @file{ChangeLog} diff and commit
+tool.  vc-chlog is a @file{ChangeLog} writing helper tool.
+
+Both tools are useful if you like to maintain a @file{ChangeLog} file
+describing the changes you make to version-controlled files.  vc-dwim
+works with the following version control systems: bzr, CVS, git,
+mercurial, and SVN.  It should be easy to add support for more.
+
+vc-dwim can save you from making some small mistakes when using
+version control programs from the command line.
+
+For example, if you have unsaved changes in an editor buffer and use
+vc-dwim to print diffs or to commit changes involving that file, it will
+detect the problem, tell you about it, and fail.  This works as long as
+you use Emacs or Vim.
+
+Another common error you can avoid with this tool is the one where you
+create a new file, add its name to @file{Makefile}s, etc., mention the
+addition in a @file{ChangeLog}, but forget to e.g., @code{git add} (or
+@code{hg add}, etc.) the file to the version control system.  vc-dwim
+detects this discrepancy and fails with a diagnostic explaining the
+probable situation.  You might also have simply mistyped the file name
+in the ChangeLog.
+
+Also, vc-dwim makes it a little easier/safer to commit a strict subset
+of the modified files in a working directory.  But no one ever does
+@strong{that}.
+
+@node vc-dwim
+@chapter Version-control wrapper functionality
+
+@menu
+* Using vc-dwim::               How can you use vc-dwim?
+* vc-dwim Invocation::          Invoking vc-dwim
+@end menu
+
+
+@node Using vc-dwim
+@section How can you use vc-dwim?
+
+
+@subheading Print diffs of arbitrary files:
+
+Use an alias like this to show all or specified diffs:
+
+@example
+alias cv='vc-dwim --diff'
+@end example
+
+@noindent
+Use that when you want to see diffs of a specified file, regardless
+of whether you have written new @file{ChangeLog} entries for it.
+It works the same for @command{bzr}, @command{cvs}, @command{git},
+@command{hg}, @command{svn} repositories, as long as all you want are the
+difference between your local copy and the checked out version.
+
+@subheading Print diffs of files with new @file{ChangeLog} entries:
+
+Let's say you have made local changes to a file, and you've also added
+at least one corresponding entry in a @file{ChangeLog} file.  Then, you
+can use @code{vc-dwim ChangeLog} to print the diffs for which there are
+@file{ChangeLog} entries, warning about the potential problems mentioned
+above (editor temporaries that can imply there are unsaved changes, and
+files listed in @file{ChangeLog}, but not @code{cvs add}ed).  If your
+changes affect files covered by more than one ChangeLog, you might use
+@code{vc-dwim ChangeLog lib/ChangeLog}, or more concisely, @code{vc-dwim
+@{,lib/@}ChangeLog}.
+
+
+@subheading Commit changes to files with new @file{ChangeLog} entries:
+
+Use @code{vc-dwim --commit ChangeLog}
+or @code{vc-dwim --commit ChangeLog lib/ChangeLog src/ChangeLog}
+to commit the changes you would see without the @option{--commit} option.
+
+Assuming you have completed a change and have documented everything in
+one or more @file{ChangeLog} file, run @code{vc-dwim --commit ChangeLog}
+to commit that @file{ChangeLog} file and the files ``implied'' by the
+new ChangeLog lines.  The commit log message is derived from the added
+@file{ChangeLog} lines.  With a single @file{ChangeLog} file, the log
+message is nearly identical to the list of added lines.  One leading
+@key{TAB} is removed and any @code{date  user-name  <email>} lines are
+elided.  When there are two or more @file{ChangeLog} files, the log
+message includes a line for each indicating the affected directory.
+For example:
+
+@example
+[ChangeLog]
+* some-file-in-top-level-dir: ...
+[lib/ChangeLog]
+* lib.c: ...
+[m4/ChangeLog]
+* foo.m4: ...
+@end example
+
+
+@node vc-dwim Invocation
+@section Invoking vc-dwim
+
+Synopsis:
+@example
+vc-dwim @ovar{option...} @ovar{changelog_file...}
+vc-dwim @ovar{option...} --commit @var{changelog_file...}
+vc-dwim @ovar{option...} --diff @ovar{file...}
+vc-dwim @ovar{option...} --print-vc-list
+@end example
+
+By default, each command line argument should be a locally modified,
+version-controlled @file{ChangeLog} file.  If there is no command line
+argument, @command{vc-dwim} tries to use the @file{ChangeLog} file in
+the current directory.  In this default mode, @command{vc-dwim} works by
+first computing diffs of those files and parsing the diff output to
+determine which named files are being changed.  Then, it diffs the
+affected files and prints the resulting output.  One advantage of using
+this tool is that before printing any diffs, it warns you if it sees
+that a @file{ChangeLog} or an affected file has unsaved changes.  It
+detects that by searching for an editor temporary file corresponding to
+each affected file.  Another common error you can avoid with this tool
+is the one where you create a new file, add its name to
+@file{Makefile}s, etc., mention the addition in @file{ChangeLog} but
+forget to e.g., @code{git add} (or @code{hg add}, etc.) the file to the
+version control system.  @command{vc-dwim} detects this discrepancy and
+fails with a diagnostic explaining the probable situation.  You might
+also have simply mistyped the file name in the @file{ChangeLog}.
+
+Once you are happy with your @file{ChangeLog}-derived diffs, you can
+commit those changes and the @file{ChangeLog} simply by rerunning the
+command with the @option{--commit} option.
+
+But what if you'd like to use @command{vc-dwim} on a project that
+doesn't have or want a @file{ChangeLog} file?  In that case, you can
+maintain your own, private, version-controlled @file{ChangeLog} file in
+a different hierarchy.  Then just make a symlink to it from the top
+level directory of the hierarchy in which you'd like to use it and
+everything should work.  Your private @file{ChangeLog} file need not
+even use the same version control system as the rest of the project
+hierarchy.
+
+@noindent
+@command{vc-dwim} accepts the following options:
+
+@table @option
+@item --help
+Display help and exit.
+
+@item --version
+Output version information and exit.
+
+@item --author="User Name <user@@example.org>"
+Specify the user name and email address of the author of this change
+set.
+
+@item --commit
+Perform the commit, too.
+
+@item --diff
+Determine which version control system manages the first
+@file{@var{file}}, then use that to print diffs of the named
+@file{@var{file}}s.  If no @file{@var{file}} is specified, print all
+diffs for the current hierarchy.
+
+@item --print-vc-list
+Print the list of recognized version control names, then exit.
+
+@item --verbose
+Generate verbose output.
+
+@item --debug
+Generate debug output.
+@end table
+
+This tool can be useful to you only if you use a version control system.
+It's most useful if you maintain a @file{ChangeLog} file and create a
+log entry per file per ``commit'' operation.
+
+Relies on fairly strict adherence to recommended @file{ChangeLog}
+syntax.  Detects editor temporaries created by Emacs and Vim.
+Eventually, it will detect temporaries created by other editors.
+
+
+@node vc-chlog
+@chapter What can vc-chlog do?
+
+vc-chlog is about writing GNU Coding Standards-compliant
+@file{ChangeLog} entries easily, @ref{Change Logs, , ChangeLog,
+standards, The @acronym{GNU} Coding Standards}.
+
+@menu
+* Using vc-chlog::              Getting up and going with vc-chlog
+* vc-chlog Invocation::         Invoking vc-dwim
+* vc-chlog Internals::          How vc-chlog works
+@end menu
+
+@node Using vc-chlog
+@section Getting up and going with vc-chlog
+
+Say you have made some changes to your code, ready to be committed.
+The only remaining part is to write one or more @file{ChangeLog}
+entries: for each @file{ChangeLog} governing a part of the package,
+collect the list of changed files, in each file list the changed
+functions, and mention all of those, in order to afterwards describe the
+changes:
+
+@example
+1984-01-01  A.U. Thor  <email@@address>
+
+	* file1.c (foo, bar, ...): ...
+	* file2.c (baz): ...
+@end example
+
+@command{vc-chlog} attempts to help with this step.  It scans the diff
+(obtained by @code{vc-dwim --diff} or passed on standard input with
+@option{--stdin}) for the files that were touched and the set of lines
+that have been changed.  It then uses the @command{ctags} program to try
+to find out in which functions those changes have occurred, and formats
+the file and functions names in a prototype @file{ChangeLog} entry form
+on standard output.
+
+There is a crucial assumption behind this idea to work well in practice:
+ctags should be able to generate tags for the identifiers that changed.
+For example, it should list functions in C source files (but not
+function-local or other nested entities); it should list macros in M4
+files (e.g., those that serve as input to Autoconf), or it should list
+@code{@@node}s in Texinfo files.  The output of @command{vc-chlog}
+improves with that of ctags.
+
+Exuberant Ctags is a powerful and extensible implementation of this
+command, and therefore preferred.  For example, with the @file{.ctags}
+file in this package:
+
+@example
+--langmap=Sh:+.in
+@end example
+
+@noindent
+it detects the shell script @command{vc-chlog} as such.  With a
+@file{~/.ctags} containing
+
+@example
+--langdef=Texinfo
+--langmap=Texinfo:.texi.txi.texinfo
+--regex-texinfo=/^@@node[	 ]+([^,]+)/\1/d,definition/
+@end example
+
+@noindent
+it detects Texinfo node names (@command{vc-chlog} uses some heuristic to
+deal with spaces in the identifier names when Exuberant Ctags is used).
+
+Autoconf macros may be tagged by options such as
+
+@example
+--langdef=m4
+--langmap=m4:.m4.at.ac.as.m4sh
+--regex-m4=/^(m4_def(ine|un(|_once))|A[CU]_DEFUN(|_ONCE)|AU_ALIAS)\
+  \(\[*([a-zA-Z0-9_()+]+)/\5/d,definition/
+@end example
+
+@command{vc-chlog} tries to find out about added as well as removed
+identifiers by examining both the new and the old version of a file.
+Here, it works hard not to change any file in your working directory, by
+using @code{ctags -x} and keeping all intermediate files in a temporary
+directory.
+
+For some languages, @command{vc-chlog} attempts to guess where functions end,
+and thus not attribute changes past that end to the previous identifier.
+
+Typically, @command{vc-chlog} is exact in the list of files that
+changed, false negatives in the list of identifiers stem from a
+@command{ctags} that failed to enumerate all identifiers properly, or
+changes before a function, false positives typically stem from
+constructs like nested functions.
+
+Use @command{vc-chlog} with multiple @file{ChangeLog} files in a project
+
+If a project uses multiple @file{ChangeLog} files, @command{vc-chlog}
+assumes that changes are to be recorded in the log file that is nearest
+up the directory tree.  One possibility is to invoke @command{vc-chlog}
+always from the project root and put the output of
+
+@example
+find . -name ChangeLog | sed 's,^,--changelog ,'
+@end example
+
+@noindent
+into the @file{.vc-chlogrc} file at the root.
+
+
+@node vc-chlog Invocation
+@section Invoking vc-chlog
+
+Synopsis:
+@example
+vc-chlog @ovar{option...} @ovar{file...}
+@end example
+
+@noindent
+@command{vc-dwim} accepts the following options:
+
+@table @option
+@item --address @var{address}
+Use @var{address} as email address.
+
+@item --changelog @file{@var{cfile}}
+For all changes to files below the dirname of @file{@var{cfile}},
+generate an entry for @file{@var{cfile}} with stripped names.
+This option may be passed multiple times.
+
+@item --stdin
+Read unified diff from stdin instead of with @command{vc-dwim}.
+
+@item --tabsize @var{cols}
+Assume tab stops at each @var{cols} instead of 8.
+
+@item --user-name @var{name}
+Use @var{name} as user name.
+
+@item --width @var{cols}
+Wrap @file{ChangeLog} entry at @var{cols} instead of 72.
+
+@item --debug
+Inhibit temp file cleanup.
+
+@item --help
+Display this help and exit.
+
+@item --version
+Output version information and exit.
+@end table
+
+The environment variables @env{TMPDIR} and @env{USER} are honored.
+
+The files @file{~/.vc-chlogrc} and @file{.vc-chlogrc} may contain
+default options, possibly with double-quoted arguments, and comment
+lines starting with @samp{#}.
+
+
+@node vc-chlog Internals
+@section How vc-chlog works
+
+At the heart of @command{vc-chlog}, there is a long pipe that processes
+a prototype @file{ChangeLog} entry from a patch and a source tree.  This
+source tree is assumed to be patched, i.e., already has the patch applied.
+
+From the patch text, @code{func_extract_changed_lines} generates a list
+of changes.  For each changed file, it outputs a line containing the
+@file{@var{filename}}, a strip prefix, a couple of integers @var{d1} and
+@var{d2}, then a list of ranges, all separated with spaces.
+The strip prefix is the argument that needs to be passed to the
+@option{-p} option of the @command{patch} command.
+The integers @var{d1} and @var{d2} denote the line numbers of the patch
+text that deal with @file{@var{filename}}, while the ranges deal with
+line numbers within the file @file{@var{filename}}.
+
+A range consists of four minus-separated integers
+@code{@var{a}-@var{b}-@var{c}-@var{d}}.  They denote that, in the old
+version of @file{@var{filename}}, lines @var{a} through @var{b}
+inclusively have been changed and end up as lines @var{c} through
+@var{d} inclusively in the new file.  Purely added or purely removed
+lines are denoted with a @code{0-0} pair.
+
+This information is passed to @code{func_extract_identifiers}, the heart
+of the script.  Now, for each changed file, it calls a helper function
+@code{func_taglist}, which uses @command{ctags -x} to obtain a list of
+identifiers in both the new, and the old version of the file.  These
+lists are ordered by line number.  Changes between two consecutive
+identifiers will later be assumed to change the earlier of the two.
+
+While this works reasonably well for functions, it fails for example for
+global variable declarations or changes to comments outside of
+functions.  So @code{func_taglist} applies some heuristics to guess the
+end of a function, e.g.@: a closing brace in the first column, and
+inserts an empty tag there.
+
+With all tags in place, @code{func_extract_identifiers} selects those
+that match the change intervals, merges the lists from the old and the
+new file, and outputs them, avoiding duplicates and roughly maintaining
+the order of the identifiers in the new file.
+
+Care is taken throughout that the tags may contain spaces, so that
+Texinfo @code{@@node}s may be listed as tags.
+
+In a couple of final steps, the sets of files with identifiers are keyed
+to one or more @file{ChangeLog} files throughout the source tree using
+@code{func_sortby_chlog}, and a GCS-style @file{ChangeLog} entry stub is 
+formatted with @code{func_pretty_changelog_entry}.
+
+The fact that @command{vc-chlog} is written as portable shell script,
+using @command{awk}, @command{sed}, and other POSIX tools freely, adds
+to the compactness of the script, added to the fun in writing it,
+necessitates slightly awkward data constructs, and probably impedes easy
+modification and debugging.  This might be construed as a bug.
+
+@node GNU Free Documentation License
+@appendix GNU Free Documentation License
+
+@include fdl.texi
+
+@bye
+
+@c Local Variables:
+@c fill-column: 72
+@c ispell-local-dictionary: "american"
+@c indent-tabs-mode: nil
+@c whitespace-check-buffer-indent: nil
+@c End:
+@c vi:ft=texinfo tw=72:
