@@ -1,3 +1,11 @@
+2008-07-02  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	Do not build libvc_dwim.a by default.
+	* gnulib-local/modules/extra-lib: New file.
+	* bootstrap.conf (gnulib_modules): Add extra-lib.
+	(gnulib_tool_option_extras): Add --local-dir=gnulib-local.
+	* TODO: Update.
+
 2008-07-01  Jim Meyering  <meyering@redhat.com>
 
 	* TODO: Add some build-related items.

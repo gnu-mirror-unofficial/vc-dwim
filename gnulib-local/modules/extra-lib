@@ -1,0 +1,8 @@
+Description:
+Do not build gnulib library by default.
+
+License:
+public domain
+
+Makefile.am:
+EXTRA_LIBRARIES = libvc_dwim.a
