@@ -1,13 +1,3 @@
-Update the bug-report-to address in the documentation.
-
-
-Build-related
-=============
-
-Either generate ChangeLog or adjust recent change sets
-so that each adds a ChangeLog entry.
-
-
 TODO for vc-dwim
 ================
 

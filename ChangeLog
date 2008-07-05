@@ -1,3 +1,9 @@
+2008-07-05  Jim Meyering  <meyering@redhat.com>
+
+	vc-chlog: use new bug-reporting address
+	* vc-chlog.in: Use <@PACKAGE_BUGREPORT@>.
+	* TODO: Update.
+
 2008-07-02  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	Do not build libvc_dwim.a by default.

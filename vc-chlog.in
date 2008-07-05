@@ -52,7 +52,7 @@ Files:
 \`~/.${progname}rc' and \`.${progname}rc' may contain default options,
 possibly with double-quoted arguments, and comment lines starting with \`#'.
 
-Report bugs to <Ralf.Wildenhues@gmx.de>."
+Report bugs to <@PACKAGE_BUGREPORT@>."
   func_exit $?
 }
 
