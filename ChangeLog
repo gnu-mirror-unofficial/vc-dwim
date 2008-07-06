@@ -1,3 +1,7 @@
+2008-07-06  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* doc/vc-dwim.texi (@ovar): Fix macro description.
+
 2008-07-05  Jim Meyering  <meyering@redhat.com>
 
 	vc-chlog: use new bug-reporting address

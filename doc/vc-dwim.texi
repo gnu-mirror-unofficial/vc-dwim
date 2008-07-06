@@ -10,8 +10,8 @@
 @end ifnothtml
 @finalout
 
-@c @ovar(ARG, DEFAULT)
-@c -------------------
+@c @ovar(ARG)
+@c ----------
 @c The ARG is an optional argument.  To be used for macro arguments in
 @c their documentation (@defmac).
 @macro ovar{varname}
