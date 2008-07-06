@@ -1,3 +1,7 @@
+2008-07-06  Jim Meyering  <meyering@redhat.com>
+
+	* bootstrap: Remove $bt and $bt2 also when not using gettext.
+
 2008-07-06  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	* doc/vc-dwim.texi (@ovar): Fix macro description.
