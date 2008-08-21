@@ -197,8 +197,9 @@ func_extract_changed_lines ()
 	record_file();
 	file = $2;
 	start = NR - 1;
-	# some vcs use a/ and b/ as diff prefixes. strip them, and remember:
-	hasprefix = sub("^b/", "", file);
+	# some vcs use single-character dir names (often a/ and b/) as diff
+	# prefixes. strip them, and remember:
+	hasprefix = sub("^./", "", file);
 	next;
       }
     }

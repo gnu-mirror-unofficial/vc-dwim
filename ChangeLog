@@ -1,3 +1,9 @@
+2008-08-21  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* vc-chlog.in (func_extract_changed_lines): Accept
+	single-character prefixes other than `a/' and `b/' for diff file
+	names, for git.
+
 2008-07-23  Jim Meyering  <meyering@redhat.com>
 
 	tests: also accept bzr-1.3 and 1.4-based versions.
