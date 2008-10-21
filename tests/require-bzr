@@ -5,7 +5,8 @@ if test $? != 0; then
   have_bzr=0
 else
   case $bzr_version in
-    "Bazaar (bzr) 1."[345]*) ;;
+    "Bazaar (bzr) "1.[3-9]*) ;;
+    "Bazaar (bzr) "[2-9]*) ;;
     *) have_bzr=0 ;;
   esac
 fi
