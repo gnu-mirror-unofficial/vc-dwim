@@ -1,3 +1,7 @@
+2009-03-16  Jim Meyering  <meyering@redhat.com>
+
+	* configure.ac: Use dist-xz, not dist-lzma.
+
 2008-08-21  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	* vc-chlog.in (func_extract_changed_lines): Accept

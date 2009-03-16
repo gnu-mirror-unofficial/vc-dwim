@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Free Software Foundation, Inc.
+# Copyright (C) 2008-2009 Free Software Foundation, Inc.
 # This file may be modified and/or distributed without restriction.
 
 # Make inter-release version strings look like, e.g., v1.0-219-g58ddd, which
@@ -9,7 +9,7 @@ AC_INIT([vc-dwim],
 	[bug-vc-dwim@gnu.org])
 
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([1.10.1 dist-lzma])
+AM_INIT_AUTOMAKE([1.10.1 dist-xz])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.59)
