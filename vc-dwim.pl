@@ -2,7 +2,7 @@
 # vc-dwim - a version-control-agnostic ChangeLog diff and commit tool
 # @configure_input@
 #
-# Copyright 2006-2008 Free Software Foundation, Inc.
+# Copyright 2006-2009 Free Software Foundation, Inc.
 # Written by Jim Meyering <meyering@redhat.com>
 
 # This program is free software: you can redistribute it and/or modify
@@ -629,9 +629,10 @@ sub cross_check ($$$)
           $diff_line =~ /^diff /
             and undef $prev_file;
 
-          if ($diff_line =~ m!^diff --git a/(\S+) b/\S+$!)
+          if ($diff_line =~ m!^diff --git ./(\S+) ./\S+$!)
             {
               $prev_file = $1;
+              $seen{$prev_file} = 1;
               next;
             }
 

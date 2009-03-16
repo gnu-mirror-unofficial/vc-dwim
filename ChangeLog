@@ -1,5 +1,10 @@
 2009-03-16  Jim Meyering  <meyering@redhat.com>
 
+	accept new git diff output: diff --git c/... w/...
+	* vc-dwim.pl (cross_check): a/ and b/ prefix strings may be c/ and w/,
+	so accept any one-letter prefix.
+	Also, record each such name as "seen".
+
 	* configure.ac: Use dist-xz, not dist-lzma.
 
 2008-08-21  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
