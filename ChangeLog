@@ -1,5 +1,8 @@
 2009-06-19  Jim Meyering  <meyering@redhat.com>
 
+	doc: update build-from-sources instructions
+	* README-hacking: Update.
+
 	build: remove now-imported or unused files
 	* maint.mk: Remove file. (now from gnulib)
 	* build-aux/check.mk: Remove file.
