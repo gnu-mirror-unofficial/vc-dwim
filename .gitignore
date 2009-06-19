@@ -1,4 +1,5 @@
 *~
+/maint.mk
 GNUmakefile
 INSTALL
 Makefile

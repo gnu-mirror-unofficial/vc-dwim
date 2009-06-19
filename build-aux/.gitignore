@@ -7,4 +7,5 @@ install-sh
 mdate-sh
 missing
 texinfo.tex
+useless-if-before-free
 vc-list-files

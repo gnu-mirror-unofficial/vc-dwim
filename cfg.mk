@@ -1,5 +1,5 @@
 # Customize maint.mk                           -*- makefile -*-
-# Copyright (C) 2003-2008 Free Software Foundation, Inc.
+# Copyright (C) 2003-2009 Free Software Foundation, Inc.
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ local-checks-to-skip = strftime-check patch-check check-AUTHORS
 # release.  Used solely to get gnulib's SHA1 for the "announcement" target.
 gnulib_dir = /gnulib
 
-# Now that we have better (check.mk) tests, make this the default.
+# Now that we have better tests, make this the default.
 export VERBOSE = yes
 
-old_NEWS_hash = 48eb0d85c40176e5aeb7430b013c675e  -
+old_NEWS_hash = 48eb0d85c40176e5aeb7430b013c675e

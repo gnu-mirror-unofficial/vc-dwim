@@ -1,5 +1,18 @@
 2009-06-19  Jim Meyering  <meyering@redhat.com>
 
+	build: remove now-imported or unused files
+	* maint.mk: Remove file. (now from gnulib)
+	* build-aux/check.mk: Remove file.
+	* bootstrap.conf (gnulib_modules): Add maintainer-makefile.
+	Remove thus-subsumed modules: gnumakefile, vc-list-files.  Sort.
+	* configure.ac: Require automake-1.11, and enable its
+	color-tests, parallel-tests and silent-rules options.
+	* tests/Makefile.am (TESTS): Don't include build-aux/check.mk.
+	* tests/check.mk: Likewise.
+	* cfg.mk: Don't mention check.mk.
+	(old_NEWS_hash): Remove trailing "  -", to align with adjusted
+	rule in gnulib's maint.mk.
+
 	avoid "make syntax-check" failure
 	* doc/vc-dwim.texi: Remove trailing space.
 
