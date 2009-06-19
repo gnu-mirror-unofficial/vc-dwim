@@ -6,8 +6,9 @@ if test "$VERBOSE" = yes; then
   vc-dwim --version
 fi
 
-. $srcdir/require-git
 . $srcdir/trap-setup
+
+require_git_
 
 framework_failure=0
 mkdir -p $tmp || framework_failure=1

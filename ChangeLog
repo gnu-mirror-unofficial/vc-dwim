@@ -1,4 +1,42 @@
+2009-06-20  Jim Meyering  <meyering@redhat.com>
+
+	FIXME: to merge onto require-* removal changes
+	* tests/Makefile.am (EXTRA_DIST): Remove these:
+	require-bzr require-cvs require-git require-hg.
+
 2009-06-19  Jim Meyering  <meyering@redhat.com>
+
+	tests: move require-* files into trap-setup as functions
+	* tests/trap-setup: (require_bzr_, require_cvs_): New functions.
+	(require_hg_, require_git_): New functions.
+	* tests/require-bzr: Remove file.
+	* tests/require-cvs: Likewise.
+	* tests/require-hg: Likewise.
+	* tests/require-git: Likewise.
+	* tests/add-empty: Update users to invoke the function rather than
+	to source the file.
+	* tests/author: Likewise.
+	* tests/cl-but-no-diff: Likewise.
+	* tests/cl-other-user: Likewise.
+	* tests/git-log-summary: Likewise.
+	* tests/git-mv: Likewise.
+	* tests/leading-comment: Likewise.
+	* tests/no-star: Likewise.
+	* tests/subdir: Likewise.
+	* tests/subdir-cvs: Likewise.
+	* tests/subdir-middle: Likewise.
+	* tests/trap-setup: Likewise.
+	* tests/two-line-attr: Likewise.
+	* tests/two-vc: Likewise.
+
+2009-06-19  Jim Meyering  <meyering@redhat.com>
+
+	* tests/require-git: Remove file.
+
+	build: revert part of an earlier change
+	* tests/Makefile.am: Do include *this* check.mk.
+
+	* tests/trap-setup (skip_test_): New function.
 
 	doc: update build-from-sources instructions
 	* README-hacking: Update.

@@ -2,10 +2,6 @@
 # This file may be modified and/or distributed without restriction.
 
 EXTRA_DIST = $(TESTS) \
-  require-bzr \
-  require-cvs \
-  require-git \
-  require-hg \
   trap-setup
 
 TESTS = \

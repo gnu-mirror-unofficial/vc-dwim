@@ -22,7 +22,7 @@ if ($diff -u empty empty) >/dev/null 2>&1; then
   diff_u="$diff -u"
 else
   diff_u=$diff
-  echo "$0: skipping this test, since $diff -u does not work" 1>&2
+  skip_test_ "$diff -u does not work"
   (exit 77); exit 77
 fi
 

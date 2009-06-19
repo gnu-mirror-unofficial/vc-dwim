@@ -8,7 +8,7 @@ if test "$VERBOSE" = yes; then
   vc-dwim --version
 fi
 
-. $srcdir/require-cvs
+require_cvs_
 . $srcdir/trap-setup
 
 framework_failure=0
