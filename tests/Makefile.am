@@ -26,3 +26,5 @@ TESTS = \
   subdir-cvs \
   t-vc-chlog \
   multiple-chlogs
+
+include $(srcdir)/check.mk
