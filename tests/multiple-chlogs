@@ -190,3 +190,5 @@ DATE  NAME  EMAIL
 EOF
 run_vc_chlog p2 --changelog ChangeLog --changelog sub/ChangeLog --changelog sub/subb/ChangeLog
 $diff_u expected stdout
+
+Exit 0

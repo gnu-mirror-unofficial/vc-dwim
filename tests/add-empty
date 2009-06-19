@@ -58,4 +58,4 @@ vc-dwim ChangeLog > out
 cmp out exp \
   || { diff out exp 2> /dev/null; false; }
 
-exit 0
+Exit 0

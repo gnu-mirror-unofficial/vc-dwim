@@ -91,4 +91,4 @@ echo foo >> x
 # Expect this to succeed
 vc-dwim --author='X Y <z@example.org>' --commit > /dev/null
 
-exit 0
+Exit 0

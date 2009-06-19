@@ -637,4 +637,4 @@ test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
 run_vc_chlog p11
 $diff_u expected stdout
 
-exit 0
+Exit 0

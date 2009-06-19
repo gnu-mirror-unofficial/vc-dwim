@@ -47,4 +47,4 @@ vc-dwim --commit > /dev/null
 git log -1 > out.t
 tail -n3 out.t |sed 's/^    $//' > out
 diff -u out exp || fail=1
-exit 0
+Exit 0
