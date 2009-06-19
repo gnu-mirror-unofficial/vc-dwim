@@ -1,3 +1,8 @@
+2009-06-19  Jim Meyering  <meyering@redhat.com>
+
+	avoid "make syntax-check" failure
+	* doc/vc-dwim.texi: Remove trailing space.
+
 2009-03-16  Jim Meyering  <meyering@redhat.com>
 
 	accept new git diff output: diff --git c/... w/...
