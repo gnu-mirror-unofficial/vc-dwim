@@ -1,8 +1,12 @@
 vc-dwim NEWS                                          -*- outline -*-
 
-* Noteworthy changes in release ?.? (????-??-??) [stable]
+* Noteworthy changes in release 1.1 (2009-06-20) [stable]
 
-  vc-dwim supports bzr
+  vc-dwim supports bzr.
+
+  A xz tarball is provided instead of an lzma one.
+
+  A texinfo manual is provided.
 
 
 * Major changes in release 1.0 (2007-10-11)
