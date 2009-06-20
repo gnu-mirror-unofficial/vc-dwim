@@ -12,6 +12,13 @@ Exit ()
   exit $1
 }
 
+skip_test_()
+{
+  echo "$0: skipping test: $@" | head -1 1>&9
+  echo "$0: skipping test: $@" 1>&2
+  Exit 77
+}
+
 require_bzr_()
 {
   have_bzr=1

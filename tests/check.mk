@@ -15,13 +15,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Propagate build-related Makefile variables to test scripts.
-TESTS_ENVIRONMENT = \
-  top_srcdir=$(top_srcdir) \
-  srcdir=$(srcdir) \
-  PATCH="$(PATCH)" \
-  PERL="$(PERL)" \
-  perllibdir="`$(am__cd) $(top_srcdir) && pwd`" \
-  PATH="$(VG_PATH_PREFIX)`pwd`/..$(PATH_SEPARATOR)$$PATH"
+TESTS_ENVIRONMENT =						\
+  exec 9>&2;							\
+  export							\
+  top_srcdir=$(top_srcdir)					\
+  srcdir=$(srcdir)						\
+  PATCH="$(PATCH)"						\
+  PERL="$(PERL)"						\
+  perllibdir="`$(am__cd) $(top_srcdir) && pwd`"			\
+  PATH="$(VG_PATH_PREFIX)`pwd`/..$(PATH_SEPARATOR)$$PATH"	\
+  ; $(SHELL)
 
 TEST_LOGS = $(TESTS:=.log)
 
