@@ -637,4 +637,23 @@ test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
 run_vc_chlog p11
 $diff_u expected stdout
 
+
+cat >p12 <<\EOF
+diff --git a/removed.c b/removed.c
+deleted file mode 100644
+index 587be6b..0000000
+--- a/removed.c
++++ /dev/null
+@@ -1 +0,0 @@
+-x
+EOF
+
+cat >expected <<\EOF
+	* removed.c:
+
+EOF
+
+run_vc_chlog p12
+$diff_u expected stdout
+
 Exit 0

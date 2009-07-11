@@ -192,6 +192,13 @@ func_extract_changed_lines ()
 	file = "";
       }
     }
+    /^--- / {
+      if (!(1 in newhunk)) {	# do not match a removed line with 2 minuses at front
+	record_file();
+	maybe_file = $2;	# record possible name here, we might need it below
+	next;
+      }
+    }
     /^\+\+\+ / {
       if (!(1 in newhunk)) {	# do not match an added line with 2 pluses at front
 	record_file();
@@ -200,6 +207,10 @@ func_extract_changed_lines ()
 	# some vcs use single-character dir names (often a/ and b/) as diff
 	# prefixes. strip them, and remember:
 	hasprefix = sub("^./", "", file);
+	if (file == "/dev/null") {	# removed file
+	  file = maybe_file;
+	  hasprefix = sub("^./", "", file);
+	}
 	next;
       }
     }
