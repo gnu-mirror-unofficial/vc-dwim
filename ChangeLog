@@ -1,5 +1,8 @@
 2009-07-11  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
+	Fix testsuite setup error.
+	* tests/subdir-cvs: Move require_cvs_ after sourcing trap-setup.
+
 	vc-chlog: correctly detect files removed in git tree.
 	* vc-chlog.in (record_file): Record file name from the `^--- '
 	line, use it in case the `^+++ ' line contains `/dev/null'.
