@@ -1,0 +1,57 @@
+#!/bin/sh
+# test for a bug in the symlinked ChangeLog feature.
+# Before FIXME vc-dwim would insert a line like SCALAR(0xb1d360)
+# in the commit log.
+
+if test "$VERBOSE" = yes; then
+  set -x
+  vc-dwim --version
+fi
+
+. $srcdir/trap-setup
+
+require_git_
+
+framework_failure=0
+mkdir -p $tmp || framework_failure=1
+cd $tmp || framework_failure=1
+
+touch f || framework_failure=1
+( git init && git add . && git commit -m m . ) || framework_failure=1
+mkdir .git/c || framework_failure=1
+cat <<EOF >> .git/c/ChangeLog || framework_failure=1
+2006-09-04  Jo R. User  <random@example.com>
+
+	sum:X
+	* f: ..
+
+	sum:0
+	* f: other.
+
+2006-09-03  Jo R. User  <random@example.com>
+
+	sum:g
+	* g: Y.
+EOF
+ln -s .git/c/ChangeLog . || framework_failure=1
+( cd .git/c && git init && git add . && git commit -m m . ) || framework_failure=1
+
+perl -pi -e '/X/ and print "\t* f: new\n";' \
+         -e '/Y/ and print "\tgah\n"' .git/c/ChangeLog || framework_failure=1
+echo >> f || framework_failure=1
+
+if test $framework_failure = 1; then
+  echo "$0: failure in testing framework" 1>&2
+  (exit 1); exit 1
+fi
+
+fail=0
+
+vc-dwim --c || fail=1
+
+git log -1 --pretty=format:%b > log || fail=1
+
+# Before the fix, this would contain SCALAR(0x......)
+test "$(cat log)" = gah || fail=1
+
+Exit $fail

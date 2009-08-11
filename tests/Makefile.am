@@ -14,6 +14,7 @@ TESTS = \
   cl-other-user \
   no-vc \
   symlinked-changelog \
+  scalar \
   two-vc \
   cl-but-no-diff \
   leading-comment \

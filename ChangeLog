@@ -1,3 +1,13 @@
+2009-08-11  Jim Meyering  <meyering@redhat.com>
+
+	vc-dwim: fix SCALAR(0x...) log pollution
+	Under rather unusual circumstances, vc-dwim would erroneously
+	insert an extra "SCALAR(0x...)" line in a commit log.
+	* vc-dwim.pl (main): Do not record any references in @log_msg_lines.
+
+	* tests/scalar: New test for the above.
+	* tests/Makefile.am (TESTS): Add scalar.
+
 2009-07-11  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	Fix testsuite setup error.

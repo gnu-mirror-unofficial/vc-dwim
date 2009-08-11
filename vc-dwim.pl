@@ -1010,7 +1010,7 @@ sub main
         }
       continue
         {
-          push @log_msg_lines, $line;
+          push @log_msg_lines, $line if ! ref $line;
         }
     }
 
@@ -1030,15 +1030,13 @@ sub main
   $fail
     and exit 1;
 
-  my @non_ref_log_msg_lines = grep { ! ref $_ } @log_msg_lines;
-
   # Collect diffs of non-ChangeLog files.
   # But don't print diff output unless we're sure everything is ok.
   my $diff_lines = get_diffs $vc, \@affected_files;
 
   cross_check $vc, \@affected_files, $diff_lines;
 
-  print join ("\n", @non_ref_log_msg_lines), "\n";
+  print join ("\n", @log_msg_lines), "\n";
   print join ("\n", @$diff_lines), "\n";
 
   # FIXME: add an option to take ChangeLog-style lines from a file,
