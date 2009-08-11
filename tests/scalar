@@ -1,6 +1,6 @@
 #!/bin/sh
 # test for a bug in the symlinked ChangeLog feature.
-# Before FIXME vc-dwim would insert a line like SCALAR(0xb1d360)
+# Before, vc-dwim would insert a line like SCALAR(0xb1d360)
 # in the commit log.
 
 if test "$VERBOSE" = yes; then
