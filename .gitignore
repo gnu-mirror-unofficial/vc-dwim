@@ -1,4 +1,5 @@
 *~
+/build-aux
 /maint.mk
 GNUmakefile
 INSTALL

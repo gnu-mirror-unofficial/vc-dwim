@@ -1,5 +1,9 @@
 2009-09-01  Jim Meyering  <meyering@redhat.com>
 
+	build: ignore all of build-aux/
+	* .gitignore: Ignore all of build-aux.
+	* build-aux/.gitignore: Remove file.
+
 	build: include update-copyright
 	* bootstrap.conf (gnulib_modules): Add update-copyright.
 	* cfg.mk (update-copyright-env): Define.
