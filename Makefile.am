@@ -60,10 +60,10 @@ do_subst = sed						\
 ## Use chmod a-w to prevent people from editing the wrong file by accident.
 ## Write this so it works even when hg is not installed on this system.
 vc-dwim: vc-dwim.pl Makefile
-	rm -f $@ $@.tmp
-	$(do_subst) $(srcdir)/$@.pl >$@.tmp
-	chmod a-w+x $@.tmp
-	mv -f $@.tmp $@
+	$(AM_V_GEN)rm -f $@ $@.tmp
+	$(AM_V_at)$(do_subst) $(srcdir)/$@.pl >$@.tmp
+	$(AM_V_at)chmod a-w+x $@.tmp
+	$(AM_V_at)mv -f $@.tmp $@
 
 # Arrange so that .tarball-version appears only in the distribution
 # tarball, and never in a checked-out repository.
