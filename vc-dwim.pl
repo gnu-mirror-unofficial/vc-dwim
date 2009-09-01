@@ -1178,7 +1178,7 @@ use this bash/zsh alias to set it up and to create the symlink:
         test -d .git || return 1
         mkdir $d
         touch $d/ChangeLog
-        (cd $d && git init && git add ChangeLog && git ci -m. -a)
+        (cd $d && git init && git add ChangeLog && git commit -m. -a)
         ln --backup -s $d/ChangeLog .
     }
 
