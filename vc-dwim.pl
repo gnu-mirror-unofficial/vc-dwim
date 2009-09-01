@@ -1163,6 +1163,27 @@ Generate debug output.
 
 =back
 
+=head1  EXAMPLE
+
+Here's how to use B<@@ME@@> in a project that does not version-control
+a ChangeLog file.  Create a repository just for your personal
+ChangeLog file and make a symlink to it from the top-level directory
+of the project.  For projects that use git, I put this tiny
+auxiliary repository in a directory named .git/c.  You can
+use this bash/zsh alias to set it up and to create the symlink:
+
+    git-changelog-symlink-init()
+    {
+        local d=.git/c
+        test -d .git || return 1
+        mkdir $d
+        touch $d/ChangeLog
+        (cd $d && git init && git add ChangeLog && git ci -m. -a)
+        ln --backup -s $d/ChangeLog .
+    }
+
+
+
 =head1  RESTRICTIONS
 
 This tool can be useful to you only if you use a version control system.

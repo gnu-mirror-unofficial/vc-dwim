@@ -1,3 +1,9 @@
+2009-09-01  Jim Meyering  <meyering@redhat.com>
+
+	doc: you can use vc-dwim when ChangeLog is not version-controlled
+	* vc-dwim.pl (--help): Give an example describing how to use vc-dwim
+	in a project that does not maintain a version-controlled ChangeLog file.
+
 2009-08-11  Jim Meyering  <meyering@redhat.com>
 
 	vc-dwim: fix SCALAR(0x...) log pollution
