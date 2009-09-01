@@ -1,5 +1,7 @@
 2009-09-01  Jim Meyering  <meyering@redhat.com>
 
+	* NEWS: Mention improvements.
+
 	vc-dwim: correct example code to spell out "commit" rather than "ci"
 	* vc-dwim.pl (main): Don't use private alias, "ci".
 	Spotted by Ralf Wildenhues.
