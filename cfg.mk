@@ -40,3 +40,6 @@ Exit_witness_file = tests/trap-setup
 export VERBOSE = yes
 
 old_NEWS_hash = 48eb0d85c40176e5aeb7430b013c675e
+
+update-copyright-env = \
+  UPDATE_COPYRIGHT_USE_INTERVALS=1
