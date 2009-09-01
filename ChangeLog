@@ -1,5 +1,14 @@
 2009-09-01  Jim Meyering  <meyering@redhat.com>
 
+	update all copyright year lists to include 2009
+	* Coda.pm: Likewise.
+	* Makefile.am: Likewise.
+	* ProcessStatus.pm: Likewise.
+	* README: Likewise.
+	* VC.pm: Likewise.
+	* bootstrap: Likewise.
+	* vc-chlog.in: Likewise.
+
 	build: ignore all of build-aux/
 	* .gitignore: Ignore all of build-aux.
 	* build-aux/.gitignore: Remove file.
