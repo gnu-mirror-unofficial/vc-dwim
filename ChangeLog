@@ -1,3 +1,15 @@
+2009-09-07  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	vc-chlog: new command line option --no-functions.
+	* vc-chlog.in (find_functions): New variable, true by default and
+	false if --no-functions was passed.
+	(func_help): Document it.
+	(func_extract_identifiers): Do not extract identifiers if false.
+	* tests/t-vc-chlog (run_vc_chlog): Test it.
+	* doc/vc-dwim.texi (vc-chlog Invocation, vc-chlog Internals):
+	Document it.
+	* NEWS: Update.
+
 2009-09-01  Jim Meyering  <meyering@redhat.com>
 
 	* NEWS: Mention improvements.

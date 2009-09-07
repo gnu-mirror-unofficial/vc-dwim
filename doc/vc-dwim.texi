@@ -417,6 +417,10 @@ Use @var{name} as user name.
 @item --width @var{cols}
 Wrap @file{ChangeLog} entry at @var{cols} instead of 72.
 
+@item --no-functions
+Do not try to parse the names of functions or other identifiers
+that changed.
+
 @item --debug
 Inhibit temp file cleanup.
 
@@ -459,7 +463,8 @@ inclusively have been changed and end up as lines @var{c} through
 lines are denoted with a @code{0-0} pair.
 
 This information is passed to @code{func_extract_identifiers}, the heart
-of the script.  Now, for each changed file, it calls a helper function
+of the script.  Unless identifier extraction has been disabled with
+@option{--no-functions}, for each changed file, it calls a helper function
 @code{func_taglist}, which uses @command{ctags -x} to obtain a list of
 identifiers in both the new, and the old version of the file.  These
 lists are ordered by line number.  Changes between two consecutive

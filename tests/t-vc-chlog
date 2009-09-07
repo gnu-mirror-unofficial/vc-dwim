@@ -28,7 +28,9 @@ fi
 
 run_vc_chlog ()
 {
-  { vc-chlog --stdin < "$1" 2>stderr ||
+  infile=$1
+  shift
+  { vc-chlog --stdin ${1+"$@"} < "$infile" 2>stderr ||
     { echo; echo; echo vc-chlog failed; }; } |
       sed 1,2d > stdout
   test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
@@ -342,6 +344,17 @@ cat >expected-emacs <<\EOF
 
 EOF
 
+# This is with --no-functions:
+cat >expected-no-functions <<\EOF
+	* add-several.c:
+	* append.c:
+	* moved.c:
+	* prepend.c:
+	* remove-several.c:
+	* several-changes-per-hunk.c:
+
+EOF
+
 $PATCH -p0 <p1 >stdout 2>stderr || fail=1
 test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
 test "$fail" -ne 1
@@ -358,6 +371,9 @@ for file in expected-perfect expected-exuberant expected-emacs; do
   test "$VERBOSE" != yes || { cat diffout; cat differr >&2; }
 done
 $success
+
+run_vc_chlog p1 --no-functions
+$diff_u expected-no-functions stdout
 
 # Now for some error checking:
 
