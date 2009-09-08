@@ -1,6 +1,6 @@
 vc-dwim NEWS                                          -*- outline -*-
 
-* Noteworthy changes in release ?.? (????-??-??) [stable]
+* Noteworthy changes in release 1.2 (2009-09-08) [stable]
 
   vc-dwim no longer occasionally inserts a "SCALAR(0x...)" line into
   the commit log message.
@@ -8,6 +8,7 @@ vc-dwim NEWS                                          -*- outline -*-
   vc-chlog now detects removed files in a git tree.
 
   vc-chlog accepts a --no-functions option to disable identifier extraction.
+
 
 * Noteworthy changes in release 1.1 (2009-06-20) [stable]
 
