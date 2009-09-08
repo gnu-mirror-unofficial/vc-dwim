@@ -1,5 +1,8 @@
 vc-dwim NEWS                                          -*- outline -*-
 
+* Noteworthy changes in release ?.? (????-??-??) [?]
+
+
 * Noteworthy changes in release 1.2 (2009-09-08) [stable]
 
   vc-dwim no longer occasionally inserts a "SCALAR(0x...)" line into

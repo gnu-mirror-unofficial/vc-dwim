@@ -39,7 +39,7 @@ Exit_witness_file = tests/trap-setup
 # Now that we have better tests, make this the default.
 export VERBOSE = yes
 
-old_NEWS_hash = 48eb0d85c40176e5aeb7430b013c675e
+old_NEWS_hash = 8d6545bf44b225ae05cada8bc63409bb
 
 update-copyright-env = \
   UPDATE_COPYRIGHT_USE_INTERVALS=1
