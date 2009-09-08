@@ -1,3 +1,8 @@
+2009-09-08  Jim Meyering  <meyering@redhat.com>
+
+	build: update bootstrap from gnulib
+	* bootstrap: Update from gnulib
+
 2009-09-07  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	vc-chlog: new command line option --no-functions.
