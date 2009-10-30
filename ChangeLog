@@ -1,3 +1,13 @@
+2009-10-30  Jim Meyering  <meyering@redhat.com>
+
+	vc-dwim: commit symlink'd ChangeLog *after* primary commit, not before
+	* vc-dwim.pl (do_commit): Set DIE_UPON_FAILURE.
+	(main): With a symlink'd ChangeLog file, attempt the primary commit
+	before the ChangeLog commit, since the primary one is far more likely
+	to fail, e.g., due to a commit hook.  In that case, the ChangeLog
+	delta is left uncommitted, as you probably require, so that you
+	can run vc-dwim after correcting the problem with the primary commit.
+
 2009-09-09  Jim Meyering  <meyering@redhat.com>
 
 	maint: use correct directory name in generated announcement

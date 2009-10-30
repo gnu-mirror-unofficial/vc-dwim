@@ -558,7 +558,7 @@ sub do_commit ($$$$)
     {
      DEBUG => $debug,
      VERBOSE => $verbose,
-     DIE_UPON_FAILURE => 0,
+     DIE_UPON_FAILURE => 1,
      INHIBIT_STDOUT => 0,
     };
   run_command ($options, @cmd);
@@ -1051,11 +1051,11 @@ sub main
 
       if ($symlinked_changelog)
         {
+          do_commit $vc, $author, \@log_msg_lines, [@affected_files];
           do_at (dirname ($symlinked_changelog),
                  sub { do_commit ($vc_changelog, $author,
                                   ['non-empty-commit-msg'],
                                   [basename ($symlinked_changelog)])});
-          do_commit $vc, $author, \@log_msg_lines, [@affected_files];
         }
       else
         {
