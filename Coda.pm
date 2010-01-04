@@ -14,25 +14,24 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-# Coda  -  a global destructor that closes stdout, with error-checking
-#
-# Why `Coda'?  Here are some definitions:
-# coda: A few measures added beyond the natural termination of a composition.
-#    [1913 Webster]
-# coda: the closing section of a musical composition [syn: {finale}]
-#    [From WordNet (r) 2.0 (August 2003)]
 #
 # This package is intended to be "use"d very early on.
 # It simply sets up actions to be executed at the end of execution.
+#
+# Why ``Coda''?  Its definition strikes me as particularly apt:
+#
+# coda, n:
+#   A few measures added beyond the natural termination of a composition.
+#   --- 1913 Webster
 
 package Coda;
 
 use strict;
 use warnings;
 
+# Program name of our caller
 our $ME = $0;
-(our $VERSION = '$Revision: 1.6 $ ') =~ tr/[0-9].//cd;
+our $VERSION = '1.91';
 
 # Set $? to this value upon failure to close stdout.
 our $Exit_status = 1;
@@ -41,8 +40,8 @@ END {
     # Nobody ever checks the status of print()s.  That's okay, because
     # if any do fail, we're usually[*] guaranteed to get an indicator
     # when we close() the file handle.
-    # [*] Beware the exception, due to a bug in Perl that affected
-    # 5.003 through 5.9.1.  See the report and patch here:
+    # [*] Beware the exception, due to a long-standing bug in Perl,
+    # fixed in 5.9.1.  See the report and patch here:
     # http://www.xray.mpe.mpg.de/mailing-lists/perl5-porters/2004-12/msg00072.html
     # or http://bugs.debian.org/285435.
     #
@@ -54,7 +53,7 @@ END {
       and return;
 
     # Errors closing stdout.  Indicate that, and hope stderr is OK.
-    warn "$ME: closing standard output: $!\n";
+    warn $ME . ": closing standard output: $!\n";
 
     # Don't be so arrogant as to assume that we're the first END handler
     # defined, and thus the last one invoked.  There may be others yet
@@ -71,7 +70,7 @@ __DATA__
 
 =head1	NAME
 
-Coda - establish a global destructor that closes stdout, with error-checking
+Coda - a global destructor that closes stdout, with error-checking
 
 =head1	SYNOPSIS
 
@@ -79,10 +78,10 @@ Coda - establish a global destructor that closes stdout, with error-checking
 
 =head1	DESCRIPTION
 
-Coda defines a global destructor handler that closes STDOUT and reports
+Coda defines a global destructor that closes STDOUT and reports
 any failure.  If the close fails, it means some script output was lost.
-This is reported as an error to STDERR.  If the incoming exit status is
-zero, set it to one, so the script will exit with error status.
+This is diagnosed via 'warn'.  If the incoming exit status is zero,
+set it to one, by default, so the script will exit with error status.
 
 =head1	AUTHOR
 

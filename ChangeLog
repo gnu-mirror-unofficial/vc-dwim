@@ -1,5 +1,8 @@
 2010-01-04  Jim Meyering  <meyering@redhat.com>
 
+	pull in a work-around for a Perl taint bug from File::Coda
+	* Coda.pm: Sync from File::Coda, but omit the File:: prefix for now.
+
 	update cfg.mk to reflect newer maint.mk from gnulib
 	* cfg.mk (update-copyright-env): Also record non-default max line length.
 	(gpg_key_ID): Remove, now that maint.mk no longer requires this.
