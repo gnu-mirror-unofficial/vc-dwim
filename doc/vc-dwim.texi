@@ -27,7 +27,7 @@ This manual is for vc-dwim (version @value{VERSION}, @value{UPDATED}),
 a version-control-agnostic ChangeLog diff and commit tool, and vc-chlog,
 a ChangeLog writing helper tool.
 
-Copyright @copyright{} 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+Copyright @copyright{} 2006-2010 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
