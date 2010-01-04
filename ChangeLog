@@ -1,3 +1,9 @@
+2010-01-04  Jim Meyering  <meyering@redhat.com>
+
+	update cfg.mk to reflect newer maint.mk from gnulib
+	* cfg.mk (update-copyright-env): Also record non-default max line length.
+	(gpg_key_ID): Remove, now that maint.mk no longer requires this.
+
 2009-10-30  Jim Meyering  <meyering@redhat.com>
 
 	vc-dwim: commit symlink'd ChangeLog *after* primary commit, not before

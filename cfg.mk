@@ -24,9 +24,6 @@ gnu_rel_host = $(gnu_ftp_host-$(RELEASE_TYPE))
 url_dir_list = \
   ftp://$(gnu_rel_host)/gnu/$(PACKAGE)
 
-# The GnuPG ID of the key used to sign the tarballs.
-gpg_key_ID = B9AB9A16
-
 # Tests not to run as part of "make distcheck".
 # Exclude changelog-check here so that there's less churn in ChangeLog
 # files -- otherwise, you'd need to have the upcoming version number
@@ -42,4 +39,5 @@ export VERBOSE = yes
 old_NEWS_hash = 8d6545bf44b225ae05cada8bc63409bb
 
 update-copyright-env = \
-  UPDATE_COPYRIGHT_USE_INTERVALS=1
+  UPDATE_COPYRIGHT_USE_INTERVALS=1 \
+  UPDATE_COPYRIGHT_MAX_LINE_LENGTH=79
