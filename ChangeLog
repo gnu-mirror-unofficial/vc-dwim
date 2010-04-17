@@ -1,5 +1,8 @@
 2010-04-17  Jim Meyering  <meyering@redhat.com>
 
+	build: update bootstrap script from gnulib
+	* bootstrap: Update from gnulib.
+
 	doc: refer to v1.3 of the FDL, not v1.2; remove uses of @acronym{...}
 	* doc/vc-dwim.texi: Use version 1.3 of FDL.
 	Use "GNU", rather than @acronym{GNU} to placate syntax-check.
