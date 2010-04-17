@@ -1,5 +1,8 @@
 2010-04-17  Jim Meyering  <meyering@redhat.com>
 
+	doc: mention the 2009-10-30 bug fix
+	* NEWS: Describe sole bug fix since version 1.2.
+
 	build: update bootstrap script from gnulib
 	* bootstrap: Update from gnulib.
 

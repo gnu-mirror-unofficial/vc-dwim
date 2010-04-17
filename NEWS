@@ -2,6 +2,12 @@ vc-dwim NEWS                                          -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+  vc-dwim now commits the symlink'd ChangeLog *after* the primary commit,
+  not before it.  This is more useful because the primary one is far more
+  likely to fail, e.g., due to a commit hook.  Now, when that happens, the
+  ChangeLog delta is left uncommitted, as you probably require, so that you
+  can run vc-dwim after correcting the problem with the primary commit.
+
 
 * Noteworthy changes in release 1.2 (2009-09-08) [stable]
 
