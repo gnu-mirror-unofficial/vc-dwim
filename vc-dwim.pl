@@ -311,7 +311,7 @@ sub run_command
 
   if ($options{INHIBIT_STDERR})
     {
-      open SAVE_ERR, ">&STDERR";
+      open SAVE_ERR, '>&', STDERR;
       open STDERR, ">/dev/null"
         or die "$ME: cannot redirect stderr to /dev/null: $!\n";
       select STDERR; $| = 1;
@@ -321,9 +321,9 @@ sub run_command
   my $rc = 0xffff & system @cmd;
 
   # Restore stdout.
-  open STDOUT, ">&SAVE_OUT"
+  open STDOUT, '>&', SAVE_OUT
     if $options{INHIBIT_STDOUT};
-  open STDERR, ">&SAVE_ERR"
+  open STDERR, '>&', SAVE_ERR
     if $options{INHIBIT_STDERR};
 
   if ($rc == 0)

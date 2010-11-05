@@ -1,3 +1,11 @@
+2010-11-05  Jim Meyering  <meyering@redhat.com>
+
+	avoid a warning from perl-5.12
+	e.g., "main::SAVE_ERR" used only once: ..."
+	This unexpected output to stderr was making several tests fail.
+	* vc-dwim.pl (run_command): Use 3-argument form of open,
+	rather than embedding glob name in a string.
+
 2010-04-17  Jim Meyering  <meyering@redhat.com>
 
 	doc: mention the 2009-10-30 bug fix
