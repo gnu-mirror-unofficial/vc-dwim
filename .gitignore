@@ -1,5 +1,6 @@
 *~
 /build-aux
+/gnulib.mk
 /maint.mk
 GNUmakefile
 INSTALL
@@ -13,7 +14,6 @@ config.in
 config.log
 config.status
 configure
-gnulib.mk
 m4
 man/Makefile
 man/Makefile.in

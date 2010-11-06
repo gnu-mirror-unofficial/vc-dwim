@@ -1,3 +1,8 @@
+2010-11-06  Jim Meyering  <meyering@redhat.com>
+
+	build: use latest bootstrap from gnulib
+	* bootstrap: Update to latest from gnulib.
+
 2010-11-05  Jim Meyering  <meyering@redhat.com>
 
 	avoid a warning from perl-5.12
