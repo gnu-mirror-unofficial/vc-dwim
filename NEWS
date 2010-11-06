@@ -1,5 +1,8 @@
 vc-dwim NEWS                                          -*- outline -*-
 
+* Noteworthy changes in release ?.? (????-??-??) [?]
+
+
 * Noteworthy changes in release 1.3 (2010-11-06) [stable]
 
   vc-dwim now commits the symlink'd ChangeLog *after* the primary commit,
