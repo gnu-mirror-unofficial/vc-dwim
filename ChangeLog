@@ -1,5 +1,9 @@
 2010-11-06  Jim Meyering  <meyering@redhat.com>
 
+	build: configure for gnu-web-doc-update
+	* cfg.mk (manual_title): Define.  Required by the web-manual-
+	generating code in build-aux/gnu-web-doc-update
+
 	build: remove now-unnecessary release-related settings
 	* cfg.mk (gnu_ftp_host-alpha, gnu_ftp_host-beta gnu_ftp_host-stable):
 	(gnu_rel_host, url_dir_list): Remove definitions.  The defaults,

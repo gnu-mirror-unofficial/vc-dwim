@@ -23,6 +23,9 @@ local-checks-to-skip = strftime-check patch-check check-AUTHORS
 # We define Exit in a different file.
 Exit_witness_file = tests/trap-setup
 
+# Used in maint.mk's web-manual rule
+manual_title = vc-dwim
+
 # Now that we have better tests, make this the default.
 export VERBOSE = yes
 
