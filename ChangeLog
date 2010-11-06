@@ -1,5 +1,10 @@
 2010-11-06  Jim Meyering  <meyering@redhat.com>
 
+	build: remove now-unnecessary release-related settings
+	* cfg.mk (gnu_ftp_host-alpha, gnu_ftp_host-beta gnu_ftp_host-stable):
+	(gnu_rel_host, url_dir_list): Remove definitions.  The defaults,
+	now provided by maint.mk, are the same.
+
 	build: use gnulib's gnu-web-doc-update module
 	* bootstrap.conf (gnulib_modules): Add gnu-web-doc-update.
 
