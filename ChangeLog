@@ -1,5 +1,8 @@
 2010-11-06  Jim Meyering  <meyering@redhat.com>
 
+	build: use gnulib's gnu-web-doc-update module
+	* bootstrap.conf (gnulib_modules): Add gnu-web-doc-update.
+
 	build: use gnulib's do-release-commit-and-tag module
 	* bootstrap.conf (gnulib_modules): Add do-release-commit-and-tag.
 
