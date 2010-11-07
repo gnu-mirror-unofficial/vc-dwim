@@ -21,6 +21,12 @@ cat <<EOF > d/ChangeLog || framework_failure=1
 2006-09-04  Jim Meyering  <jim@meyering.net>
 
 EOF
+
+# Do not require any bzr set-up in home-dir of someone running this test.
+HOME=`pwd`
+export HOME
+bzr whoami 'U. Ser <user@example.com>'
+
 (cd m && bzr init && bzr add . && bzr ci -m m . ) || framework_failure=1
 ln -s ../d/ChangeLog m
 echo a >> m/f
