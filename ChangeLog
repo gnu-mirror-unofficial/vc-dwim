@@ -1,3 +1,15 @@
+2011-01-05  Jim Meyering  <meyering@redhat.com>
+
+	doc: don't emit @@ME@@ strings into generated man page
+	Do hard-code the program name, vc-dwim, in the --help POD sources,
+	rather than using @@ME@@ and substituting at output time.  The man
+	page generation process, $(POD2MAN), didn't know to perform that
+	substitution.
+	* vc-dwim.pl: s/@@ME@@/vc-dwim/, as above.
+	(package PodTemplate): Now that we no longer substitute anything
+	in --help output, remove the embedded package and its functions.
+	Reported by Paul Eggert.
+
 2010-11-07  Jim Meyering  <meyering@redhat.com>
 
 	tests: don't fail symlinked-changelog when email not define in ~/.bazaar
