@@ -2,6 +2,8 @@ vc-dwim NEWS                                          -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+  vc-chlog can now handle two-word function names like "operator delete"
+
 
 * Noteworthy changes in release 1.3 (2010-11-06) [stable]
 

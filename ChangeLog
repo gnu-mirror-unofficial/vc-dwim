@@ -1,3 +1,11 @@
+2011-03-07  Jim Meyering  <meyering@redhat.com>
+
+	vc-chlog: handle two-word function names like "operator delete"
+	With exuberant ctags, a file in gcc would provoke diagnostics like this:
+	  vc-chlog: line 425: test: delete: integer expression expected
+	* vc-chlog.in (func_taglist): Don't let a function name like "operator
+	delete" provoke shell syntax errors.
+
 2011-01-05  Jim Meyering  <meyering@redhat.com>
 
 	doc: don't emit @@ME@@ strings into generated man page

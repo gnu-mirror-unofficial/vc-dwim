@@ -307,7 +307,15 @@ func_taglist ()
 	  print $3, $1;
 	}'
     else
-      $AWK '{ print $2, $1; }'
+      # Handle output like this:
+      # operator delete   32 libstdc++-v3/libsupc++/del_opnt.cc operator delete
+      $AWK '
+        {
+          if ($1 == "operator")
+            print $3, $1, $2;
+          else
+            print $2, $1;
+        }'
     fi
     # Heuristic: to avoid identifying changes outside of functions
     # with the previous function, we add end-of-function markers
