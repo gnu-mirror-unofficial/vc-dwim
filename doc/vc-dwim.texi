@@ -421,6 +421,11 @@ Wrap @file{ChangeLog} entry at @var{cols} instead of 72.
 Do not try to parse the names of functions or other identifiers
 that changed.
 
+@item --dirty-workdir
+Assume that the working directory has other changes unrelated to the
+patch (usually given with @option{--stdin}).  This will let the file
+be recreated from the version control index or cache, if any.
+
 @item --debug
 Inhibit temp file cleanup.
 

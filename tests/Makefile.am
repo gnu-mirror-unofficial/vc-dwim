@@ -25,7 +25,4 @@ TESTS = \
   multiple-chlogs \
   dirty-workdir
 
-XFAIL_TESTS = \
-  dirty-workdir
-
 include $(srcdir)/check.mk

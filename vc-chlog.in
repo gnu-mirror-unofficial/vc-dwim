@@ -41,6 +41,7 @@ Options:
       --user-name NAME   use NAME as user name
       --width COLS       wrap ChangeLog entry at COLS instead of 72
       --no-functions     do not try to find the names of changed functions
+      --dirty-workdir    base off last version control copy, not working dir
 
       --debug            inhibit temp file cleanup
       --help             display this help and exit
@@ -72,6 +73,7 @@ PATCH="@PATCH@"
 : ${TMPDIR=/tmp}
 : ${INT_MAX=2147483647}
 : ${stdin=false}
+: ${dirty_workdir=false}
 : ${take_old_file_into_account=:}
 
 today=`date +%Y-%m-%d`
@@ -404,6 +406,8 @@ func_extract_identifiers ()
     basename=`func_basename "$file"`
     oldbase=oldfile-$nfile-$basename
     oldfile=$tmp/$oldbase
+    newbase=newfile-$nfile-$basename
+    newfile=$tmp/$newbase
     nidents=$tmp/nidents-$nfile
     oidents=$tmp/oidents-$nfile
 
@@ -413,14 +417,22 @@ func_extract_identifiers ()
     else
       : >"$oldfile"
     fi
-    func_diff_for_file "$oldbase" | func_apply_tmp_patch -p0 -R "$oldbase"
+    if $dirty_workdir; then
+      vc-dwim --diff "$file"
+    else
+      func_diff_for_file "$oldbase"
+    fi | func_apply_tmp_patch -p0 -R "$oldbase"
     # The file may be new, in which case $oldfile will be removed by patch.
     if test -f "$oldfile"; then
       func_taglist "$oldfile"
     fi >"$tagfile-old"
 
-    # Create the tag list from the new file.
-    if test -f "$file"; then
+    # Recreate the new file if needed, and the tag list from it.
+    if $dirty_workdir; then
+      cp "$oldfile" "$newfile"
+      func_diff_for_file "$oldbase" | func_apply_tmp_patch -p0 "$newbase"
+      func_taglist "$newfile"
+    elif test -f "$file"; then
       func_taglist "$file"
     fi >"$tagfile"
 
@@ -625,6 +637,7 @@ while test $# -gt 0; do
     --address)   email_address=$2; shift ;;
     --changelog) chlogs="$chlogs $2"; shift ;;
     --no-functions) find_functions=false ;;
+    --dirty-workdir) dirty_workdir=: ;;
     --stdin)     stdin=: ;;
     --tabsize)   tabstop=$2; shift ;;
     --width)     textwidth=$2; shift ;;

@@ -74,7 +74,7 @@ EOF
 # This will now mention the 'bar' function, although that is not
 # present in the commit at all.
 git diff --cached > diff
-run_vc_chlog diff
+run_vc_chlog diff --dirty-workdir
 grep '(foo)' stdout
 
 Exit 0
