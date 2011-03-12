@@ -85,6 +85,7 @@ test -z "$user_name" &&
 test -z "$email_address" &&
   email_address=$USER@`hostname`.`(domainname) 2>/dev/null || hostname -d`
 find_functions=:
+wd=`pwd`
 
 # From here on, uninitialized variables and unchecked commands are erroneous:
 set -eu
@@ -346,41 +347,41 @@ func_taglist ()
   sort -k1n
 }
 
+# func_diff_for_file FILENAME
+#
+# Modify interesting portions of PATCHFILE to be suitable for FILENAME.
+# We have to munge the diff header to use the new file name: Solaris patch
+# is very picky about inconsistencies here and loves to ask the user questions.
+# :-/
+func_diff_for_file ()
+{
+  test -z "$debug" || set -x
+  diffhead=`expr $diffstart + 2`
+  sed -n "$diffstart,$diffhead{
+	    s|^--- [^	 ]\\{1,\\}|--- $1~|
+	    s|^+++ [^	 ]\\{1,\\}|+++ $1|
+	  }
+	  $diffstart,$diffend""p" "$patchfile"
+}
 
-# func_recreate_oldfile
+# func_apply_tmp_patch PATCH-ARGS
+# Apply a patch (passed on stdin) inside $tmp.
 #
 # Some 'patch' implementations (*cough* Solaris *cough*) tend to output reject
 # files (or original files) under the names found in the patch, even with -o
 # passed (for the diff formats specified by POSIX this is not conforming).
-# So we play safe and copy the file over first.
-# Also, we have to munge the diff header to use our new names: Solaris patch
-# is very picky about inconsistencies here and loves to ask the user questions.
-# :-/
-func_recreate_oldfile ()
+# So we play safe and apply the patch in the $tmp directory.
+func_apply_tmp_patch ()
 {
   test -z "$debug" || set -x
-  if test -f "$file"; then
-    cp "$file" "$oldfile"
+  cd "$tmp"
+  if test -n "$debug"; then
+    $PATCH "$@" >&2
   else
-    : >"$oldfile"
+    $PATCH "$@" >/dev/null
   fi
-  diffhead=`expr $diffstart + 2`
-  sed -n "$diffstart,$diffhead{
-	    s|^--- [^	 ]\\{1,\\}|--- $oldbase~|
-	    s|^+++ [^	 ]\\{1,\\}|+++ $oldbase|
-	  }
-	  $diffstart,$diffend""p" "$patchfile" | {
-    wd=`pwd`
-    cd "$tmp"
-    if test -n "$debug"; then
-      $PATCH -p0 -R "$oldbase" >&2
-    else
-      $PATCH -p0 -R "$oldbase" >/dev/null
-    fi
-    cd "$wd"
-  }
+  cd "$wd"
 }
-
 
 # func_extract_identifiers
 # Generate a list of files and identifiers from file name and line number ranges
@@ -400,17 +401,29 @@ func_extract_identifiers ()
     echo "file: $file"
     $find_functions || continue
     tagfile=$tmp/taglist-$nfile
-    oldbase=oldfile-$nfile-`func_basename "$file"`
+    basename=`func_basename "$file"`
+    oldbase=oldfile-$nfile-$basename
     oldfile=$tmp/$oldbase
     nidents=$tmp/nidents-$nfile
     oidents=$tmp/oidents-$nfile
-    func_recreate_oldfile
+
+    # Recreate the old file, and the tag list from it.
     if test -f "$file"; then
-      func_taglist "$file"
-    fi >"$tagfile"
+      cp "$file" "$oldfile"
+    else
+      : >"$oldfile"
+    fi
+    func_diff_for_file "$oldbase" | func_apply_tmp_patch -p0 -R "$oldbase"
+    # The file may be new, in which case $oldfile will be removed by patch.
     if test -f "$oldfile"; then
       func_taglist "$oldfile"
     fi >"$tagfile-old"
+
+    # Create the tag list from the new file.
+    if test -f "$file"; then
+      func_taglist "$file"
+    fi >"$tagfile"
+
     exec 5<"$tagfile" 6<"$tagfile-old" 7>"$nidents" 8>"$oidents"
     nfile=`expr $nfile + 1`
 
