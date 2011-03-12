@@ -1,0 +1,81 @@
+#! /bin/sh
+# Test vc-chlog.
+
+if test "$VERBOSE" = yes; then
+  set -x
+  vc-chlog --version
+fi
+
+. $srcdir/trap-setup
+require_git_
+
+mkdir -p $tmp && cd $tmp || {
+  echo "$0: failure in testing framework" 1>&2
+  (exit 1); exit 1
+}
+
+# Let's see whether this system knows unidiff format.
+# We assume that if diff doesn't, then patch also won't.
+# As long as vc-chlog only works with unidiff, SKIP the test.
+: ${diff=diff}
+: >empty
+if ($diff -u empty empty) >/dev/null 2>&1; then
+  diff_u="$diff -u"
+else
+  diff_u=$diff
+  skip_test_ "$diff -u does not work"
+  (exit 77); exit 77
+fi
+
+run_vc_chlog ()
+{
+  infile=$1
+  shift
+  { vc-chlog --stdin ${1+"$@"} < "$infile" 2>stderr ||
+    { echo; echo; echo vc-chlog failed; }; } |
+      sed 1,2d > stdout
+  test "$VERBOSE" != yes || { cat stdout; cat stderr >&2; }
+}
+
+fail=0
+set -e
+
+### Set up files ###
+
+git init
+cat >file.c <<\EOF
+int foo ()
+{
+  return 0;
+}
+EOF
+git add file.c
+git commit -m init
+# Simulate add -i by two edits and an add in between.
+cat >file.c <<\EOF
+int foo ()
+{
+  return 42;
+}
+EOF
+git add file.c
+cat >file.c <<\EOF
+int bar (int x)
+{
+  return 2 * x;
+}
+
+int foo ()
+{
+  int x;
+  return 42;
+}
+EOF
+# This will now mention the 'bar' function, although that is not
+# present in the commit at all.
+git diff --cached > diff
+run_vc_chlog diff
+grep '(foo)' stdout
+
+Exit 0
+

@@ -22,6 +22,10 @@ TESTS = \
   subdir \
   subdir-cvs \
   t-vc-chlog \
-  multiple-chlogs
+  multiple-chlogs \
+  dirty-workdir
+
+XFAIL_TESTS = \
+  dirty-workdir
 
 include $(srcdir)/check.mk
