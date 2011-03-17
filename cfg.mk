@@ -14,6 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# Used in maint.mk's web-manual rule
+manual_title = vc-dwim
+
 # Tests not to run as part of "make distcheck".
 # Exclude changelog-check here so that there's less churn in ChangeLog
 # files -- otherwise, you'd need to have the upcoming version number
