@@ -78,4 +78,3 @@ run_vc_chlog diff --dirty-workdir
 grep '(foo)' stdout
 
 Exit 0
-
