@@ -378,7 +378,7 @@ up the directory tree.  One possibility is to invoke @command{vc-chlog}
 always from the project root and put the output of
 
 @example
-find . -name ChangeLog | sed 's,^,--changelog ,'
+find . -name ChangeLog | sed 's,^\./,--changelog ,'
 @end example
 
 @noindent
