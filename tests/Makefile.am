@@ -6,6 +6,7 @@ EXTRA_DIST = $(TESTS) \
   init.sh
 
 TESTS = \
+  changelog-header-at-end-of-log \
   git-log-summary \
   author \
   subdir-middle \
