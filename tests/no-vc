@@ -6,23 +6,10 @@
 # to do this properly.
 exit 0
 
-if test "$VERBOSE" = yes; then
-  set -x
-  vc-dwim --version
-fi
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-dwim
 
-. $srcdir/trap-setup
-
-framework_failure=0
-mkdir -p $tmp || framework_failure=1
-cd $tmp || framework_failure=1
-
-touch ChangeLog || framework_failure=1
-
-if test $framework_failure = 1; then
-  echo "$0: failure in testing framework" 1>&2
-  (exit 1); exit 1
-fi
+touch ChangeLog || framework_failure_
 
 fail=0
 

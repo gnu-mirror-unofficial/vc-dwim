@@ -1,38 +1,25 @@
 #!/bin/sh
 # Fail if two ChangeLog files use different version control systems.
 
-if test "$VERBOSE" = yes; then
-  set -x
-  vc-dwim --version
-fi
-
-. $srcdir/trap-setup
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-dwim
 
 require_git_
 require_cvs_
 
-framework_failure=0
-mkdir -p $tmp || framework_failure=1
-cd $tmp || framework_failure=1
-
-mkdir -p c/sub/CVS g || framework_failure=1
-touch c/sub/f g/f || framework_failure=1
-cat <<EOF > g/ChangeLog || framework_failure=1
+mkdir -p c/sub/CVS g || framework_failure_
+touch c/sub/f g/f || framework_failure_
+cat <<EOF > g/ChangeLog || framework_failure_
 2006-09-04  Jim Meyering  <jim@meyering.net>
 
 	* f: X.
 EOF
-cp g/ChangeLog c/sub || framework_failure=1
+cp g/ChangeLog c/sub || framework_failure_
 
-(cd g && git init > /dev/null)           || framework_failure=1
-(cd g && git add . > /dev/null)          || framework_failure=1
-(cd g && git commit -m m . ) > /dev/null || framework_failure=1
-mv c/sub g || framework_failure=1
-
-if test $framework_failure = 1; then
-  echo "$0: failure in testing framework" 1>&2
-  (exit 1); exit 1
-fi
+(cd g && git init > /dev/null)           || framework_failure_
+(cd g && git add . > /dev/null)          || framework_failure_
+(cd g && git commit -m m . ) > /dev/null || framework_failure_
+mv c/sub g || framework_failure_
 
 fail=0
 

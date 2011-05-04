@@ -3,23 +3,15 @@
 # Before, vc-dwim would insert a line like SCALAR(0xb1d360)
 # in the commit log.
 
-if test "$VERBOSE" = yes; then
-  set -x
-  vc-dwim --version
-fi
-
-. $srcdir/trap-setup
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-dwim
 
 require_git_
 
-framework_failure=0
-mkdir -p $tmp || framework_failure=1
-cd $tmp || framework_failure=1
-
-touch f || framework_failure=1
-( git init && git add . && git commit -m m . ) || framework_failure=1
-mkdir .git/c || framework_failure=1
-cat <<EOF >> .git/c/ChangeLog || framework_failure=1
+touch f || framework_failure_
+( git init && git add . && git commit -m m . ) || framework_failure_
+mkdir .git/c || framework_failure_
+cat <<EOF >> .git/c/ChangeLog || framework_failure_
 2006-09-04  Jo R. User  <random@example.com>
 
 	sum:X
@@ -33,17 +25,12 @@ cat <<EOF >> .git/c/ChangeLog || framework_failure=1
 	sum:g
 	* g: Y.
 EOF
-ln -s .git/c/ChangeLog . || framework_failure=1
-( cd .git/c && git init && git add . && git commit -m m . ) || framework_failure=1
+ln -s .git/c/ChangeLog . || framework_failure_
+( cd .git/c && git init && git add . && git commit -m m . ) || framework_failure_
 
 perl -pi -e '/X/ and print "\t* f: new\n";' \
-         -e '/Y/ and print "\tgah\n"' .git/c/ChangeLog || framework_failure=1
-echo >> f || framework_failure=1
-
-if test $framework_failure = 1; then
-  echo "$0: failure in testing framework" 1>&2
-  (exit 1); exit 1
-fi
+         -e '/Y/ and print "\tgah\n"' .git/c/ChangeLog || framework_failure_
+echo >> f || framework_failure_
 
 fail=0
 

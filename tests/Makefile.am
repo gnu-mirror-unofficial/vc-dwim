@@ -2,7 +2,8 @@
 # This file may be modified and/or distributed without restriction.
 
 EXTRA_DIST = $(TESTS) \
-  trap-setup
+  init.cfg \
+  init.sh
 
 TESTS = \
   git-log-summary \

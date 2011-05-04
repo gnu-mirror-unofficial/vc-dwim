@@ -1,18 +1,9 @@
 #! /bin/sh
 # Test vc-chlog.
 
-if test "$VERBOSE" = yes; then
-  set -x
-  vc-chlog --version
-fi
-
-. $srcdir/trap-setup
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-chlog
 require_git_
-
-mkdir -p $tmp && cd $tmp || {
-  echo "$0: failure in testing framework" 1>&2
-  (exit 1); exit 1
-}
 
 # Let's see whether this system knows unidiff format.
 # We assume that if diff doesn't, then patch also won't.

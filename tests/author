@@ -1,38 +1,25 @@
 #!/bin/sh
 # Exercise the --author='user name <email@addr.dom>' option.
 
-if test "$VERBOSE" = yes; then
-  set -x
-  vc-dwim --version
-fi
-
-. $srcdir/trap-setup
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-dwim
 
 require_git_
 
-framework_failure=0
-mkdir -p $tmp && cd $tmp \
-  || framework_failure=1
-
-cat <<EOF > ChangeLog || framework_failure=1
+cat <<EOF > ChangeLog || framework_failure_
 2006-09-04  Jim Meyering  <jim@meyering.net>
 EOF
 git init > /dev/null 2>&1		\
   && git add .				\
   && git commit -m m . > /dev/null 2>&1	\
-    || framework_failure=1
+    || framework_failure_
 
-touch x || framework_failure=1
-git add x || framework_failure=1
-cat <<EOF >> ChangeLog || framework_failure=1
+touch x || framework_failure_
+git add x || framework_failure_
+cat <<EOF >> ChangeLog || framework_failure_
 
 	* x: whatever...
 EOF
-
-if test $framework_failure = 1; then
-  echo "$0: failure in testing framework" 1>&2
-  (exit 1); exit 1
-fi
 
 set -e
 fail=0
@@ -45,7 +32,7 @@ grep "^Author: $name_and_addr" out > /dev/null
 ##################################################
 # Now ensure that with no --author=... option, the
 # name in ChangeLog entry is used as the author.
-cat <<EOF > t || framework_failure=1
+cat <<EOF > t || framework_failure_
 2006-09-05  X Y  <z@example.org>
 
 	* x: Done.
@@ -62,7 +49,7 @@ grep '^Author: X Y <z@example\.org>' out > /dev/null
 ##################################################
 # Now ensure that when --author=... and ChangeLog
 # disagree, vc-dwim objects.
-cat <<EOF > t || framework_failure=1
+cat <<EOF > t || framework_failure_
 2006-09-06  X Y  <z@example.org>
 
 	* x: Done, again.
@@ -78,7 +65,7 @@ vc-dwim --author='wrong.person@example.org' --commit 2> /dev/null || :
 ##################################################
 # Finally, ensure that when --author=S matches the name/email
 # in ChangeLog it works.
-cat <<EOF > t || framework_failure=1
+cat <<EOF > t || framework_failure_
 2006-09-07  X Y  <z@example.org>
 
 	* x: Last.

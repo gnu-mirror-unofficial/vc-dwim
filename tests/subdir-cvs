@@ -3,34 +3,22 @@
 # an .hg or .git repository is a little tricky internally.
 # It "just works" when CVS is the version control system.
 
-if test "$VERBOSE" = yes; then
-  set -x
-  vc-dwim --version
-fi
-
-. $srcdir/trap-setup
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-dwim
 
 require_cvs_
 
-framework_failure=0
-mkdir -p $tmp || framework_failure=1
-cd $tmp || framework_failure=1
+mkdir repo || framework_failure_
+repo=$PWD/repo
+cvs -f -Q -d $repo init 2> /dev/null || framework_failure_
 
-repo=$pwd/$tmp/repo
-cvs -f -Q -d $repo init 2> /dev/null || framework_failure=1
-
-mkdir d || framework_failure=1
+mkdir d || framework_failure_
 cd d
-mkdir s || framework_failure=1
-touch s/f s/ChangeLog || framework_failure=1
-cvs -f -Q -d $repo import -m msg m M M0 || framework_failure=1
-cvs -f -Q -d $repo co m || framework_failure=1
-cd m || framework_failure=1
-
-if test $framework_failure = 1; then
-  echo "$0: failure in testing framework" 1>&2
-  (exit 1); exit 1
-fi
+mkdir s || framework_failure_
+touch s/f s/ChangeLog || framework_failure_
+cvs -f -Q -d $repo import -m msg m M M0 || framework_failure_
+cvs -f -Q -d $repo co m || framework_failure_
+cd m || framework_failure_
 
 fail=0
 

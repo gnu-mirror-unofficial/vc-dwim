@@ -1,20 +1,12 @@
 #!/bin/sh
 # Handle git-diff headers upon adding an empty file.
 
-if test "$VERBOSE" = yes; then
-  set -x
-  vc-dwim --version
-fi
-
-. $srcdir/trap-setup
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-dwim
 
 require_git_
 
-framework_failure=0
-mkdir -p $tmp && cd $tmp \
-  || framework_failure=1
-
-cat <<EOF > ChangeLog || framework_failure=1
+cat <<EOF > ChangeLog || framework_failure_
 2006-09-04  Jim Meyering  <jim@meyering.net>
 EOF
 git init > /dev/null			\
@@ -23,15 +15,15 @@ git init > /dev/null			\
   && git commit -m m . > /dev/null	\
   && git mv x y				\
   && : > y				\
-    || framework_failure=1
+    || framework_failure_
 
-cat <<EOF >> ChangeLog || framework_failure=1
+cat <<EOF >> ChangeLog || framework_failure_
 
 	* x: Rename to...
 	* y: ...this.
 EOF
 
-cat <<\EOF > exp || framework_failure=1
+cat <<\EOF > exp || framework_failure_
 * x: Rename to...
 * y: ...this.
 diff --git a/x b/x
@@ -45,11 +37,6 @@ diff --git a/y b/y
 new file mode 100644
 index 0000000..e69de29
 EOF
-
-if test $framework_failure = 1; then
-  echo "$0: failure in testing framework" 1>&2
-  (exit 1); exit 1
-fi
 
 set -e
 

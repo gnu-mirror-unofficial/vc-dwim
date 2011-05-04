@@ -1,44 +1,31 @@
 #!/bin/sh
 # ensure that vc-dwim inserts a blank line when necessary
 
-if test "$VERBOSE" = yes; then
-  set -x
-  vc-dwim --version
-fi
-
-. $srcdir/trap-setup
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-dwim
 
 require_git_
 
-framework_failure=0
-mkdir -p $tmp && cd $tmp \
-  || framework_failure=1
-
-cat <<EOF > ChangeLog || framework_failure=1
+cat <<EOF > ChangeLog || framework_failure_
 2006-09-04  Jim Meyering  <jim@meyering.net>
 EOF
 git init > /dev/null 2>&1		\
   && git add .				\
   && git commit -m m . > /dev/null 2>&1	\
-    || framework_failure=1
+    || framework_failure_
 
-touch x || framework_failure=1
-git add x || framework_failure=1
-cat <<EOF >> ChangeLog || framework_failure=1
+touch x || framework_failure_
+git add x || framework_failure_
+cat <<EOF >> ChangeLog || framework_failure_
 
 	Summary
 	* x: body
 EOF
-cat <<EOF >> exp || framework_failure=1
+cat <<EOF >> exp || framework_failure_
     Summary
 
     * x: body
 EOF
-
-if test $framework_failure = 1; then
-  echo "$0: failure in testing framework" 1>&2
-  (exit 1); exit 1
-fi
 
 set -e
 fail=0

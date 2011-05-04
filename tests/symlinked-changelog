@@ -1,23 +1,15 @@
 #!/bin/sh
 # Test the symlinked ChangeLog feature.
 
-if test "$VERBOSE" = yes; then
-  set -x
-  vc-dwim --version
-fi
-
-. $srcdir/trap-setup
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-dwim
 
 require_bzr_
 require_git_
 
-framework_failure=0
-mkdir -p $tmp || framework_failure=1
-cd $tmp || framework_failure=1
-
-mkdir d m || framework_failure=1
-touch m/f || framework_failure=1
-cat <<EOF > d/ChangeLog || framework_failure=1
+mkdir d m || framework_failure_
+touch m/f || framework_failure_
+cat <<EOF > d/ChangeLog || framework_failure_
 2006-09-04  Jim Meyering  <jim@meyering.net>
 
 EOF
@@ -27,19 +19,14 @@ HOME=`pwd`
 export HOME
 bzr whoami 'U. Ser <user@example.com>'
 
-(cd m && bzr init && bzr add . && bzr ci -m m . ) || framework_failure=1
+(cd m && bzr init && bzr add . && bzr ci -m m . ) || framework_failure_
 ln -s ../d/ChangeLog m
 echo a >> m/f
 
-(cd d && git init && git add . && git commit -m m . ) || framework_failure=1
-cat <<EOF >> d/ChangeLog || framework_failure=1
+(cd d && git init && git add . && git commit -m m . ) || framework_failure_
+cat <<EOF >> d/ChangeLog || framework_failure_
 	* f: X.
 EOF
-
-if test $framework_failure = 1; then
-  echo "$0: failure in testing framework" 1>&2
-  (exit 1); exit 1
-fi
 
 fail=0
 
