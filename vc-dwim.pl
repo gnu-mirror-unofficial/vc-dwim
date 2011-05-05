@@ -849,28 +849,50 @@ sub main
       # 2006-08-19  Jim Meyering  <jim@meyering.net>
       # Ignore the following one, too, which should be blank.
       my $n_log_lines = @log_lines;
-      if (3 <= $n_log_lines
-          && $log_lines[0] =~ /^\+\d{4}-\d\d-\d\d  (.*)/)
+      if (3 <= $n_log_lines)
         {
-          my $name_and_email = $1;
-          check_attribution $name_and_email, \$author;
-          shift @log_lines;
-
-          # Accept and ignore a second ChangeLog attribution line.  E.g.,
-          # 2006-09-29  user one  <u1@example.org>
-          #         and user two  <u2@example.org>
-          # The "and " on the second line is optional.
-          $log_lines[0] =~ /^\+\t(?:and )?[^<]+<.*>$/
-            and shift @log_lines;
-
-          if ($log_lines[0] ne '+')
+          if ($log_lines[0] =~ /^\+\d{4}-\d\d-\d\d  (.*)/)
             {
-              $log_lines[0] =~ s/^\+//;
-              die "$ME:$log: unexpected, non-blank line after first:\n"
-                . $log_lines[0] . "\n";
+              my $name_and_email = $1;
+              check_attribution $name_and_email, \$author;
+              shift @log_lines;
+
+              # Accept and ignore a second ChangeLog attribution line.  E.g.,
+              # 2006-09-29  user one  <u1@example.org>
+              #         and user two  <u2@example.org>
+              # The "and " on the second line is optional.
+              $log_lines[0] =~ /^\+\t(?:and )?[^<]+<.*>$/
+                and shift @log_lines;
+
+              if ($log_lines[0] ne '+')
+                {
+                  $log_lines[0] =~ s/^\+//;
+                  die "$ME:$log: unexpected, non-blank line after first:\n"
+                    . $log_lines[0] . "\n";
+                }
+              shift @log_lines;
+              $offset += ($n_log_lines - @log_lines);
             }
-          shift @log_lines;
-          $offset += ($n_log_lines - @log_lines);
+          elsif ($log_lines[@log_lines-2] =~ /^\+\d{4}-\d\d-\d\d  (.*)/
+                 && $log_lines[@log_lines-1] =~ /^\+ ?$/)
+            {
+              # Handle the case in which the latest ChangeLog entry
+              # has a header that is identical to the previous one.
+              # That could result in diff output like this:
+              #
+              # @@ -1,3 +1,7 @@
+              #  2011-03-04  Joe Random  <jr@example.com>
+              #
+              # +       * x: y
+              # +
+              # +2011-03-04  Joe Random  <jr@example.com>
+              # +
+              #
+              # Before the 2011-05-05 fix, vc-dwim would include
+              # that header line at the end of the commit log.
+              pop @log_lines;
+              pop @log_lines;
+            }
         }
 
       # FIXME: now that we have this find_author function,

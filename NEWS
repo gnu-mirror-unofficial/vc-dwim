@@ -2,6 +2,13 @@ vc-dwim NEWS                                          -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Bug fixes
+
+  vc-dwim: when the added ChangeLog date-name-email header is identical
+  to the preceding one, vc-dwim would put that line at the end of the
+  commit log whenever diff output listed the new, topmost, header only
+  as context lines in the ChangeLog diff output.  That bug is fixed.
+
 
 * Noteworthy changes in release 1.4 (2011-03-18) [stable]
 
