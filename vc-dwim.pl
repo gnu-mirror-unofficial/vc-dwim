@@ -678,6 +678,7 @@ sub check_attribution($$)
       return;
     }
 
+  $$author =~ s/  +</ </;
   $$author eq $name_and_email
     or die "$ME: --author/ChangeLog mismatch:\n  $$author\n  $name_and_email\n";
 }
