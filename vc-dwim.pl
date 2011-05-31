@@ -989,7 +989,7 @@ sub main
 
           if ($line =~ /^\*/)
             {
-              $line =~ /^\* (\S.*?):/
+              $line =~ /^\* (\S.*?)(:|\)$)/
                 or die "$ME:$log: line of unexpected form:\n$line";
               my $f_spec = $1;
               foreach my $file (change_log_line_extract_file_list ($f_spec))

@@ -4,6 +4,9 @@ vc-dwim NEWS                                          -*- outline -*-
 
 ** Bug fixes
 
+  vc-dwim no longer fails when it encounters a ChangeLog line like
+  "* file (...)" (i.e., with no colon) when that line ends with a ")".
+
   "vc-dwim a/ChangeLog b/ChangeLog" would mistakenly complain about
   an "--author/ChangeLog mismatch" even though the two name/email
   pairs in the ChangeLog files were identical.
