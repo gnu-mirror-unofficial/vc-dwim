@@ -1,0 +1,34 @@
+#!/bin/sh
+# Ensure that we accept relatively new ChangeLog syntax.
+
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-dwim
+
+require_git_
+
+cat <<EOF > ChangeLog || framework_failure_
+2011-05-31  R. Andom  <random@example.com>
+
+	* not-checked.c: Irrelevant.
+
+EOF
+git init > /dev/null || framework_failure_
+touch foo || framework_failure_
+git add . || framework_failure_
+git commit -m m . > /dev/null || framework_failure_
+
+cat <<EOF > ChangeLog
+2011-05-31  R. Andom  <random@example.com>
+
+	* foo (bar)
+        (qux): Comment.
+	* not-checked.c: Irrelevant.
+
+EOF
+
+fail=0
+
+echo a > foo || framework_failure_
+vc-dwim ChangeLog || fail=1
+
+Exit $fail

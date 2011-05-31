@@ -14,6 +14,7 @@ TESTS = \
   git-mv \
   two-line-attr \
   cl-other-user \
+  cl-syntax \
   no-vc \
   symlinked-changelog \
   scalar \
