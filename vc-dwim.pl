@@ -324,6 +324,7 @@ sub run_command
 # Given the part of a ChangeLog line after a leading "\t* ",
 # return the list of named files.  E.g.,
 # * foo.c: descr
+# * foo.c (func_1, func_2): descr
 # * lib/bar.c (func): descr
 # * glarp.c (struct) [member]: descr
 # and multiple files per line, with each comma-separated entry potentially
@@ -989,7 +990,7 @@ sub main
 
           if ($line =~ /^\*/)
             {
-              $line =~ /^\* (\S.*?)(:|\)$)/
+              $line =~ /^\* (\S.*?(:|\)$))/
                 or die "$ME:$log: line of unexpected form:\n$line";
               my $f_spec = $1;
               foreach my $file (change_log_line_extract_file_list ($f_spec))

@@ -20,7 +20,8 @@ git commit -m m . > /dev/null || framework_failure_
 cat <<EOF > ChangeLog
 2011-05-31  R. Andom  <random@example.com>
 
-	* foo (bar)
+	* foo (zoo, bar)
+	(a, b)
         (qux): Comment.
 	* not-checked.c: Irrelevant.
 
