@@ -783,7 +783,6 @@ sub main
 
   my $vc = VC->new ($changelog_file_name[0]);
   my $vc_name = $vc->name();
-  my @vc_diff = $vc->diff_cmd();
 
   # Key is ChangeLog file name, value is a ref to list of
   # lines added to that file.
