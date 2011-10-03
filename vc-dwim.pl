@@ -128,12 +128,13 @@ sub get_diffs ($$)
           . join (' ', @cmd) . "': $PROCESS_STATUS\n";
     }
 
-  # Remove the single space from what would otherwise be empty
-  # lines in unified diff output.
-  foreach my $line (@added_lines)
+  # This may not be needed for git (for it, just run
+  # git config diff.suppress-blank-empty true), but for other
+  # version control systems, it helps to normalize diff output.
+  foreach my $i (0..$#added_lines)
     {
-      $line eq ' '
-        and $line = '';
+      $added_lines[$i] eq ' '
+        and $added_lines[$i] = '';
     }
 
   return \@added_lines;
