@@ -4,6 +4,8 @@ vc-dwim NEWS                                          -*- outline -*-
 
 ** Bug fixes
 
+  vc-dwim now works even when you set GIT_EXTERNAL_DIFF
+
   vc-dwim no longer fails when it encounters a ChangeLog line like
   "* file (...)" (i.e., with no colon) when that line ends with a ")".
 
