@@ -107,11 +107,12 @@ sub verbose_cmd ($)
 }
 
 # Return an array of lines from running $VC diff -u on the named files.
-sub get_diffs ($$)
+# If $PRISTINE, do not honor e.g., git's --ext-diff option.
+sub get_diffs ($$$)
 {
-  my ($vc, $f) = @_;
+  my ($vc, $f, $pristine) = @_;
 
-  my @cmd = ($vc->diff_cmd(), @$f);
+  my @cmd = ($pristine ? $vc->diff_pristine() : $vc->diff_cmd(), @$f);
   $verbose
     and verbose_cmd \@cmd;
   open PIPE, '-|', @cmd
@@ -145,7 +146,7 @@ sub get_new_changelog_lines ($$)
 {
   my ($vc, $f) = @_;
 
-  my $diff_lines = get_diffs ($vc, [$f]);
+  my $diff_lines = get_diffs ($vc, [$f], 1);
   if (@$diff_lines == 0)
     {
       my $vc_name = $vc->name();
@@ -1026,11 +1027,17 @@ sub main
 
   # Collect diffs of non-ChangeLog files.
   # But don't print diff output unless we're sure everything is ok.
-  my $diff_lines = get_diffs $vc, \@affected_files;
+  my $diff_lines = get_diffs $vc, \@affected_files, 1;
 
   cross_check $vc, \@affected_files, $diff_lines;
 
   print join ("\n", @log_msg_lines), "\n";
+
+  # If a user's diff settings may produce non-default-formatted diffs,
+  # then recompute those diffs now, but using their settings (not pristine).
+  $vc->diff_is_pristine
+    or $diff_lines = get_diffs $vc, \@affected_files, 0;
+
   print join ("\n", @$diff_lines), "\n";
 
   # FIXME: add an option to take ChangeLog-style lines from a file,

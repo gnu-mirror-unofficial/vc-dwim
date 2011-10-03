@@ -56,6 +56,7 @@ my $vc_cmd =
    GIT() =>
    {
     DIFF_COMMAND => [qw(git diff -B -C HEAD --)],
+    DIFF_PRISTINE => [qw(git diff --no-ext-diff -B -C HEAD --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
     COMMIT_COMMAND => [qw(git commit -q -F)],
     # is-version-controlled-file: true, if "git cat-file -t HEAD:$file"
@@ -186,6 +187,27 @@ sub diff_cmd()
   my $self = shift;
   my $cmd_ref = $vc_cmd->{$self->name()}->{DIFF_COMMAND};
   return @$cmd_ref;
+}
+
+# Print diff -u style diffs, regardless of envvar settings
+# like GIT_EXTERNAL_DIFF or options like git's --ext-diff.
+# If no DIFF_PRISTINE member is specified, just use DIFF_COMMAND.
+sub diff_pristine()
+{
+  my $self = shift;
+  my $cmd_ref = $vc_cmd->{$self->name()}->{DIFF_PRISTINE}
+    || $vc_cmd->{$self->name()}->{DIFF_COMMAND};
+  return @$cmd_ref;
+}
+
+# Return true if the diff output is not customized.
+# FIXME: currently all it knows about is git's GIT_EXTERNAL_DIFF.
+# I'm sure there are other ways to configure git's diff output
+# as well as the other version control tools.
+sub diff_is_pristine()
+{
+  my $self = shift;
+  return $self->name() ne GIT || !defined $ENV{GIT_EXTERNAL_DIFF};
 }
 
 sub valid_diff_exit_status
