@@ -49,12 +49,11 @@ set -e
 
 vc-dwim ChangeLog > out
 
-if cmp out exp > /dev/null 2>&1 ; then
+if compare out exp > /dev/null 2>&1 ; then
   :
-elif cmp out exp-old; then
+elif compare out exp-old; then
   :
 else
-  diff out exp-old 2> /dev/null
   false
 fi
 

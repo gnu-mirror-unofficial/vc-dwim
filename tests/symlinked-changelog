@@ -44,8 +44,7 @@ cat <<\EOF > exp || fail=1
 
 EOF
 
-cmp out exp || fail=1
-test $fail = 1 && diff out exp 2> /dev/null
+compare out exp || fail=1
 
 (cd m && vc-dwim --commit ChangeLog) > out || fail=1
 

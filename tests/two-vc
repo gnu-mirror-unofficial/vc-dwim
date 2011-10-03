@@ -32,7 +32,6 @@ vc-dwim: ChangeLog files are managed by more than one version-control system:
   sub/ChangeLog: cvs
 EOF
 
-cmp out exp || fail=1
-test $fail = 1 && diff out exp 2> /dev/null
+compare out exp || fail=1
 
 Exit $fail

@@ -34,7 +34,6 @@ vc-dwim: not-mod is listed in the ChangeLog entry, but not in diffs.
 Did you forget to add it?
 EOF
 
-cmp out exp \
-  || { diff out exp 2> /dev/null; false; }
+compare out exp
 
 Exit 0

@@ -42,7 +42,6 @@ set -e
 
 vc-dwim ChangeLog > out
 
-cmp out exp \
-  || { diff out exp 2> /dev/null; false; }
+compare out exp
 
 Exit 0

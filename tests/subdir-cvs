@@ -53,7 +53,6 @@ diff -u -p -r1.1.1.1 f
 +bow
 EOF
 
-cmp out exp || fail=1
-test $fail = 1 && diff out exp 2> /dev/null
+compare out exp || fail=1
 
 Exit $fail

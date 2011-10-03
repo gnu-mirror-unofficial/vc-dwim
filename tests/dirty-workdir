@@ -5,6 +5,10 @@
 print_ver_ vc-chlog
 require_git_
 
+# The use of git diff --cached below would fail if you had, say,
+# GIT_EXTERNAL_DIFF='diff -c'.
+unset GIT_EXTERNAL_DIFF
+
 # Let's see whether this system knows unidiff format.
 # We assume that if diff doesn't, then patch also won't.
 # As long as vc-chlog only works with unidiff, SKIP the test.

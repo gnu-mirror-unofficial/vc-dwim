@@ -33,7 +33,6 @@ index e69de29..de03f25 100644
 +bow
 EOF
 
-cmp out exp || fail=1
-test $fail = 1 && diff out exp 2> /dev/null
+compare out exp || fail=1
 
 Exit $fail
