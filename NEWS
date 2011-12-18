@@ -13,6 +13,10 @@ vc-dwim NEWS                                          -*- outline -*-
   an "--author/ChangeLog mismatch" even though the two name/email
   pairs in the ChangeLog files were identical.
 
+** Changes in behavior
+
+  vc-dwim now warns when you forget to add a one-line summary
+
 
 * Noteworthy changes in release 1.5 (2011-05-20) [stable]
 
