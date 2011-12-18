@@ -44,7 +44,7 @@ cat <<\EOF > exp || fail=1
 
 EOF
 
-compare out exp || fail=1
+compare exp out || fail=1
 
 (cd m && vc-dwim --commit ChangeLog) > out || fail=1
 

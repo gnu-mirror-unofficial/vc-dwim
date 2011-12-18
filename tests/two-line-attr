@@ -33,6 +33,6 @@ index e69de29..de03f25 100644
 +bow
 EOF
 
-compare out exp || fail=1
+compare exp out || fail=1
 
 Exit $fail

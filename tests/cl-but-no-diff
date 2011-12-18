@@ -34,6 +34,6 @@ vc-dwim: not-mod is listed in the ChangeLog entry, but not in diffs.
 Did you forget to add it?
 EOF
 
-compare out exp
+compare exp out
 
 Exit 0

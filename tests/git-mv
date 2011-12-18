@@ -49,9 +49,9 @@ set -e
 
 vc-dwim ChangeLog > out
 
-if compare out exp > /dev/null 2>&1 ; then
+if compare exp out > /dev/null 2>&1 ; then
   :
-elif compare out exp-old; then
+elif compare exp-old out; then
   :
 else
   false

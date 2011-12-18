@@ -42,6 +42,6 @@ set -e
 
 vc-dwim ChangeLog > out
 
-compare out exp
+compare exp out
 
 Exit 0
