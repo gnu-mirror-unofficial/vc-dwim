@@ -17,6 +17,7 @@ git commit -m m . > /dev/null || framework_failure_
 cat <<EOF > $ChangeLog || framework_failure_
 2006-09-04  Jim Meyering  <jim@meyering.net>
 
+	1-line summary
 	* f: X.
 EOF
 echo z > 2/3/f || framework_failure_
@@ -24,9 +25,10 @@ echo z > 2/3/f || framework_failure_
 fail=0
 cd 2
 
-vc-dwim 3/ChangeLog > out 2>&1 || fail=1
+vc-dwim 3/ChangeLog > out 2>err || fail=1
 
 cat <<\EOF > exp || fail=1
+1-line summary
 * f: X.
 diff --git a/2/3/f b/2/3/f
 index e69de29..b680253 100644
@@ -36,6 +38,6 @@ index e69de29..b680253 100644
 +z
 EOF
 
-compare out exp || fail=1
+compare exp out || fail=1
 
 Exit $fail

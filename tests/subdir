@@ -19,14 +19,16 @@ fail=0
 cat <<EOF > s/ChangeLog || fail=1
 2006-09-04  Jim Meyering  <jim@meyering.net>
 
+	1-line summary
 	* f: X.
 EOF
 echo bow > s/f || fail=1
 cd s
 
-vc-dwim ChangeLog > out 2>&1 || fail=1
+vc-dwim ChangeLog > out 2>err || fail=1
 
 cat <<\EOF > exp || fail=1
+1-line summary
 * f: X.
 diff --git a/s/f b/s/f
 index e69de29..de03f25 100644
@@ -36,7 +38,7 @@ index e69de29..de03f25 100644
 +bow
 EOF
 
-compare out exp || fail=1
-test $fail = 1 && diff out exp 2> /dev/null
+compare exp out || fail=1
+test $fail = 1 && diff exp out 2> /dev/null
 
 Exit $fail
