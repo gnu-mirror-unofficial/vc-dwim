@@ -78,6 +78,7 @@ PATCH="@PATCH@"
 
 today=`date +%Y-%m-%d`
 test -z "$USER" && USER=`id -nu`
+user_name=$USER
 test -z "$user_name" &&
   user_name=`finger $USER | sed -n '
       /.*Name: /{
