@@ -16,7 +16,6 @@
 
 # Propagate build-related Makefile variables to test scripts.
 TESTS_ENVIRONMENT =						\
-  exec 9>&2;							\
   export							\
   top_srcdir=$(top_srcdir)					\
   srcdir=$(srcdir)						\
@@ -24,7 +23,7 @@ TESTS_ENVIRONMENT =						\
   PERL="$(PERL)"						\
   perllibdir="`$(am__cd) $(top_srcdir) && pwd`"			\
   PATH="$(VG_PATH_PREFIX)`pwd`/..$(PATH_SEPARATOR)$$PATH"	\
-  ; $(SHELL)
+  ; 9>&2
 
 TEST_LOGS = $(TESTS:=.log)
 
