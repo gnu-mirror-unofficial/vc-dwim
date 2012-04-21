@@ -9,6 +9,7 @@ TESTS = \
   changelog-header-at-end-of-log \
   git-log-summary \
   author \
+  author-bzr \
   subdir-middle \
   add-empty \
   git-mv \

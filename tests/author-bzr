@@ -1,0 +1,32 @@
+#!/bin/sh
+# Exercise the --author='user name <email@addr.dom>' option.
+
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-dwim
+
+require_bzr_
+
+cat <<EOF > ChangeLog || framework_failure_
+2006-09-04  Jim Meyering  <jim@meyering.net>
+EOF
+bzr init > /dev/null 2>&1		\
+  && bzr add .				\
+  && bzr commit -m m . > /dev/null 2>&1	\
+    || framework_failure_
+
+echo foo > x || framework_failure_
+bzr add x || framework_failure_
+cat <<EOF >> ChangeLog || framework_failure_
+
+	* x: whatever...
+EOF
+
+set -e
+fail=0
+
+name_and_addr='joe blow <j@blow.org>'
+vc-dwim --commit --author="$name_and_addr" > /dev/null
+bzr log -r-1 > out
+grep "^author: $name_and_addr" out > /dev/null
+
+Exit 0

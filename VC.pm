@@ -55,6 +55,7 @@ my $vc_cmd =
    },
    GIT() =>
    {
+    AUTHOR_FMT => '--author=%s',
     DIFF_COMMAND => [qw(git diff -B -C HEAD --)],
     DIFF_PRISTINE => [qw(git diff --no-ext-diff -B -C HEAD --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
@@ -78,6 +79,7 @@ my $vc_cmd =
    },
    BZR() => # aka bazaar
    {
+    AUTHOR_FMT => '--author=%s',
     DIFF_COMMAND => [qw(bzr diff --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1, 1 => 1},
     COMMIT_COMMAND => [qw(bzr ci -q -F)],
@@ -187,6 +189,15 @@ sub diff_cmd()
   my $self = shift;
   my $cmd_ref = $vc_cmd->{$self->name()}->{DIFF_COMMAND};
   return @$cmd_ref;
+}
+
+sub author_option()
+{
+  my $self = shift;
+  my $author = shift;
+  my $fmt = $vc_cmd->{$self->name()}->{AUTHOR_FMT};
+  my $opt = $fmt ? sprintf ($fmt, $author) : undef;
+  return $opt;
 }
 
 # Print diff -u style diffs, regardless of envvar settings

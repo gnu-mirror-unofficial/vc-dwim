@@ -484,8 +484,7 @@ sub find_author($$)
 # If there's only one file, say F, and its name starts with "/", then
 # do "chdir(dirname(F))" before performing the commit (committing
 # "basename(F)" in that case), and restore the initial working directory
-# afterwards.  If $AUTHOR is defined, and the vc back-end is GIT, then
-# use 'git commit's --author option.
+# afterwards.
 sub do_commit ($$$$)
 {
   my ($vc, $author, $log_msg_lines, $file_list_arg) = @_;
@@ -523,8 +522,12 @@ sub do_commit ($$$$)
 
   my @vc_commit = $vc->commit_cmd();
   push @vc_commit, $commit_log_filename;
-  defined $author && $vc->name() eq VC::GIT
-    and push @vc_commit, '--author', $author;
+
+  # If the back-end has an --author=... option, use it.
+  my $author_opt = $vc->author_option($author);
+  $author_opt
+    and push @vc_commit, $author_opt;
+
   my @cmd = (@vc_commit, '--', @file_list);
 
   my $options =

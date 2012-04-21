@@ -2,6 +2,11 @@ vc-dwim NEWS                                          -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Bug fixes
+
+  vc-dwim now applies --author= for ChangeLog-derived name/email for bzr,
+  just like it has always done for git.
+
 
 * Noteworthy changes in release 1.6 (2011-12-23) [stable]
 
