@@ -9,9 +9,14 @@ require_bzr_
 cat <<EOF > ChangeLog || framework_failure_
 2006-09-04  Jim Meyering  <jim@meyering.net>
 EOF
-bzr init > /dev/null 2>&1		\
+
+# Set HOME, so that bzr whoami doesn't affect the real $HOME.
+HOME=$(pwd); export HOME
+
+bzr whoami 'au thor <au@thor.com>'	\
+  && bzr init > /dev/null		\
   && bzr add .				\
-  && bzr commit -m m . > /dev/null 2>&1	\
+  && bzr commit -m m . > /dev/null	\
     || framework_failure_
 
 echo foo > x || framework_failure_
