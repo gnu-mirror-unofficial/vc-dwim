@@ -12,6 +12,7 @@
 /config.log
 /config.status
 /configure
+/doc/vc-dwim.t2d
 /gnulib.mk
 /m4
 /maint.mk
@@ -21,12 +22,11 @@
 /man/vc-dwim.1
 /stamp-h1
 /tests/*.log
+/tests/*.trs
 /tests/Makefile
 /tests/Makefile.in
 /vc-chlog
 /vc-dwim
-/vc-dwim-[.1-9]*.tar.gz
-/vc-dwim-[.1-9]*.tar.gz.sig
 /vc-dwim-[.1-9]*.tar.xz
 /vc-dwim-[.1-9]*.tar.xz.sig
 Makefile
