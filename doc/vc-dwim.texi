@@ -85,6 +85,7 @@ vc-chlog:
 * Using vc-chlog::              Getting up and going with vc-chlog
 * vc-chlog Invocation::         Invoking vc-dwim
 * vc-chlog Internals::          How vc-chlog works
+* Reporting Bugs::              Reporting Bugs
 
 @end detailmenu
 @end menu
@@ -286,6 +287,7 @@ standards, The GNU Coding Standards}.
 * Using vc-chlog::              Getting up and going with vc-chlog
 * vc-chlog Invocation::         Invoking vc-dwim
 * vc-chlog Internals::          How vc-chlog works
+* Reporting Bugs::              Reporting Bugs
 @end menu
 
 @node Using vc-chlog
@@ -496,6 +498,14 @@ using @command{awk}, @command{sed}, and other POSIX tools freely, adds
 to the compactness of the script, added to the fun in writing it,
 necessitates slightly awkward data constructs, and probably impedes easy
 modification and debugging.  This might be construed as a bug.
+
+@node Reporting Bugs
+@section Reporting bugs
+
+@cindex bugs, reporting
+Email bug reports to @email{bug-vc-dwim@@gnu.org},
+a mailing list whose web page is
+@url{http://lists.gnu.org/mailman/listinfo/bug-vc-dwim}.
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
