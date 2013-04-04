@@ -42,6 +42,7 @@ use constant
     HG  => 'hg',
     SVN => 'svn',
     BZR => 'bzr',
+    DARCS => 'darcs',
   };
 
 my $vc_cmd =
@@ -83,6 +84,13 @@ my $vc_cmd =
     DIFF_COMMAND => [qw(bzr diff --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1, 1 => 1},
     COMMIT_COMMAND => [qw(bzr ci -q -F)],
+   },
+   DARCS() => # aka bazaar
+   {
+    AUTHOR_FMT => '--author=%s',
+    DIFF_COMMAND => [qw(darcs diff --)],
+    VALID_DIFF_EXIT_STATUS => {0 => 1},
+    COMMIT_COMMAND => [qw(darcs record -q -a --look-for-adds --logfile)],
    },
   };
 
@@ -129,6 +137,8 @@ sub new($%)
 	$self->{name} = BZR;
       } elsif (-d "$d/.hg") {
 	$self->{name} = HG;
+      } elsif (-d "$d/_darcs") {
+	$self->{name} = DARCS;
       }
 
       my ($dev, $ino, undef) = stat $d;

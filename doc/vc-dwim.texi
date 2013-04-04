@@ -104,7 +104,7 @@ tool.  vc-chlog is a @file{ChangeLog} writing helper tool.
 Both tools are useful if you like to maintain a @file{ChangeLog} file
 describing the changes you make to version-controlled files.  vc-dwim
 works with the following version control systems: bzr, CVS, git,
-mercurial, and SVN.  It should be easy to add support for more.
+mercurial, SVN, and darcs.  It should be easy to add support for more.
 
 vc-dwim can save you from making some small mistakes when using
 version control programs from the command line.
@@ -151,7 +151,8 @@ alias cv='vc-dwim --diff'
 Use that when you want to see diffs of a specified file, regardless
 of whether you have written new @file{ChangeLog} entries for it.
 It works the same for @command{bzr}, @command{cvs}, @command{git},
-@command{hg}, @command{svn} repositories, as long as all you want are the
+@command{hg}, @command{svn}, and @command{darcs} repositories, as long
+as all you want are the
 difference between your local copy and the checked out version.
 
 @subheading Print diffs of files with new @file{ChangeLog} entries:
