@@ -31,6 +31,7 @@
 use strict;
 use warnings;
 
+use Errno qw(EEXIST);
 use Getopt::Long;
 use File::Basename; # for basename and dirname
 
@@ -689,14 +690,29 @@ sub check_attribution($$)
     or die "$ME: --author/ChangeLog mismatch:\n  $$author\n  $name_and_email\n";
 }
 
+# Return the name of the/an admin directory residing in
+# the current directory.  If there is none, return undef.
+sub admin_dir()
+{
+  -d '.git/objects' and return '.git';
+  -d '.hg' and return '.hg';
+  -d 'CVS' and return 'CVS';
+  -d '.svn' and return '.svn';
+  -d '.bzr/repository' and return '.bzr';
+  -d '_darcs' and return '_darcs';
+  return undef;
+}
+
 sub main
 {
   my $commit;
   my $simple_diff;
   my $print_vc_list;
   my $author;
+  my $initialize;
   GetOptions
     (
+     initialize => \$initialize,
      diff => \$simple_diff,
      commit => \$commit,
      'author=s' => \$author,   # makes sense only with --commit
@@ -709,6 +725,50 @@ sub main
     ) or usage 1;
 
   my $fail;
+
+  if ($initialize)
+    {
+      my $adm = admin_dir
+        or die "$ME: no version-control admin dir in the current directory\n";
+      my $options =
+        {
+         DEBUG => $debug,
+         VERBOSE => $verbose,
+         DIE_UPON_FAILURE => 1,
+         INHIBIT_STDOUT => 0,
+        };
+
+      # set -e; cd $adm && mkdir -p c && cd c
+      chdir $adm or die "$ME: failed to chdir to $adm: $!\n";
+      ! (mkdir ('c') || $! == EEXIST)
+        and die "$ME: failed to create $adm/c: $!\n";
+      chdir 'c' or die "$ME: failed to chdir to $adm/c: $!\n";
+
+      # touch ChangeLog || die
+      my $cl = 'ChangeLog';
+      open FH, '>>', $cl
+        or die "$ME: failed to open '$cl' for writing: $!\n";
+      close FH
+        or die "$ME: failed to write '$cl': $!\n";
+
+      # Initialize the git repo, add ChangeLog and commit it.
+      # Any failure is fatal.
+      run_command ($options, qw(git init -q));
+      run_command ($options, qw(git add), $cl);
+      run_command ($options, qw(git commit --allow-empty -q -m. -a));
+
+      # If the top-level ChangeLog file exists, rename it to ChangeLog~,
+      # deliberately ignoring any rename failure.
+      my $cl_top = "../../$cl";
+      rename $cl_top, "$cl_top~";
+
+      # Create the top-level ChangeLog symlink into $adm/c:
+      my $cl_sub = "$adm/c/$cl";
+      symlink $cl_sub, $cl_top
+        or die "$ME: failed to create symlink, $cl, to $cl_sub: $!\n";
+
+      exit 0;
+    }
 
   if ($simple_diff)
     {
@@ -1098,9 +1158,11 @@ B<vc-dwim> [OPTIONS] --diff [FILE...]
 
 B<vc-dwim> [OPTIONS] --print-vc-list
 
+B<vc-dwim> [OPTIONS] --initialize
+
 =head1  DESCRIPTION
 
-By default, each command line argument should be a locally modified,
+By default, each command line argument should specify a locally modified,
 version-controlled ChangeLog file.  If there is no command line argument,
 B<vc-dwim> tries to use the ChangeLog file in the current directory.
 In this default mode, B<vc-dwim> works by first computing diffs of those
@@ -1154,6 +1216,17 @@ hierarchy.
 
 Print the list of recognized version control names, then exit.
 
+=item B<--initialize>
+
+This option is useful in a project that does not version-control
+a ChangeLog file.  Use this option in the top-level project
+directory to create your personal ChangeLog file -- that file
+will be a symlink to a git-version-controlled ChangeLog file
+in a just-created single-file repository residing in the VC-admin
+directory (.git, .hg, etc.).  If there is an existing ChangeLog file
+in the working directory, running B<vc-dwim --initialize> first
+renames it to ChangeLog~.
+
 =item B<--help>
 
 Display this help and exit.
@@ -1171,27 +1244,6 @@ Generate verbose output.
 Generate debug output.
 
 =back
-
-=head1  EXAMPLE
-
-Here's how to use B<vc-dwim> in a project that does not version-control
-a ChangeLog file.  Create a repository just for your personal
-ChangeLog file and make a symlink to it from the top-level directory
-of the project.  For projects that use git, I put this tiny
-auxiliary repository in a directory named .git/c.  You can
-use this bash/zsh alias to set it up and to create the symlink:
-
-    git-changelog-symlink-init()
-    {
-        local d=.git/c
-        test -d .git || return 1
-        mkdir $d
-        touch $d/ChangeLog
-        (cd $d && git init && git add ChangeLog && git commit -m. -a)
-        ln --backup -s $d/ChangeLog .
-    }
-
-
 
 =head1  RESTRICTIONS
 

@@ -2,6 +2,10 @@ vc-dwim NEWS                                          -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** New features
+
+  vc-dwim accepts a new option: --initialize
+
   vc-dwim now supports darcs.
 
 

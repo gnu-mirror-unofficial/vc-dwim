@@ -1,0 +1,55 @@
+#!/bin/sh
+# Exercise the --initialize option.
+
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-dwim
+
+require_git_
+require_hg_
+
+mkdir h g || framework_failure_
+
+fail=0
+
+(cd g && git init > /dev/null) || framework_failure_
+
+# First, try with git:
+cd g
+vc-dwim --initialize 2> out || fail=1
+test -d .git/c/.git || fail=1
+test -f .git/c/ChangeLog || fail=1
+test -f ChangeLog || fail=1
+compare /dev/null out || fail=1
+
+# The second time, nothing should change,
+# except the original ChangeLog symlink is moved aside.
+# But first, put something in ChangeLog, so that we can
+# ensure its contents is preserved.
+echo foo > ChangeLog || framework_failure_
+echo foo > exp || framework_failure_
+
+vc-dwim --initialize 2> out || fail=1
+test -d .git/c/.git || fail=1
+test -f .git/c/ChangeLog || fail=1
+test -f ChangeLog || fail=1
+test -f ChangeLog~ || fail=1
+compare /dev/null out || fail=1
+compare exp ChangeLog || fail=1
+
+cd ../h
+
+# When there is not .git, .hg, etc. directory, we must fail.
+vc-dwim --initialize 2> out && fail=1
+echo vc-dwim: no version-control admin dir in the current directory > exp-err \
+  || framework_failure_
+compare exp-err out || fail=1
+
+# Ensure it works with mercurial, too:
+hg init || framework_failure_
+vc-dwim --initialize 2> out || fail=1
+test -d .hg/c/.git || fail=1
+test -f .hg/c/ChangeLog || fail=1
+test -f ChangeLog || fail=1
+compare /dev/null out || fail=1
+
+Exit $fail
