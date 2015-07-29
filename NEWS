@@ -8,6 +8,8 @@ vc-dwim NEWS                                          -*- outline -*-
 
   vc-dwim now supports darcs.
 
+  vc-dwim now silently ignores dirty git submodules
+
 
 * Noteworthy changes in release 1.7 (2013-03-15) [stable]
 

@@ -57,8 +57,9 @@ my $vc_cmd =
    GIT() =>
    {
     AUTHOR_FMT => '--author=%s',
-    DIFF_COMMAND => [qw(git diff -B -C HEAD --)],
-    DIFF_PRISTINE => [qw(git diff --no-ext-diff -B -C HEAD --)],
+    DIFF_COMMAND => [qw(git diff --ignore-submodules=all -B -C HEAD --)],
+    DIFF_PRISTINE => [qw(git diff --ignore-submodules=all --no-ext-diff
+                         -B -C HEAD --)],
     VALID_DIFF_EXIT_STATUS => {0 => 1},
     COMMIT_COMMAND => [qw(git commit -q -F)],
     # is-version-controlled-file: true, if "git cat-file -t HEAD:$file"

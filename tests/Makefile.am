@@ -28,6 +28,7 @@ TESTS = \
   subdir-cvs \
   t-vc-chlog \
   multiple-chlogs \
-  dirty-workdir
+  dirty-workdir \
+  ignore-dirty-submodules
 
 include $(srcdir)/check.mk

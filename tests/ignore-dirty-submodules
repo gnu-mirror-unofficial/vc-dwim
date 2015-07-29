@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# Ensure dirty git submodules are ignored by 'vc-dwim --diff'
+
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-dwim
+
+require_git_
+
+fail=0
+
+##
+## Create two git repositories (a,b),
+## add 'a' as submodule of 'b',
+## then modify 'a'.
+##
+mkdir a b || framework_failure_
+(cd a \
+    && git init \
+    && echo a > a \
+    && git add a \
+    && git commit -m a ) >/dev/null || framework_failure_
+(cd b \
+    && git init \
+    && echo b > b \
+    && git add b \
+    && git commit -m b ) >/dev/null || framework_failure_
+(cd b \
+    && git submodule add ../a \
+    && git commit -m "submodule added") >/dev/null || framework_failure_
+
+## Sanity check: ensure no diffs, either with git or with vc-dwim
+cd b
+A=$(git diff) || framework_failure_
+test -z "$A" || framework_failure_
+B=$(vc-dwim --diff) || framework_failure_
+test -z "$B" || framework_failure_
+
+## Modify the submodule
+echo >> a/a || framework_failure_
+
+## git diff should report a dirty submodule
+git diff | grep -q '^\+Subproject commit [0-9a-f]*-dirty$' \
+    || framework_failure_
+
+## git diff with ignore flag should not report anything
+## (if this doesn't work as expected, vc-dwim will fail too)
+C=$(git diff --ignore-submodules=all) || framework_failure_
+test -z "$C" || framework_failure_
+
+## Now test vc-dwim
+D=$(vc-dwim --diff) || framework_failure_
+test -z "$D" || fail=1
+
+Exit $fail
