@@ -30,7 +30,7 @@ EOF
 echo bow > s/f || fail=1
 cd s
 
-# cvs can mistakenly report no diffs due to file system time stamp
+# cvs can mistakenly report no diffs due to file system timestamp
 # granularity.  If that happens, adjust mtimes manually.
 if cvs diff ChangeLog > /dev/null; then
   # Attempt to use gnu touch.  If that fails, sleep.
