@@ -36,7 +36,7 @@ manual_title = vc-dwim
 # Now that we have better tests, make this the default.
 export VERBOSE = yes
 
-old_NEWS_hash = c06c98a390b44d75c2e672ce473d4e0e
+old_NEWS_hash = f259ca9e61fffcbc09ed14172034492d
 
 update-copyright-env = \
   UPDATE_COPYRIGHT_USE_INTERVALS=1 \
