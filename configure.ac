@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2017 Free Software Foundation, Inc.
+# Copyright (C) 2008-2018 Free Software Foundation, Inc.
 # This file may be modified and/or distributed without restriction.
 
 # Make inter-release version strings look like, e.g., v1.0-219-g58ddd, which
