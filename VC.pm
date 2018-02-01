@@ -132,7 +132,7 @@ sub new($%)
 	  }
 	}
 
-      if (-d "$d/.git/objects") {
+      if (-d "$d/.git/objects" || -f "$d/.git") {
 	$self->{name} = GIT;
       } elsif (-d "$d/.bzr/repository") {
 	$self->{name} = BZR;
