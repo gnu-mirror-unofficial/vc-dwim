@@ -690,11 +690,24 @@ sub check_attribution($$)
     or die "$ME: --author/ChangeLog mismatch:\n  $$author\n  $name_and_email\n";
 }
 
-# Return the name of the/an admin directory residing in
+# Return the name of the/an admin directory associated with
 # the current directory.  If there is none, return undef.
 sub admin_dir()
 {
+  # This is the usual case: a .git directory.
   -d '.git/objects' and return '.git';
+  # With a git worktree, .git is a file containing a line of this form:
+  # gitdir: /abs/dir
+  my $git_file = '.git';
+  if (-f $git_file)
+    {
+      # Read .git, and extract the name after "gitdir: "
+      my $fh = new IO::File $git_file, 'r'
+        or die "$ME: can't open `$git_file' for reading: $!\n";
+      my $line = <$fh>;
+      defined $line && $line =~ /^gitdir: (.+)$/
+        and return $1;
+    }
   -d '.hg' and return '.hg';
   -d 'CVS' and return 'CVS';
   -d '.svn' and return '.svn';

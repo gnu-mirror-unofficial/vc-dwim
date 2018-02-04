@@ -14,6 +14,7 @@ TESTS = \
   subdir-middle \
   add-empty \
   git-mv \
+  git-worktree \
   two-line-attr \
   cl-other-user \
   cl-syntax \

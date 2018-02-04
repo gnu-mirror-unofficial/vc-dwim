@@ -1,0 +1,21 @@
+#!/bin/sh
+# Ensure things work in a git worktree, for which .git is a file.
+
+. "${srcdir=.}/init.sh"; path_prepend_ ..
+print_ver_ vc-dwim
+
+require_git_
+
+git init > /dev/null			\
+  && touch x				\
+  && git add .				\
+  && git commit -m m . > /dev/null	\
+  && git worktree add wt		\
+  && cd wt				\
+    || framework_failure_
+
+fail=0
+vc-dwim --init || fail=1
+test -h ChangeLog || fail=1
+
+Exit $fail
