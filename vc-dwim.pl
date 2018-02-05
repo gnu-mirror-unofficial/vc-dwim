@@ -738,33 +738,33 @@ sub main
          INHIBIT_STDOUT => 0,
         };
 
-      # set -e; cd $adm && mkdir -p c && cd c
-      chdir $adm or die "$ME: failed to chdir to $adm: $!\n";
-      ! (mkdir ('c') || $! == EEXIST)
-        and die "$ME: failed to create $adm/c: $!\n";
-      chdir 'c' or die "$ME: failed to chdir to $adm/c: $!\n";
-
-      # touch ChangeLog || die
       my $cl = 'ChangeLog';
-      open FH, '>>', $cl
-        or die "$ME: failed to open '$cl' for writing: $!\n";
-      close FH
-        or die "$ME: failed to write '$cl': $!\n";
+      do_at ($adm, sub
+      {
+        ! (mkdir ('c') || $! == EEXIST)
+          and die "$ME: failed to create $adm/c: $!\n";
+        chdir 'c' or die "$ME: failed to chdir to $adm/c: $!\n";
 
-      # Initialize the git repo, add ChangeLog and commit it.
-      # Any failure is fatal.
-      run_command ($options, qw(git init -q));
-      run_command ($options, qw(git add), $cl);
-      run_command ($options, qw(git commit --allow-empty -q -m. -a));
+        # touch ChangeLog || die
+        open FH, '>>', $cl
+          or die "$ME: failed to open '$cl' for writing: $!\n";
+        close FH
+          or die "$ME: failed to write '$cl': $!\n";
 
-      # If the top-level ChangeLog file exists, rename it to ChangeLog~,
-      # deliberately ignoring any rename failure.
-      my $cl_top = "../../$cl";
-      rename $cl_top, "$cl_top~";
+        # Initialize the git repo, add ChangeLog and commit it.
+        # Any failure is fatal.
+        run_command ($options, qw(git init -q));
+        run_command ($options, qw(git add), $cl);
+        run_command ($options, qw(git commit --allow-empty -q -m. -a));
+      });
+
+      # If a ChangeLog file exists in the current directory, rename it
+      # to ChangeLog~, deliberately ignoring any rename failure.
+      rename $cl, "$cl~";
 
       # Create the top-level ChangeLog symlink into $adm/c:
       my $cl_sub = "$adm/c/$cl";
-      symlink $cl_sub, $cl_top
+      symlink $cl_sub, $cl
         or die "$ME: failed to create symlink, $cl, to $cl_sub: $!\n";
 
       exit 0;
