@@ -16,7 +16,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Given a command like vc-dwim ChangeLog lib/ChangeLog..., check that each
 # ChangeLog has been modified, determine the list of affected files from
