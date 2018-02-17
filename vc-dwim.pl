@@ -549,6 +549,8 @@ sub do_commit ($$$$)
 sub do_at($$)
 {
   my ($dest_dir, $code) = @_;
+  eval 'use Cwd';
+  die $@ if $@;
   my $initial_wd = Cwd::getcwd()
     or die "$ME: getcwd failed: $!\n";
   chdir $dest_dir
