@@ -322,7 +322,7 @@
 
 	avoid hg here -- 1.0.1 gets an internal error due to hierarchy depth
 	* tests/symlinked-changelog: Use bzr instead.
-	Mercurial bug report: <http://www.selenic.com/mercurial/bts/msg6450>.
+	Mercurial bug report: <https://www.selenic.com/mercurial/bts/msg6450>.
 
 	add support for bzr
 	* tests/require-bzr (bzr_version): New file.

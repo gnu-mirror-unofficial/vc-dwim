@@ -505,7 +505,7 @@ modification and debugging.  This might be construed as a bug.
 @cindex bugs, reporting
 Email bug reports to @email{bug-vc-dwim@@gnu.org},
 a mailing list whose web page is
-@url{http://lists.gnu.org/mailman/listinfo/bug-vc-dwim}.
+@url{https://lists.gnu.org/mailman/listinfo/bug-vc-dwim}.
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License

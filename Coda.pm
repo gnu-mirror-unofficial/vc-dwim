@@ -42,8 +42,8 @@ END {
     # when we close() the file handle.
     # [*] Beware the exception, due to a long-standing bug in Perl,
     # fixed in 5.9.1.  See the report and patch here:
-    # http://www.xray.mpe.mpg.de/mailing-lists/perl5-porters/2004-12/msg00072.html
-    # or http://bugs.debian.org/285435.
+    # https://www.xray.mpe.mpg.de/mailing-lists/perl5-porters/2004-12/msg00072.html
+    # or https://bugs.debian.org/285435.
     #
     # If stdout is already closed, we're done.
     defined fileno STDOUT
