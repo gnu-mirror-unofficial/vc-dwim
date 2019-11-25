@@ -127,6 +127,7 @@ of the modified files in a working directory.  But no one ever does
 
 @menu
 * Using vc-dwim::               How can you use vc-dwim?
+* Initializing vc-dwim::        Setting up a source tree with no ChangeLog file
 * vc-dwim Invocation::          Invoking vc-dwim
 @end menu
 
@@ -191,6 +192,35 @@ For example:
 @end example
 
 
+@node Initializing vc-dwim
+@section Initializing vc-dwim
+
+vc-dwim operates based on a ChangeLog file; if you maintain a ChangeLog
+as part of your source tree, you don't need to do anything special to
+set up to use vc-dwim; just run it.
+
+However, it is common practice nowadays for source trees not to have
+ChangeLog files, but instead to have them derived for distributions or
+on demand (@code{make ChangeLog}, with one common GNU infrastructure).
+So, how to use vc-dwim in this case? It still needs a ChangeLog.
+
+The answer is to run @code{vc-dwim --initialize}. This sets up your own,
+private @file{ChangeLog} file in a git repository rooted at
+@file{@var{VCDIR}/c/}, with a symlink to it from the top level directory
+of the source tree in which you'd like to use vc-dwim.
+
+Your own source tree need not use git; @var{VCDIR} in the above refers
+to the version-control system's control directory, such as @file{.svn},
+@file{_darcs}, etc., as well as @file{.git}.
+
+Then you can make ChangeLog entries as usual, and proceed with use of
+vc-dwim.
+
+You can also set up your own repository of whatever type and make your
+own symlinked top-level ChangeLog into it; there's nothing magical about
+@code{--initialize} or the @file{@var{VCDIR}/c/} location.
+
+
 @node vc-dwim Invocation
 @section Invoking vc-dwim
 
@@ -200,6 +230,7 @@ vc-dwim @ovar{option...} @ovar{changelog_file...}
 vc-dwim @ovar{option...} --commit @var{changelog_file...}
 vc-dwim @ovar{option...} --diff @ovar{file...}
 vc-dwim @ovar{option...} --print-vc-list
+vc-dwim @ovar{option...} --initialize
 @end example
 
 By default, each command line argument should be a locally modified,
@@ -225,13 +256,10 @@ commit those changes and the @file{ChangeLog} simply by rerunning the
 command with the @option{--commit} option.
 
 But what if you'd like to use @command{vc-dwim} on a project that
-doesn't have or want a @file{ChangeLog} file?  In that case, you can
-maintain your own, private, version-controlled @file{ChangeLog} file in
-a different hierarchy.  Then just make a symlink to it from the top
-level directory of the hierarchy in which you'd like to use it and
-everything should work.  Your private @file{ChangeLog} file need not
-even use the same version control system as the rest of the project
-hierarchy.
+doesn't have or want a @file{ChangeLog} file? In that case, you can
+maintain your own ChangeLog file.  This is what the
+@option{--initialize} option sets up for you, or you can perform
+equivalent steps by hand (@pxref{Initializing vc-dwim}).
 
 @noindent
 @command{vc-dwim} accepts the following options:
@@ -262,6 +290,10 @@ diffs for the current hierarchy.
 
 @item --print-vc-list
 Print the list of recognized version control names, then exit.
+
+@item --initialize
+Prepare a source tree with no @file{ChangeLog} file for use with vc-dwim
+(@pxref{Initializing vc-dwim}).
 
 @item --verbose
 Generate verbose output.

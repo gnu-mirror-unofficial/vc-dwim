@@ -1264,14 +1264,14 @@ Print the list of recognized version control names, then exit.
 
 =item B<--initialize>
 
-This option is useful in a project that does not version-control
-a ChangeLog file.  Use this option in the top-level project
-directory to create your personal ChangeLog file -- that file
-will be a symlink to a git-version-controlled ChangeLog file
-in a just-created single-file repository residing in the VC-admin
-directory (.git, .hg, etc.).  If there is an existing ChangeLog file
-in the working directory, running B<vc-dwim --initialize> first
-renames it to ChangeLog~.
+This option, or the equivalent operations, is needed in a project that
+does not version-control a ChangeLog file. Use this option in the
+top-level project directory to create your personal ChangeLog file --
+that file will be a symlink to a git-version-controlled ChangeLog file
+in a just-created single-file repository residing in the VC admin
+directory (.git, .hg, etc.). If there is an existing C<ChangeLog> file
+in the top-level directory, running B<vc-dwim --initialize> first
+renames it to C<ChangeLog~>.
 
 =item B<--help>
 
