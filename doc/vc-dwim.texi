@@ -93,7 +93,6 @@ vc-chlog:
 
 @node Introduction
 @chapter Introduction
-@cindex Introduction
 
 vc-dwim is a version-control-agnostic @file{ChangeLog} diff and commit
 tool.  vc-chlog is a @file{ChangeLog} writing helper tool.
@@ -277,7 +276,7 @@ log entry per file per ``commit'' operation.
 
 Relies on fairly strict adherence to recommended @file{ChangeLog}
 syntax.  Detects editor temporaries created by Emacs and Vim.
-Eventually, it will detect temporaries created by other editors.
+Patches to detect temporaries created by other editors are welcome.
 
 
 @node vc-chlog
@@ -319,6 +318,8 @@ to find out in which functions those changes have occurred, and formats
 the file and functions names in a prototype @file{ChangeLog} entry form
 on standard output.
 
+@subheading Finding identifiers for what has changed:
+
 There is a crucial assumption behind this idea to work well in practice:
 ctags should be able to generate tags for the identifiers that changed.
 For example, it should list functions in C source files (but not
@@ -346,7 +347,7 @@ it detects the shell script @command{vc-chlog} as such.  With a
 @end example
 
 @noindent
-it detects Texinfo node names (@command{vc-chlog} uses some heuristic to
+it detects Texinfo node names (@command{vc-chlog} uses some heuristics to
 deal with spaces in the identifier names when Exuberant Ctags is used).
 
 Autoconf macros may be tagged by options such as
@@ -368,12 +369,12 @@ For some languages, @command{vc-chlog} attempts to guess where functions end,
 and thus not attribute changes past that end to the previous identifier.
 
 Typically, @command{vc-chlog} is exact in the list of files that
-changed, false negatives in the list of identifiers stem from a
+changed; false negatives in the list of identifiers stem from a
 @command{ctags} that failed to enumerate all identifiers properly, or
-changes before a function, false positives typically stem from
+changes before a function, and false positives typically stem from
 constructs like nested functions.
 
-Use @command{vc-chlog} with multiple @file{ChangeLog} files in a project
+@subheading Use @command{vc-chlog} with multiple @file{ChangeLog} files in a project:
 
 If a project uses multiple @file{ChangeLog} files, @command{vc-chlog}
 assumes that changes are to be recorded in the log file that is nearest
@@ -430,7 +431,7 @@ patch (usually given with @option{--stdin}).  This will let the file
 be recreated from the version control index or cache, if any.
 
 @item --debug
-Inhibit temp file cleanup.
+Inhibit temp file cleanup and show much shell execution.
 
 @item --help
 Display this help and exit.
@@ -478,7 +479,7 @@ identifiers in both the new, and the old version of the file.  These
 lists are ordered by line number.  Changes between two consecutive
 identifiers will later be assumed to change the earlier of the two.
 
-While this works reasonably well for functions, it fails for example for
+While this works reasonably well for functions, it fails, for example, for
 global variable declarations or changes to comments outside of
 functions.  So @code{func_taglist} applies some heuristics to guess the
 end of a function, e.g.@: a closing brace in the first column, and
@@ -497,7 +498,7 @@ to one or more @file{ChangeLog} files throughout the source tree using
 @code{func_sortby_chlog}, and a GCS-style @file{ChangeLog} entry stub is
 formatted with @code{func_pretty_changelog_entry}.
 
-The fact that @command{vc-chlog} is written as portable shell script,
+The fact that @command{vc-chlog} is written as a portable shell script,
 using @command{awk}, @command{sed}, and other POSIX tools freely, adds
 to the compactness of the script, added to the fun in writing it,
 necessitates slightly awkward data constructs, and probably impedes easy
@@ -506,8 +507,7 @@ modification and debugging.  This might be construed as a bug.
 @node Reporting Bugs
 @section Reporting bugs
 
-@cindex bugs, reporting
-Email bug reports to @email{bug-vc-dwim@@gnu.org},
+Email bug reports and all other discussion to @email{bug-vc-dwim@@gnu.org},
 a mailing list whose web page is
 @url{https://lists.gnu.org/mailman/listinfo/bug-vc-dwim}.
 

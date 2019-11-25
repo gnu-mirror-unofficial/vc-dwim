@@ -1305,7 +1305,11 @@ Eventually, it will detect temporaries created by other editors.
 
 Jim Meyering <jim@meyering.net>
 
-Report bugs to <@PACKAGE_BUGREPORT@>.
+Report bugs and all other discussion to <@PACKAGE_BUGREPORT@>.
+
+GNU <@PACKAGE_NAME> home page: &lt;https://www.gnu.org/software/<@PACKAGE_NAME>/&gt;
+
+General help using GNU software: <https://www.gnu.org/gethelp/>
 
 =cut
 
