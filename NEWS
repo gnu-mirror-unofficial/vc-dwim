@@ -2,7 +2,12 @@ vc-dwim NEWS                                          -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** New features
+
   vc-dwim and vc-chlog now also work with git worktree directories
+
+  vc-dwim accepts a new option: --dry-run (-n)
+
 
 * Noteworthy changes in release 1.8 (2017-01-14) [stable]
 

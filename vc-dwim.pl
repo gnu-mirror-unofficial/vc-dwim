@@ -60,6 +60,7 @@ our $VERSION = '@VERSION@';
 
 my $verbose = 0;
 my $debug = 0;
+my $dry_run = 0;
 
 sub usage ($)
 {
@@ -247,7 +248,7 @@ sub run_command
      IGNORE_FAILURE => 0,
      DIE_UPON_FAILURE => 1,
      INHIBIT_STDERR => 0,
-     INHIBIT_STDOUT => 1,
+     INHIBIT_STDOUT => ! $dry_run, # keep stdout if just printing
     );
 
   my %options = %all_options;
@@ -291,7 +292,13 @@ sub run_command
     }
 
   my $fail = 1;
-  my $rc = 0xffff & system @cmd;
+  my $rc;
+  if ($dry_run) {
+    print "$ME: would run: @cmd\n";
+    $rc = 0;
+  } else {
+    $rc = 0xffff & system @cmd;
+  }
 
   # Restore stdout.
   open STDOUT, '>&', *SAVE_OUT
@@ -733,6 +740,8 @@ sub main
      'author=s' => \$author,   # makes sense only with --commit
      'print-vc-list' =>
        sub { print join (' ', VC::supported_vc_names()), "\n"; exit },
+     n => \$dry_run,
+     'dry-run' => \$dry_run,
      debug => \$debug,
      verbose => \$verbose,
      help => sub { usage 0 },
@@ -756,15 +765,23 @@ sub main
       my $cl = 'ChangeLog';
       do_at ($adm, sub
       {
-        ! (mkdir ('c') || $! == EEXIST)
-          and die "$ME: failed to create $adm/c: $!\n";
-        chdir 'c' or die "$ME: failed to chdir to $adm/c: $!\n";
+        if ($dry_run) {
+          print "$ME: would mkdir 'c' in $adm\n";
+        } else {
+          ! (mkdir ('c') || $! == EEXIST)
+            and die "$ME: failed to create $adm/c: $!\n";
+          chdir 'c' or die "$ME: failed to chdir to $adm/c: $!\n";
+        }
 
         # touch ChangeLog || die
-        open FH, '>>', $cl
-          or die "$ME: failed to open '$cl' for writing: $!\n";
-        close FH
-          or die "$ME: failed to write '$cl': $!\n";
+        if ($dry_run) {
+          print "$ME: would touch $cl in $adm\n";
+        } else {
+          open FH, '>>', $cl
+            or die "$ME: failed to open '$cl' for writing: $!\n";
+          close FH
+            or die "$ME: failed to write '$cl': $!\n";
+        }
 
         # Initialize the git repo, add ChangeLog and commit it.
         # Any failure is fatal.
@@ -774,13 +791,22 @@ sub main
       });
 
       # If a ChangeLog file exists in the current directory, rename it
-      # to ChangeLog~, deliberately ignoring any rename failure.
-      rename $cl, "$cl~";
+      # deliberately ignoring any rename failure. (But only report the
+      # rename for dry runs if it does exist.)
+      if ($dry_run && -e $cl) {
+        print "$ME: would rename($cl, $cl~)\n";
+      } else {
+        rename $cl, "$cl~";
+      }
 
       # Create the top-level ChangeLog symlink into $adm/c:
       my $cl_sub = "$adm/c/$cl";
-      symlink $cl_sub, $cl
-        or die "$ME: failed to create symlink, $cl, to $cl_sub: $!\n";
+      if ($dry_run) {
+        print "$ME: would symlink($cl_sub, $cl)\n";
+      } else {
+        symlink $cl_sub, $cl
+          or die "$ME: failed to create symlink, $cl, to $cl_sub: $!\n";
+      }
 
       exit 0;
     }
@@ -798,7 +824,12 @@ sub main
       $verbose
         and verbose_cmd \@cmd;
 
-      exec @cmd;
+      if ($dry_run) {
+        print "$ME: would run: @cmd\n";
+        exit 0;
+      } else {
+        exec @cmd;
+      }
       exit 1;
     }
 

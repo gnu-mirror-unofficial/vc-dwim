@@ -251,6 +251,10 @@ set.
 @item --commit
 Perform the commit, too.
 
+@item -n
+@itemx --dry-run
+Print the commands that would be run instead of running them.
+
 @item --diff
 Determine which version control system manages the first
 @file{@var{file}}, then use that to print diffs of the named
