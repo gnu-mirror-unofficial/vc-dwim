@@ -6,6 +6,11 @@ print_ver_ vc-dwim
 
 require_git_
 
+# if git isn't new enough to support worktree, just skip this test.
+if git worktree --help >/dev/null; then :; else
+  exit 77
+fi
+
 git init > /dev/null			\
   && touch x				\
   && git add .				\
