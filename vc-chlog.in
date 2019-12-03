@@ -85,8 +85,10 @@ test -z "$user_name" &&
 	s///p
 	q
       }'`
-test -z "$email_address" &&
-  email_address=$USER@`hostname`.`(domainname) 2>/dev/null || hostname -d`
+if test -z "$email_address"; then
+  domain=`(domainname) 2>/dev/null || (hostname -d) 2>/dev/null || echo unknown_domain`
+  email_address=$USER@`hostname`."$domain"
+fi
 find_functions=:
 wd=`pwd`
 
