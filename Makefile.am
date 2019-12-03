@@ -80,3 +80,8 @@ gen-ChangeLog:
 	    { rm -f $(distdir)/ChangeLog &&				\
 	      mv $(distdir)/cl-t $(distdir)/ChangeLog; }		\
 	fi
+
+install-exec-hook:
+	$(AM_V_at)p=vc-dwim;						\
+        ptrans=$$(printf '%s' "$$p" | sed -e "$(transform)");		\
+	perl -ni -e '/DELETE_ME/ or print' $(DESTDIR)$(bindir)/$$ptrans

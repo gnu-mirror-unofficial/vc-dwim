@@ -39,6 +39,7 @@ BEGIN
 {
   my $perllibdir = $ENV{'perllibdir'} || '@datadir@/@PACKAGE@';
   unshift @INC, (split '@PATH_SEPARATOR@', $perllibdir);
+  unshift @INC, dirname $0; # DELETE_ME upon installation
 
   # Override SHELL.  This is required on DJGPP so that system() uses
   # bash, not COMMAND.COM which doesn't quote arguments properly.
