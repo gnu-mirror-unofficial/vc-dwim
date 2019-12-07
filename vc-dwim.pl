@@ -793,8 +793,8 @@ sub main
       # If a ChangeLog file exists in the current directory, rename it
       # deliberately ignoring any rename failure. (But only report the
       # rename for dry runs if it does exist.)
-      if ($dry_run && -e $cl) {
-        print "$ME: would rename($cl, $cl~)\n";
+      if ($dry_run) {
+        -e $cl and print "$ME: would rename($cl, $cl~)\n";
       } else {
         rename $cl, "$cl~";
       }
