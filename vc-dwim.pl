@@ -116,6 +116,10 @@ sub get_diffs ($$$)
   my ($vc, $f, $pristine) = @_;
 
   my @cmd = ($pristine ? $vc->diff_pristine() : $vc->diff_cmd(), @$f);
+  if ($dry_run) {
+    print "$ME: would run: @cmd\n";
+    return [];
+  }
   $verbose
     and verbose_cmd \@cmd;
   open PIPE, '-|', @cmd
@@ -152,6 +156,7 @@ sub get_new_changelog_lines ($$)
   my $diff_lines = get_diffs ($vc, [$f], 1);
   if (@$diff_lines == 0)
     {
+      $dry_run and return [];
       my $vc_name = $vc->name();
       die qq|$ME: "$vc_name diff $f" produced no output\n|;
     }
@@ -928,6 +933,9 @@ sub main
           $added_log_lines{$log} = get_new_changelog_lines $vc, $log;
         }
     }
+  $dry_run
+    and exit 0;
+
   foreach my $log (@changelog_file_name)
     {
       my $line_list = $added_log_lines{$log};
