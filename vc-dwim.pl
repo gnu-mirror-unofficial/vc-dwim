@@ -1255,6 +1255,10 @@ system as the rest of the project hierarchy.
 
 perform the commit, too
 
+=item B<-n>, B<--dry-run>
+
+Print the commands that would be run instead of running them.
+
 =item B<--author="User Name <user@example.orgE<gt>">
 
 Specify the user name and email address of the author
