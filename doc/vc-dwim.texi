@@ -299,7 +299,7 @@ Prepare a source tree with no @file{ChangeLog} file for use with vc-dwim
 Generate verbose output.
 
 @item --debug
-Generate debug output.
+Generate debug output; implies @option{--verbose}.
 @end table
 
 This tool can be useful to you only if you use a version control system.

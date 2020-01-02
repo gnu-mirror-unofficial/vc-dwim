@@ -170,6 +170,7 @@ sub get_new_changelog_lines ($$)
   my $push_offset;
   foreach my $line (@$diff_lines)
     {
+      $debug and warn "$ME: considering line: $line\n";
       if ($line =~ /^\@\@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? \@\@/)
         {
           $push_offset = 1;
@@ -187,10 +188,14 @@ sub get_new_changelog_lines ($$)
         or die "$ME: unexpected diff output on line $.:\n$line";
       chomp $line;
       my $offset = $unidiff_at_offset + $offset_in_hunk - 1;
-      $push_offset
-        and push @added_lines, \$offset;
+      if ($push_offset)
+        {
+          $debug and warn "$ME:  pushing offset: $push_offset\n";
+          push @added_lines, \$offset;
+        }
       $push_offset = 0;
       push @added_lines, $line;
+      $debug and warn "$ME:  pushed line: $line\n";
     }
 
   @added_lines == 0
@@ -754,6 +759,8 @@ sub main
      version => sub { print "$ME version $VERSION\n"; exit },
     ) or usage 1;
 
+  $debug and $verbose = 1;
+
   my $fail;
 
   if ($initialize)
@@ -970,20 +977,28 @@ sub main
       # 2006-08-19  Jim Meyering  <jim@meyering.net>
       # Ignore the following one, too, which should be blank.
       my $n_log_lines = @log_lines;
+      $debug and warn "$ME: got $n_log_lines log line(s)\n";
+
       if (3 <= $n_log_lines)
         {
           if ($log_lines[0] =~ /^\+\d{4}-\d\d-\d\d  (.*)/)
             {
               my $name_and_email = $1;
               check_attribution $name_and_email, \$author;
+              $debug and warn
+                "$ME: shifting first attribution line: $log_lines[0]\n";
               shift @log_lines;
 
               # Accept and ignore a second ChangeLog attribution line.  E.g.,
               # 2006-09-29  user one  <u1@example.org>
               #         and user two  <u2@example.org>
               # The "and " on the second line is optional.
-              $log_lines[0] =~ /^\+\t(?:and )?[^<]+<.*>$/
-                and shift @log_lines;
+              if ($log_lines[0] =~ /^\+\t(?:and )?[^<]+<.*>$/)
+                {
+                  $debug and warn
+                    "$ME: shifting second attribution line: $log_lines[0]\n";
+                  shift @log_lines;
+                }
 
               if ($log_lines[0] ne '+')
                 {
@@ -1011,6 +1026,10 @@ sub main
               #
               # Before the 2011-05-05 fix, vc-dwim would include
               # that header line at the end of the commit log.
+              $debug
+                and warn "$ME: popping first of two lines: $log_lines[0]\n";
+              $debug
+                and warn "$ME: popping second of two lines: $log_lines[1]\n";
               pop @log_lines;
               pop @log_lines;
             }
@@ -1300,7 +1319,7 @@ Generate verbose output.
 
 =item B<--debug>
 
-Generate debug output.
+Generate debug output; implies C<--verbose>.
 
 =back
 
