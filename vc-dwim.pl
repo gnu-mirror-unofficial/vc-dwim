@@ -981,6 +981,12 @@ sub main
 
       if (3 <= $n_log_lines)
         {
+          if ($log_lines[0] =~ /^\+\d{4}-\d\d-\d\d(?: \S|.*\S <)/)
+            {
+              die "$ME:$log: invalid 'date  name  <email>' line:\n"
+                . $log_lines[0] . "\n";
+            }
+
           if ($log_lines[0] =~ /^\+\d{4}-\d\d-\d\d  (.*)/)
             {
               my $name_and_email = $1;

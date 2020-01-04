@@ -32,4 +32,23 @@ fail=0
 echo a > foo || framework_failure_
 vc-dwim ChangeLog || fail=1
 
+# Ensure that we fail for a "date  name  email" line that uses
+# just one space for either separator.
+
+for invalid in \
+  '2011-05-31 R. Andom  <random@example.com>' \
+  '2011-05-31  R. Andom <random@example.com>'; do
+
+  printf '%s\n' \
+    "vc-dwim:ChangeLog: invalid 'date  name  <email>' line:" "+$invalid" \
+    > exp.err || framework_failure_
+
+  printf '%s\n' "$invalid" '' one-line '* foo: xx' > ChangeLog \
+    || framework_failure_
+
+  echo b > foo || framework_failure_
+  vc-dwim ChangeLog 2> err && fail=1
+  compare exp.err err || fail=1
+done
+
 Exit $fail
