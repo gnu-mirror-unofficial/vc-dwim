@@ -18,6 +18,7 @@ touch x || framework_failure_
 git add x || framework_failure_
 cat <<EOF >> ChangeLog || framework_failure_
 
+	summary
 	* x: whatever...
 EOF
 
@@ -35,6 +36,7 @@ grep "^Author: $name_and_addr" out > /dev/null
 cat <<EOF > t || framework_failure_
 2006-09-05  X Y  <z@example.org>
 
+	summary
 	* x: Done.
 
 EOF
@@ -52,6 +54,7 @@ grep '^Author: X Y <z@example\.org>' out > /dev/null
 cat <<EOF > t || framework_failure_
 2006-09-06  X Y  <z@example.org>
 
+	summary
 	* x: Done, again.
 
 EOF
@@ -68,6 +71,7 @@ vc-dwim --author='wrong.person@example.org' --commit 2> /dev/null || :
 cat <<EOF > t || framework_failure_
 2006-09-07  X Y  <z@example.org>
 
+	summary
 	* x: Last.
 
 EOF

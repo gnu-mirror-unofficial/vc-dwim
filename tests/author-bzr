@@ -23,15 +23,15 @@ echo foo > x || framework_failure_
 bzr add x || framework_failure_
 cat <<EOF >> ChangeLog || framework_failure_
 
+	summary
 	* x: whatever...
 EOF
 
-set -e
 fail=0
 
 name_and_addr='joe blow <j@blow.org>'
-vc-dwim --commit --author="$name_and_addr" > /dev/null
-bzr log -r-1 > out
-grep "^author: $name_and_addr" out > /dev/null
+vc-dwim --commit --author="$name_and_addr" > /dev/null || fail=1
+bzr log -r-1 > out || fail=1
+grep "^author: $name_and_addr" out > /dev/null || fail=1
 
 Exit 0

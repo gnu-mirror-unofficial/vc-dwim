@@ -37,7 +37,7 @@ if cvs diff ChangeLog > /dev/null; then
   touch -d '2 seconds' f ChangeLog 2> /dev/null || sleep 2
 fi
 
-vc-dwim ChangeLog > out 2> err || fail=1
+vc-dwim ChangeLog > out 2> err && fail=1
 
 sed 's/RCS file:.*//;s/^[-+][-+][-+] f.*//' out > k; mv k out
 cat <<\EOF > exp || fail=1
@@ -55,7 +55,8 @@ EOF
 
 compare exp out || fail=1
 
-echo vc-dwim: ChangeLog: no one-line summary > exp.err || fail=1
+echo 'vc-dwim: ChangeLog: one-line summary not found; first line: * f: X.' \
+  > exp.err || fail=1
 compare exp.err err || fail=1
 
 Exit $fail

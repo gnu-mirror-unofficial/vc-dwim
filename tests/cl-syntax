@@ -20,6 +20,7 @@ git commit -m m . > /dev/null || framework_failure_
 cat <<EOF > ChangeLog
 2011-05-31  R. Andom  <random@example.com>
 
+	summary
 	* foo (zoo, bar)
 	(a, b)
         (qux): Comment.
@@ -43,8 +44,9 @@ for invalid in \
     "vc-dwim:ChangeLog: invalid 'date  name  <email>' line:" "+$invalid" \
     > exp.err || framework_failure_
 
-  printf '%s\n' "$invalid" '' one-line '* foo: xx' > ChangeLog \
-    || framework_failure_
+  { echo "$invalid"
+    printf '\t%s\n' '' one-line '* foo: xx'; }  > ChangeLog \
+      || framework_failure_
 
   echo b > foo || framework_failure_
   vc-dwim ChangeLog 2> err && fail=1

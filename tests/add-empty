@@ -6,6 +6,8 @@ print_ver_ vc-dwim
 
 require_git_
 
+fail=0
+
 cat <<EOF > ChangeLog || framework_failure_
 2006-09-04  Jim Meyering  <jim@meyering.net>
 EOF
@@ -19,11 +21,13 @@ git init > /dev/null			\
 
 cat <<EOF >> ChangeLog || framework_failure_
 
+	summary
 	* x: Rename to...
 	* y: ...this.
 EOF
 
 cat <<\EOF > exp || framework_failure_
+summary
 * x: Rename to...
 * y: ...this.
 diff --git a/x b/x
@@ -38,10 +42,7 @@ new file mode 100644
 index 0000000..e69de29
 EOF
 
-set -e
-
-vc-dwim ChangeLog > out
-
-compare exp out
+vc-dwim ChangeLog > out || fail=1
+compare exp out || fail=1
 
 Exit 0

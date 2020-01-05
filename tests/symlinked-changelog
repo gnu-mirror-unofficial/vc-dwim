@@ -27,6 +27,7 @@ echo a >> m/f
 
 (cd d && git init && git add . && git commit -m m . ) || framework_failure_
 cat <<EOF >> d/ChangeLog || framework_failure_
+	summary
 	* f: X.
 EOF
 
@@ -37,6 +38,7 @@ fail=0
 cut -b1-7 out > k; mv k out
 
 cat <<\EOF > exp || fail=1
+summary
 * f: X.
 === mod
 --- f	2

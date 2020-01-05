@@ -29,7 +29,7 @@ git init > /dev/null                            \
   && git commit -m m . > /dev/null              \
     || framework_failure_
 
-printf "$header\n\n\t* x: y\n\n$header\n\n\tfirst\n" > ChangeLog \
+printf "$header\n\n\tsummary\n\t* x: y\n\n$header\n\n\tfirst\n" > ChangeLog \
     || framework_failure_
 echo foo > x || framework_failure_
 

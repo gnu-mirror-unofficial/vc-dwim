@@ -2,9 +2,14 @@ vc-dwim NEWS                                          -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Changes in behavior
+
+  vc-dwim now requires a one-line summary
+
 ** New features
 
   --debug is much more verbose, and implies --verbose.
+
 
 * Noteworthy changes in release 1.9 (2019-12-23) [stable]
 

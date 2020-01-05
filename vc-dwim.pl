@@ -1186,6 +1186,12 @@ sub main
   # FIXME: add an option to take ChangeLog-style lines from a file,
   # rather than always requiring them to come from a diff.
 
+  # Warn if the first line of the log starts with "* ".
+  # That indicates a missing one-line summary.
+  $log_msg_lines[0] =~ /^\* /
+    and die "$ME: $changelog_file_name[0]: one-line summary not found;"
+             . " first line: $log_msg_lines[0]\n";
+
   # Check in the listed ChangeLog files and all derived ones.
   if ($commit)
     {
@@ -1207,11 +1213,6 @@ sub main
             [@changelog_file_name, @affected_files];
         }
     }
-
-  # Warn if the first line of the log starts with "* ".
-  # That indicates a missing one-line summary.
-  $log_msg_lines[0] =~ /^\* /
-    and warn "$ME: $changelog_file_name[0]: no one-line summary\n";
 }
 
 main();

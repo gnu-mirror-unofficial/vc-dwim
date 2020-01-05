@@ -20,11 +20,13 @@ git init > /dev/null			\
 
 cat <<EOF >> ChangeLog || framework_failure_
 
+	summary
 	* x: Rename to...
 	* y: ...this.
 EOF
 
 cat <<\EOF > exp || framework_failure_
+summary
 * x: Rename to...
 * y: ...this.
 diff --git a/x b/y
@@ -35,6 +37,7 @@ EOF
 
 # You get different output for a renaming, with older versions.
 cat <<\EOF > exp-old || framework_failure_
+summary
 * x: Rename to...
 * y: ...this.
 diff --git a/x b/x

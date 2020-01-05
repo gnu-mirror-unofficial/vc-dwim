@@ -10,6 +10,7 @@ touch f || framework_failure_
 cat <<EOF > ChangeLog || framework_failure_
 2006-09-04  Jim Meyering  <jim@meyering.net>
 
+	summary
 	* f: X.
 EOF
 git init > /dev/null || framework_failure_
@@ -19,13 +20,16 @@ git commit -m m . > /dev/null || framework_failure_
 fail=0
 
 cat <<EOF >> ChangeLog || fail=1
-	(dog): bark.
+
+	summary
+	* f (dog): bark.
 EOF
 echo bow >> f || fail=1
 
 vc-dwim ChangeLog > out || fail=1
 
 cat <<\EOF > exp || fail=1
+summary
 * f (dog): bark.
 diff --git a/f b/f
 index e69de29..de03f25 100644

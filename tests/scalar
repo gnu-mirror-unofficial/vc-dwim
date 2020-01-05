@@ -28,7 +28,7 @@ EOF
 ln -s .git/c/ChangeLog . || framework_failure_
 ( cd .git/c && git init && git add . && git commit -m m . ) || framework_failure_
 
-perl -pi -e '/X/ and print "\t* f: new\n";' \
+perl -pi -e '/X/ and print "\tsummary\n\t* f: new\n";' \
          -e '/Y/ and print "\tgah\n"' .git/c/ChangeLog || framework_failure_
 echo >> f || framework_failure_
 
@@ -38,7 +38,10 @@ vc-dwim --c || fail=1
 
 git log -1 --pretty=format:%b > log || fail=1
 
+exp='* f: new
+gah'
+
 # Before the fix, this would contain SCALAR(0x......)
-test "$(cat log)" = gah || fail=1
+test "$(cat log)" = "$exp" || fail=1
 
 Exit $fail
