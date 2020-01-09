@@ -191,6 +191,12 @@ For example:
 * foo.m4: ...
 @end example
 
+After committing a change, do not erase or edit the ChangeLog file.
+When writing further changes, just prepend to the top of ChangeLog, as
+usual.  vc-dwim requires that the only changes to ChangeLog are
+additions at the beginning of the file.  If you feel the need to edit
+past log entries, this needs to be done in the VC log, not by editing
+ChangeLog.
 
 @node Initializing vc-dwim
 @section Initializing vc-dwim
@@ -211,7 +217,9 @@ of the source tree in which you'd like to use vc-dwim.
 
 Your own source tree need not use git; @var{VCDIR} in the above refers
 to the version-control system's control directory, such as @file{.svn},
-@file{_darcs}, etc., as well as @file{.git}.
+@file{_darcs}, etc., as well as @file{.git}.  The
+@file{@var{VCDIR}/c/.git} repository is always independent of your own
+source tree.
 
 Then you can make ChangeLog entries as usual, and proceed with use of
 vc-dwim.

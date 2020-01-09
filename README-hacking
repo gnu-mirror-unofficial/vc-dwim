@@ -70,7 +70,7 @@ appropriate bug-reporting address as reported by the --help option of
 each program.  One way to do this is to use vc-dwim itself, as follows.
 
   Run the command "vc-dwim --initialize" from the top-level directory
-  of this package's git-cloned hierarchy.
+  of this package's git-cloned hierarchy.  (First time only, natually.)
 
   Edit the (empty) ChangeLog file that this command creates, creating a
   properly-formatted entry according to the GNU coding standards
@@ -79,12 +79,18 @@ each program.  One way to do this is to use vc-dwim itself, as follows.
   Make your changes.
 
   Run the command "vc-dwim" and make sure its output (the diff of all
-  your changes) looks good.
+  your changes) looks good.  Then run make syntax-check (or equivalent;
+  maintainer-check is another likely name).
 
   Run "vc-dwim --commit".
 
   Run the command "git format-patch --stdout -1", and email its output
   in, using the output's subject line.
+
+  When writing subsequent changes, don't delete or edit the old
+  ChangeLog entry; just prepend to the top, as usual for ChangeLog
+  files.  If you feel the need to edit past log entries, this needs to be
+  done in the VC log, not by editing ChangeLog.
 
 -----
 
