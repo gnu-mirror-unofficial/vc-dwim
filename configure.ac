@@ -61,5 +61,5 @@ AM_MISSING_PROG([HELP2MAN], [help2man])
 AM_MISSING_PROG([POD2MAN], [pod2man])
 
 AC_CONFIG_FILES([Makefile doc/Makefile man/Makefile tests/Makefile])
-AC_CONFIG_FILES([vc-chlog], [chmod +x vc-chlog])
+AC_CONFIG_FILES([vc-chlog], [chmod a+x vc-chlog])
 AC_OUTPUT
