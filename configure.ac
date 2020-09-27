@@ -13,7 +13,7 @@ AM_INIT_AUTOMAKE([1.11 no-dist-gzip dist-xz color-tests parallel-tests])
 AM_SILENT_RULES([yes]) # make --enable-silent-rules the default.
 
 # Minimum Autoconf version required.
-AC_PREREQ([2.63])
+AC_PREREQ([2.64])
 
 # Where to generate output; srcdir location.
 AC_CONFIG_SRCDIR([vc-dwim.pl])
