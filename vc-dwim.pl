@@ -2,7 +2,7 @@
 # vc-dwim - a version-control-agnostic ChangeLog diff and commit tool
 # @configure_input@
 #
-# Copyright 2006-2020 Free Software Foundation, Inc.
+# Copyright 2006-2021 Free Software Foundation, Inc.
 # Written by Jim Meyering <meyering@redhat.com>
 
 # This program is free software: you can redistribute it and/or modify
