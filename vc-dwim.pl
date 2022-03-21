@@ -54,7 +54,7 @@ BEGIN
 use Coda;
 use VC;
 use ProcessStatus qw($PROCESS_STATUS process_status);
-use Pod::PlainText;
+use Pod::Text;
 
 our $VERSION = '@VERSION@';
 (my $ME = $0) =~ s|.*/||;
@@ -73,8 +73,8 @@ sub usage ($)
     }
   else
     {
-      my $parser = Pod::PlainText->new (sentence => 1, width => 78,
-                                     dict => {ME => $ME});
+      my $parser = Pod::Text->new (sentence => 1, width => 78,
+                                   dict => {ME => $ME});
       # Read POD from __END__ (below) and write to STDOUT.
       *STDIN = *DATA;
       $parser->parse_from_filehandle;
